@@ -470,7 +470,13 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         IngredientsFieldName,
         CraftingPriceFieldName,
         LocationFieldName,
-        CraftingItemInfoDesc
+        CraftingItemInfoDesc,
+        UnmuteDesc,
+        MuteTitle,
+        MuteDesc,
+        MuteReasonFieldName,
+        MuteReasonNull,
+        MuteSignatureFieldName,
     }
 
     public static class IzumiReplyMessageHelper
@@ -1889,6 +1895,24 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.CraftingItemInfoDesc =>
                 "Для изготовления отправляйтесь в указанную локацию и напишите `!изготовить предмет [номер] [количество]`.\n*Количество указывать не обязательно, по-умолчанию это 1.*",
+
+            IzumiReplyMessage.UnmuteDesc =>
+                "Блокировка чата истекла, вы можете продолжить общение.",
+
+            IzumiReplyMessage.MuteTitle =>
+                "Указом `#{0}` постановлено",
+
+            IzumiReplyMessage.MuteDesc =>
+                "Пользователь {0} `@{1}`, нарушивший <#{2}> сервера, лишается права на общение во всех чатах.",
+
+            IzumiReplyMessage.MuteReasonFieldName =>
+                "Причина",
+
+            IzumiReplyMessage.MuteReasonNull =>
+                "не указана",
+
+            IzumiReplyMessage.MuteSignatureFieldName =>
+                "Подпись",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };

@@ -12,6 +12,7 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
         EventManager = 3,
         Moderator = 4,
         Nitro = 5, // роль nitro-boost создается дискордом по-умолчанию, нам нужно только получить ее
+        Mute = 6,
 
         LocationInTransit = 50,
         LocationCapital = 51,
@@ -35,7 +36,7 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
         LostArk = 205,
         Dota = 206,
         Osu = 207,
-        AmongUs = 208
+        AmongUs = 208,
     }
 
     public static class DiscordRoleHelper
@@ -73,6 +74,7 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
             DiscordRole.Dota => "Dota 2",
             DiscordRole.Osu => "Osu!",
             DiscordRole.AmongUs => "Among Us",
+            DiscordRole.Mute => "Блокировка чата",
             _ => throw new ArgumentOutOfRangeException(nameof(role), role, null)
         };
 
