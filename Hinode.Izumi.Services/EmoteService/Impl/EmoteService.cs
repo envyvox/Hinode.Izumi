@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -17,12 +18,15 @@ namespace Hinode.Izumi.Services.EmoteService.Impl
         private readonly IConnectionManager _con;
         private readonly IMemoryCache _cache;
         private readonly IDiscordClientService _discordClientService;
+        private readonly TimeZoneInfo _timeZoneInfo;
 
-        public EmoteService(IConnectionManager con, IMemoryCache cache, IDiscordClientService discordClientService)
+        public EmoteService(IConnectionManager con, IMemoryCache cache, IDiscordClientService discordClientService,
+            TimeZoneInfo timeZoneInfo)
         {
             _con = con;
             _cache = cache;
             _discordClientService = discordClientService;
+            _timeZoneInfo = timeZoneInfo;
         }
 
         public async Task<Dictionary<string, EmoteModel>> GetEmotes()
@@ -45,9 +49,8 @@ namespace Hinode.Izumi.Services.EmoteService.Impl
 
         public async Task UploadEmotes()
         {
-            // сначала нужно удалить все иконки чтобы отсеять удаленные
-            await DeleteEmotes();
-
+            // получаем текущее время
+            var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, _timeZoneInfo);
             // получаем клиент
             var socketClient = await _discordClientService.GetSocketClient();
             // создаем списки в которые будет добавлять информацию о иконках
@@ -76,17 +79,27 @@ namespace Hinode.Izumi.Services.EmoteService.Impl
                             unnest(array[@emoteName]),
                             unnest(array[@emoteCode])
                             )
-                    on conflict (id, name) do nothing",
+                    on conflict (id, name) do update
+                        set updated_at = now()",
                     new {emoteId, emoteName, emoteCode});
+
+            // затем удаляем все не обновленные иконки
+            await DeleteEmotes(timeNow);
         }
 
-        private async Task DeleteEmotes()
+        /// <summary>
+        /// Удаляет все иконки, дата обновления которых меньше указанной даты.
+        /// </summary>
+        /// <param name="dateTime"></param>
+        private async Task DeleteEmotes(DateTime dateTime)
         {
             // удаляем иконки из базы
             await _con
                 .GetConnection()
                 .ExecuteAsync(@"
-                    delete from emotes");
+                    delete from emotes
+                    where updated_at < @dateTime",
+                    new {dateTime});
 
             // удаляем иконки из кэша
             _cache.Remove(CacheExtensions.EmotesKey);
