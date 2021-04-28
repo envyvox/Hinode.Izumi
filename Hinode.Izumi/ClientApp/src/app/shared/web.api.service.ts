@@ -275,10 +275,6 @@ export class AlcoholService extends ServiceBase {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : this.getBaseUrl("spa");
     }
 
-    /**
-     * Возвращает массив из всего алкоголя.
-     * @return Массив из всего алкоголя.
-     */
     list(): Observable<AlcoholWebModel[]> {
         let url_ = this.baseUrl + "/api/alcohol/list";
         url_ = url_.replace(/[?&]$/, "");
@@ -333,11 +329,6 @@ export class AlcoholService extends ServiceBase {
         return _observableOf<AlcoholWebModel[]>(<any>null);
     }
 
-    /**
-     * Возвращает алкоголь с указанным id.
-     * @param id Id алкоголя.
-     * @return Алкоголь.
-     */
     get(id: number): Observable<AlcoholWebModel> {
         let url_ = this.baseUrl + "/api/alcohol/{id}";
         if (id === undefined || id === null)
@@ -391,12 +382,6 @@ export class AlcoholService extends ServiceBase {
         return _observableOf<AlcoholWebModel>(<any>null);
     }
 
-    /**
-     * Изменяет алкоголь.
-     * @param id Id алкоголя.
-     * @param model Модель алкоголя.
-     * @return Измененный алкоголь.
-     */
     edit(id: number, model: AlcoholWebModel): Observable<AlcoholWebModel> {
         let url_ = this.baseUrl + "/api/alcohol/{id}";
         if (id === undefined || id === null)
@@ -454,10 +439,6 @@ export class AlcoholService extends ServiceBase {
         return _observableOf<AlcoholWebModel>(<any>null);
     }
 
-    /**
-     * Удаляет алкоголь.
-     * @param id Id алкоголя.
-     */
     remove(id: number): Observable<void> {
         let url_ = this.baseUrl + "/api/alcohol/{id}";
         if (id === undefined || id === null)
@@ -507,10 +488,6 @@ export class AlcoholService extends ServiceBase {
         return _observableOf<void>(<any>null);
     }
 
-    /**
-     * Добавляет новый алкоголь.
-     * @return Новый алкоголь.
-     */
     add(model: AlcoholWebModel): Observable<AlcoholWebModel> {
         let url_ = this.baseUrl + "/api/alcohol/add";
         url_ = url_.replace(/[?&]$/, "");
@@ -1487,10 +1464,6 @@ export class CraftingService extends ServiceBase {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : this.getBaseUrl("spa");
     }
 
-    /**
-     * Возвращает массив из всех изготавливаемых предметов.
-     * @return Массив из всех изготавливаемых предметов.
-     */
     list(): Observable<CraftingWebModel[]> {
         let url_ = this.baseUrl + "/api/crafting/list";
         url_ = url_.replace(/[?&]$/, "");
@@ -1545,11 +1518,6 @@ export class CraftingService extends ServiceBase {
         return _observableOf<CraftingWebModel[]>(<any>null);
     }
 
-    /**
-     * Возвращает изготавливаемый предмет с указанным id.
-     * @param id Id изготавливаемого предмета.
-     * @return Изготавливаемый предмет.
-     */
     get(id: number): Observable<CraftingWebModel> {
         let url_ = this.baseUrl + "/api/crafting/{id}";
         if (id === undefined || id === null)
@@ -1603,12 +1571,6 @@ export class CraftingService extends ServiceBase {
         return _observableOf<CraftingWebModel>(<any>null);
     }
 
-    /**
-     * Изменяет изготавливаемый предмет.
-     * @param id Id изготавливаемого предмета.
-     * @param model Модель изготавливаемого предмета.
-     * @return Измененный изготавливаемый предмет.
-     */
     edit(id: number, model: CraftingWebModel): Observable<CraftingWebModel> {
         let url_ = this.baseUrl + "/api/crafting/{id}";
         if (id === undefined || id === null)
@@ -1666,10 +1628,6 @@ export class CraftingService extends ServiceBase {
         return _observableOf<CraftingWebModel>(<any>null);
     }
 
-    /**
-     * Удаляет изготавливаемый предмет.
-     * @param id Id изготавливаемого предмета.
-     */
     remove(id: number): Observable<void> {
         let url_ = this.baseUrl + "/api/crafting/{id}";
         if (id === undefined || id === null)
@@ -1719,10 +1677,6 @@ export class CraftingService extends ServiceBase {
         return _observableOf<void>(<any>null);
     }
 
-    /**
-     * Добавляет новый изготавливаемый предмет.
-     * @return Новый изготавливаемый предмет.
-     */
     add(model: CraftingWebModel): Observable<CraftingWebModel> {
         let url_ = this.baseUrl + "/api/crafting/add";
         url_ = url_.replace(/[?&]$/, "");
@@ -3374,10 +3328,6 @@ export class FoodService extends ServiceBase {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : this.getBaseUrl("spa");
     }
 
-    /**
-     * Возвращает массив из всех блюд.
-     * @return Массив из всех блюд.
-     */
     list(): Observable<FoodWebModel[]> {
         let url_ = this.baseUrl + "/api/food/list";
         url_ = url_.replace(/[?&]$/, "");
@@ -3432,11 +3382,6 @@ export class FoodService extends ServiceBase {
         return _observableOf<FoodWebModel[]>(<any>null);
     }
 
-    /**
-     * Возвращает блюдо с указанным id.
-     * @param id Id блюда.
-     * @return Блюдо.
-     */
     get(id: number): Observable<FoodWebModel> {
         let url_ = this.baseUrl + "/api/food/{id}";
         if (id === undefined || id === null)
@@ -3490,12 +3435,6 @@ export class FoodService extends ServiceBase {
         return _observableOf<FoodWebModel>(<any>null);
     }
 
-    /**
-     * Изменяет блюдо.
-     * @param id Id блюда.
-     * @param model Модель блюда.
-     * @return Измененное блюдо.
-     */
     edit(id: number, model: FoodWebModel): Observable<FoodWebModel> {
         let url_ = this.baseUrl + "/api/food/{id}";
         if (id === undefined || id === null)
@@ -3553,10 +3492,6 @@ export class FoodService extends ServiceBase {
         return _observableOf<FoodWebModel>(<any>null);
     }
 
-    /**
-     * Удаляет блюдо.
-     * @param id Id блюда.
-     */
     remove(id: number): Observable<void> {
         let url_ = this.baseUrl + "/api/food/{id}";
         if (id === undefined || id === null)
@@ -3606,10 +3541,6 @@ export class FoodService extends ServiceBase {
         return _observableOf<void>(<any>null);
     }
 
-    /**
-     * Добавляет новое блюдо.
-     * @return Новое блюдо.
-     */
     add(model: FoodWebModel): Observable<FoodWebModel> {
         let url_ = this.baseUrl + "/api/food/add";
         url_ = url_.replace(/[?&]$/, "");
