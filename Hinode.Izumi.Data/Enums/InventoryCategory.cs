@@ -8,16 +8,16 @@ namespace Hinode.Izumi.Data.Enums
     public enum InventoryCategory
     {
         Currency = 1,
-        Box = 11,
-        Gathering = 2,
-        Product = 3,
-        Crafting = 4,
-        Alcohol = 5,
-        Drink = 6,
-        Seed = 7,
-        Crop = 8,
-        Fish = 9,
-        Food = 10
+        Box = 2,
+        Gathering = 3,
+        Product = 4,
+        Crafting = 5,
+        Alcohol = 6,
+        Drink = 7,
+        Seed = 8,
+        Crop = 9,
+        Fish = 10,
+        Food = 11
     }
 
     public static class InventoryCategoryHelper
