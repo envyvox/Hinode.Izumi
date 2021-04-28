@@ -1585,7 +1585,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Обновление пола пользователя",
 
             IzumiReplyMessage.UpdateGenderNotifyFieldDesc =>
-                "{0} **{1}** `!mod gender {2} 1`\n{3} **{4}** `!mod gender {2} 2`",
+                "{0} **{1}** `!mod update-gender {2} 1`\n{3} **{4}** `!mod update-gender {2} 2`",
 
             IzumiReplyMessage.ModGenderDesc =>
                 "Пол пользователя {0} был успешно обновлен на {1} **{2}**.",
