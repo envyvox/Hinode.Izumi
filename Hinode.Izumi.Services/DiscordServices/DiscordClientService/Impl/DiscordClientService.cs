@@ -25,6 +25,7 @@ using Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnService
 using Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnServices.UserVoiceStateUpdated;
 using Hinode.Izumi.Services.DiscordServices.DiscordClientService.Options;
 using Hinode.Izumi.Services.RpgServices.ImageService;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -41,22 +42,13 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.Impl
         private readonly CommandService _commands;
         private readonly IHostApplicationLifetime _lifetime;
         private readonly ILogger<DiscordClientService> _logger;
-        private readonly IMessageReceivedService _messageReceivedService;
-        private readonly IReactionService _reactionService;
-        private readonly IUserJoinedService _userJoinedService;
-        private readonly IUserLeftService _userLeftService;
-        private readonly IUserVoiceStateUpdatedService _userVoiceStateUpdatedService;
-        private readonly IGuildMemberUpdatedService _guildMemberUpdatedService;
         private readonly IImageService _imageService;
 
         private DiscordSocketClient _socketClient;
 
         public DiscordClientService(IOptions<DiscordOptions> options, IServiceProvider serviceProvider,
             TimeZoneInfo timeZoneInfo, CommandService commands, IHostApplicationLifetime lifetime,
-            ILogger<DiscordClientService> logger, IMessageReceivedService messageReceivedService,
-            IReactionService reactionService, IUserJoinedService userJoinedService, IUserLeftService userLeftService,
-            IUserVoiceStateUpdatedService userVoiceStateUpdatedService, IImageService imageService,
-            IGuildMemberUpdatedService guildMemberUpdatedService)
+            ILogger<DiscordClientService> logger, IImageService imageService)
         {
             _options = options;
             _serviceProvider = serviceProvider;
@@ -64,12 +56,6 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.Impl
             _commands = commands;
             _lifetime = lifetime;
             _logger = logger;
-            _messageReceivedService = messageReceivedService;
-            _reactionService = reactionService;
-            _userJoinedService = userJoinedService;
-            _userLeftService = userLeftService;
-            _userVoiceStateUpdatedService = userVoiceStateUpdatedService;
-            _guildMemberUpdatedService = guildMemberUpdatedService;
             _imageService = imageService;
             _socketClient = new DiscordSocketClient(new DiscordSocketConfig
             {
@@ -204,7 +190,7 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.Impl
             if (socketMessage is not SocketUserMessage message) return;
 
             // отправляем сообщение в сервис сообщений для дополнительных проверок
-            await _messageReceivedService.Execute(_socketClient, socketMessage);
+            await _serviceProvider.GetService<IMessageReceivedService>().Execute(_socketClient, socketMessage);
 
             // если сообщение не содержит префикса (не является командой) - игнорируем
             var argPos = 0;
@@ -229,22 +215,25 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.Impl
         }
 
         private async Task SocketClientOnUserLeft(SocketGuildUser socketGuildUser) =>
-            await _userLeftService.Execute(socketGuildUser);
+            await _serviceProvider.GetService<IUserLeftService>().Execute(socketGuildUser);
 
         private async Task SocketClientOnUserJoined(SocketGuildUser socketGuildUser) =>
-            await _userJoinedService.Execute(socketGuildUser);
+            await _serviceProvider.GetService<IUserJoinedService>().Execute(socketGuildUser);
 
         private async Task SocketClientOnGuildMemberUpdated(SocketGuildUser oldSocketGuildUser,
             SocketGuildUser newSocketGuildUser) =>
-            await _guildMemberUpdatedService.Execute(_socketClient, oldSocketGuildUser, newSocketGuildUser);
+            await _serviceProvider.GetService<IGuildMemberUpdatedService>()
+                .Execute(_socketClient, oldSocketGuildUser, newSocketGuildUser);
 
         private async Task SocketClientOnUserVoiceStateUpdated(SocketUser socketUser,
             SocketVoiceState oldSocketVoiceState, SocketVoiceState newSocketVoiceState) =>
-            await _userVoiceStateUpdatedService.Execute(socketUser, oldSocketVoiceState, newSocketVoiceState);
+            await _serviceProvider.GetService<IUserVoiceStateUpdatedService>()
+                .Execute(socketUser, oldSocketVoiceState, newSocketVoiceState);
 
         private async Task SocketClientOnReactionToggle(Cacheable<IUserMessage, ulong> message,
             ISocketMessageChannel socketMessageChannel, SocketReaction socketReaction) =>
-            await _reactionService.Execute(message, socketMessageChannel, socketReaction);
+            await _serviceProvider.GetService<IReactionService>()
+                .Execute(message, socketMessageChannel, socketReaction);
 
         public async Task<DiscordSocketClient> GetSocketClient() => await Task.FromResult(_socketClient);
     }
