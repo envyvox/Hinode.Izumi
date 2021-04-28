@@ -206,7 +206,7 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.Impl
             await _commands.ExecuteAsync(context, argPos, _serviceProvider);
 
             // если сообщение было отправлено на сервере его нужно удалить
-            if (context.Channel.GetType() == typeof(SocketGuildChannel))
+            if (context.Channel.GetType() != typeof(SocketDMChannel))
             {
                 // делаем паузу для того чтобы дискорд успел обработать сообщение
                 await Task.Delay(1000);
