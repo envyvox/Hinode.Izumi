@@ -63,8 +63,10 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
             // если нет - добавляем
             else await _discordGuildService.ToggleRoleInUser((long) reaction.UserId, role, true);
 
+            // получаем сообщение на котором была поставлена реакция
+            var msg = await _discordGuildService.GetIUserMessage((long) reaction.Channel.Id, (long) message.Id);
             // снимаем поставленную пользователем реакцию
-            await message.Value.RemoveReactionAsync(reaction.Emote, reaction.User.Value);
+            await msg.RemoveReactionAsync(reaction.Emote, reaction.User.Value);
         }
     }
 }
