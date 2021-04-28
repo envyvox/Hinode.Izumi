@@ -1,0 +1,95 @@
+<div class="p-fluid p-grid" [formGroup]="form" (ngSubmit)="save()">
+    <div class="p-col-6 p-md-3">
+        <p-fieldset legend="1. Изготавливаемый предмет">
+            <p-dropdown [options]="craftings" [scrollHeight]="'300px'" [filter]="true" filterBy="name" [showClear]="true"
+                        formControlName="craftingId" optionLabel="name" optionValue="id" placeholder="Выберите предмет">
+                <ng-template let-item pTemplate="item">
+                    <div class="country-item">
+                        <div>{{item.name}}</div>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+        </p-fieldset>
+        <p-fieldset legend="3. Ингредиент">
+            <p-dropdown [options]="gatherings" [scrollHeight]="'300px'" [filter]="true" filterBy="name" [showClear]="true"
+                        [disabled]="gatheringsDisabled" formControlName="ingredientId" optionLabel="name" optionValue="id" placeholder="Выберите ингредиент">
+                <ng-template let-item pTemplate="item">
+                    <div class="country-item">
+                        <div>{{item.name}}</div>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+            <p-dropdown [options]="products" [scrollHeight]="'300px'" [filter]="true" filterBy="name" [showClear]="true"
+                        [disabled]="productsDisabled" formControlName="ingredientId" optionLabel="name" optionValue="id" placeholder="Выберите ингредиент">
+                <ng-template let-item pTemplate="item">
+                    <div class="country-item">
+                        <div>{{item.name}}</div>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+            <p-dropdown [options]="craftings" [scrollHeight]="'300px'" [filter]="true" filterBy="name" [showClear]="true"
+                        [disabled]="craftingsDisabled" formControlName="ingredientId" optionLabel="name" optionValue="id" placeholder="Выберите ингредиент">
+                <ng-template let-item pTemplate="item">
+                    <div class="country-item">
+                        <div>{{item.name}}</div>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+            <p-dropdown [options]="alcohols" [scrollHeight]="'300px'" [filter]="true" filterBy="name" [showClear]="true"
+                        [disabled]="alcoholsDisabled" formControlName="ingredientId" optionLabel="name" optionValue="id" placeholder="Выберите ингредиент">
+                <ng-template let-item pTemplate="item">
+                    <div class="country-item">
+                        <div>{{item.name}}</div>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+            <p-dropdown [options]="drinks" [scrollHeight]="'300px'" [filter]="true" filterBy="name" [showClear]="true"
+                        [disabled]="drinksDisabled" formControlName="ingredientId" optionLabel="name" optionValue="id" placeholder="Выберите ингредиент">
+                <ng-template let-item pTemplate="item">
+                    <div class="country-item">
+                        <div>{{item.name}}</div>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+            <p-dropdown [options]="crops" [scrollHeight]="'300px'" [filter]="true" filterBy="name" [showClear]="true"
+                        [disabled]="cropsDisabled" formControlName="ingredientId" optionLabel="name" optionValue="id" placeholder="Выберите ингредиент">
+                <ng-template let-item pTemplate="item">
+                    <div class="country-item">
+                        <div>{{item.name}}</div>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+            <p-dropdown [options]="foods" [scrollHeight]="'300px'" [filter]="true" filterBy="name" [showClear]="true"
+                        [disabled]="foodsDisabled" formControlName="ingredientId" optionLabel="name" optionValue="id" placeholder="Выберите ингредиент">
+                <ng-template let-item pTemplate="item">
+                    <div class="country-item">
+                        <div>{{item.name}}</div>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+        </p-fieldset>
+    </div>
+    <div class="p-col-6 p-md-3">
+        <p-fieldset legend="2. Категория ингредиента">
+            <p-dropdown [options]="ingredientCategories" [scrollHeight]="'300px'" (onChange)="selectCategory($event.value)"
+                        formControlName="category" optionLabel="name" optionValue="value" placeholder="Выберите категорию">
+                <ng-template let-item pTemplate="item">
+                    <div class="country-item">
+                        <div>{{item.name}}</div>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+        </p-fieldset>
+        <p-fieldset legend="4. Количество ингредиентов">
+            <input type="text" pInputText placeholder="Введите количество" formControlName="amount">
+        </p-fieldset>
+        <p-fieldset legend="5. Подтверждение">
+            <span class="p-buttonset">
+                <button pButton pRipple type="button" label="Save" class="p-button-raised p-button-text p-button-success"
+                        icon="pi pi-check" [disabled]="isSaving || form.invalid" (click)="save()"></button>
+                <button pButton pRipple type="button" label="Back" class="p-button-raised p-button-text p-button-danger"
+                        icon="pi pi-undo" routerLink="/crafting-ingredient/list"></button>
+            </span>
+        </p-fieldset>
+    </div>
+</div>

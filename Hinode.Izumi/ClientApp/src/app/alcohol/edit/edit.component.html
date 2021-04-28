@@ -1,0 +1,110 @@
+<div class="p-fluid p-grid" [formGroup]="form" (ngSubmit)="save()">
+    <div class="p-col-6 p-md-4">
+        <p-fieldset legend="1. Название алкоголя">
+            <input type="text" pInputText placeholder="Введите название" formControlName="name">
+        </p-fieldset>
+        <p-fieldset legend="2. Длительность изготовления">
+            <div class="p-inputgroup">
+                <input type="text" pInputText placeholder="Введите длительность" formControlName="time">
+                <span class="p-inputgroup-addon">секунд</span>
+            </div>
+        </p-fieldset>
+    </div>
+    <div class="p-col-6 p-md-4">
+        <p-fieldset legend="3. Подтверждение">
+            <span class="p-buttonset">
+                <button pButton pRipple type="button" label="Save" class="p-button-raised p-button-text p-button-success"
+                        icon="pi pi-check" [disabled]="isSaving || form.invalid" (click)="save()"></button>
+                <button pButton pRipple type="button" label="Back" class="p-button-raised p-button-text p-button-danger"
+                        icon="pi pi-undo" routerLink="/alcohol/list"></button>
+            </span>
+        </p-fieldset>
+    </div>
+    <div class="p-col-4 p-md-3">
+        <p-fieldset legend="Информация о алкоголе">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">Себестоимость</span>
+                <input type="number" pInputText placeholder="Себестоимость" formControlName="costPrice"
+                       disabled="disabled">
+                <span class="p-inputgroup-addon">иен</span>
+            </div>
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">Стоимость приготовления</span>
+                <input type="number" pInputText placeholder="Себестоимость" formControlName="craftingPrice"
+                       disabled="disabled">
+                <span class="p-inputgroup-addon">иен</span>
+            </div>
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">Цена НПС</span>
+                <input type="number" pInputText placeholder="Себестоимость" formControlName="npcPrice"
+                       disabled="disabled">
+                <span class="p-inputgroup-addon">иен</span>
+            </div>
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">Чистая прибыль</span>
+                <input type="number" pInputText placeholder="Себестоимость" formControlName="profit"
+                       disabled="disabled">
+                <span class="p-inputgroup-addon">иен</span>
+            </div>
+        </p-fieldset>
+    </div>
+    <div class="p-col-6 p-md-6">
+        <p-fieldset legend="Ингредиенты">
+            <p-contextMenu #cm [model]="menuItems"></p-contextMenu>
+            <p-table #d [value]="ingredients" [(contextMenuSelection)]="selectedItem" [contextMenu]="cm"
+                     styleClass="p-datatable-sm" autoLayout="autoLayout">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Category</th>
+                        <th>Ingredient</th>
+                        <th>Amount</th>
+                        <th>Created At</th>
+                        <th>Updated At</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-d>
+                    <tr [pContextMenuRow]="d">
+                        <td>{{d.category | enumToString:ingredientCategory}}</td>
+                        <td>{{d.ingredientName}}</td>
+                        <td>{{d.amount}}</td>
+                        <td>{{d.createdAt | date:"dd/MM/yy HH:mm"}}</td>
+                        <td>{{d.updatedAt | date:"dd/MM/yy HH:mm"}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-fieldset>
+    </div>
+    <div class="p-col-6 p-md-6">
+        <p-fieldset legend="Свойства">
+            <p-table [value]="properties" [(contextMenuSelection)]="selectedItem" [contextMenu]="cm"
+                     styleClass="p-datatable-sm" autoLayout="autoLayout">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Property</th>
+                        <th>Value at 0</th>
+                        <th>Value at 50</th>
+                        <th>Value at 100</th>
+                        <th>Value at 150</th>
+                        <th>Value at 200</th>
+                        <th>Value at 250</th>
+                        <th>Created At</th>
+                        <th>Updated At</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-d>
+                    <tr [pContextMenuRow]="d">
+                        <td>{{d.property | enumToString:property}}</td>
+                        <td>{{d.mastery0}}</td>
+                        <td>{{d.mastery50}}</td>
+                        <td>{{d.mastery100}}</td>
+                        <td>{{d.mastery150}}</td>
+                        <td>{{d.mastery200}}</td>
+                        <td>{{d.mastery250}}</td>
+                        <td>{{d.createdAt | date:"dd/MM/yy HH:mm"}}</td>
+                        <td>{{d.updatedAt | date: "dd/MM/yy HH:mm"}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-fieldset>
+    </div>
+</div>

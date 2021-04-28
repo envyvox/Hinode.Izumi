@@ -1,0 +1,18 @@
+<div class="p-fluid p-grid" [formGroup]="form" (ngSubmit)="save()">
+    <div class="p-col-12 p-md-4">
+        <p-fieldset legend="1. Название собирательского предмета">
+            <input type="text" pInputText placeholder="Введите название" formControlName="name">
+        </p-fieldset>
+        <p-fieldset legend="2. Цена">
+            <input type="text" pInputText placeholder="Введите цену" formControlName="price">
+        </p-fieldset>
+        <p-fieldset legend="3. Подтверждение">
+        <span class="p-buttonset">
+            <button pButton pRipple type="button" label="Save" class="p-button-raised p-button-text p-button-success"
+                    icon="pi pi-check" [disabled]="isSaving || form.invalid" (click)="save()"></button>
+            <button pButton pRipple type="button" label="Back" class="p-button-raised p-button-text p-button-danger"
+                    icon="pi pi-undo" routerLink="/product/list"></button>
+        </span>
+        </p-fieldset>
+    </div>
+</div>

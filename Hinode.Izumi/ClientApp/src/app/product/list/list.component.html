@@ -1,0 +1,53 @@
+<p-contextMenu #cm [model]="menuItems"></p-contextMenu>
+<p-table #d [value]="data" [(contextMenuSelection)]="selectedItem" [contextMenu]="cm"
+         styleClass="p-datatable-sm" autoLayout="autoLayout">
+    <ng-template pTemplate="caption">
+        <div class="p-d-flex">
+            <button pButton pRipple type="button" label="Add" class="p-button-raised p-button-text p-button-plain"
+                    icon="pi pi-plus" routerLink="/product/edit"></button>
+            <button pButton pRipple type="button" label="Refresh" class="p-button-raised p-button-text p-button-plain"
+                    icon="pi pi-refresh" (click)="refresh()"></button>
+            <span class="p-input-icon-left p-ml-auto">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="d.filter($event.target.value, 'name', 'contains')"
+                       placeholder="Search by name" />
+            </span>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="name">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                    Name
+                    <p-sortIcon field="name"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="price">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                    Price
+                    <p-sortIcon field="price"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="createdAt">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                    Created At
+                    <p-sortIcon field="createdAt"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="updatedAt">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                    Updated At
+                    <p-sortIcon field="updatedAt"></p-sortIcon>
+                </div>
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-d>
+        <tr [pContextMenuRow]="d">
+            <td>{{d.name}}</td>
+            <td>{{d.price}}</td>
+            <td>{{d.createdAt | date:"dd/MM/yy HH:mm"}}</td>
+            <td>{{d.updatedAt | date:"dd/MM/yy HH:mm"}}</td>
+        </tr>
+    </ng-template>
+</p-table>

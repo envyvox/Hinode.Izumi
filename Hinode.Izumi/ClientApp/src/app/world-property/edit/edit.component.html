@@ -1,0 +1,25 @@
+<div class="p-fluid p-grid" [formGroup]="form" (ngSubmit)="save()">
+    <div class="p-col-6 p-md-3">
+        <p-fieldset legend="1. Категория свойства">
+            <p-dropdown [options]="propertyCategories" [scrollHeight]="'300px'" formControlName="propertyCategory"
+                        optionLabel="name" optionValue="value" [disabled]="true"></p-dropdown>
+        </p-fieldset>
+        <p-fieldset legend="2. Свойство">
+            <p-dropdown [options]="properties" [scrollHeight]="'300px'" formControlName="property"
+                        optionLabel="name" optionValue="value" [disabled]="true"></p-dropdown>
+        </p-fieldset>
+    </div>
+    <div class="p-col-6 p-md-3">
+        <p-fieldset legend="3. Значение свойства">
+            <input type="text" pInputText formControlName="value">
+        </p-fieldset>
+        <p-fieldset legend="4. Подтверждение">
+            <span class="p-buttonset">
+                <button pButton pRipple type="button" label="Save" class="p-button-raised p-button-text p-button-success"
+                        icon="pi pi-check" [disabled]="isSaving || form.invalid" (click)="save()"></button>
+                <button pButton pRipple type="button" label="Back" class="p-button-raised p-button-text p-button-danger"
+                        icon="pi pi-undo" routerLink="/world-property/list"></button>
+            </span>
+        </p-fieldset>
+    </div>
+</div>

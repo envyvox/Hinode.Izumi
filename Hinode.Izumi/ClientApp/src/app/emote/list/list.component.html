@@ -1,0 +1,34 @@
+<p-table #d [value]="data" [paginator]="true" [rows]="10" styleClass="p-datatable-sm" autoLayout="autoLayout">
+    <ng-template pTemplate="caption">
+        <div class="p-d-flex">
+            <button pButton pRipple type="button" label="Refresh" class="p-button-raised p-button-text p-button-plain"
+                    icon="pi pi-refresh" (click)="refresh()"></button>
+            <button pButton pRipple type="button" label="Upload" class="p-button-raised p-button-text p-button-plain"
+                    icon="pi pi-cloud-upload" (click)="upload()"></button>
+            <span class="p-input-icon-left p-ml-auto">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" (input)="d.filter($event.target.value, 'name', 'contains')"
+                   placeholder="Search by name" />
+            </span>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th *ngFor="let col of cols" pSortableColumn="{{col.field}}">
+                {{col.header}}
+                <p-sortIcon field="{{col.field}}"></p-sortIcon>
+            </th>
+            <th>Preview</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-d>
+        <tr>
+            <td>{{d.id}}</td>
+            <td>{{d.name}}</td>
+            <td>{{d.code}}</td>
+            <td>{{d.createdAt | date:"dd/MM/yy HH:mm"}}</td>
+            <td>{{d.updatedAt | date:"dd/MM/yy HH:mm"}}</td>
+            <td><img src="https://cdn.discordapp.com/emojis/{{d.id}}" height="50" width="50" alt="image not found"></td>
+        </tr>
+    </ng-template>
+</p-table>

@@ -1,0 +1,49 @@
+<div class="p-fluid p-grid" [formGroup]="form" (ngSubmit)="save()">
+    <div class="p-col-4 p-md-4">
+
+        <p-fieldset legend="1. Название семени">
+            <input type="text" pInputText placeholder="Введите название семени" formControlName="name">
+        </p-fieldset>
+        <p-fieldset legend="2. Название урожая">
+            <input type="text" pInputText placeholder="Введите название урожая" formControlName="cropName">
+        </p-fieldset>
+        <p-fieldset legend="3. Сезон">
+            <p-dropdown [options]="seasons" [scrollHeight]="'300px'" formControlName="season" optionLabel="name"
+                        optionValue="value" placeholder="Выберите сезон"></p-dropdown>
+        </p-fieldset>
+    </div>
+    <div class="p-col-4 p-md-4">
+        <p-fieldset legend="4. Длительность роста">
+            <div class="p-inputgroup">
+                <input type="text" pInputText placeholder="Введите длительность" formControlName="growth">
+                <span class="p-inputgroup-addon">дней</span>
+            </div>
+        </p-fieldset>
+        <p-fieldset legend="5. Длительность повторного роста">
+            <div class="p-inputgroup">
+                <input type="text" pInputText placeholder="Введите длительность" formControlName="reGrowth">
+                <span class="p-inputgroup-addon">дней</span>
+            </div>
+        </p-fieldset>
+        <p-fieldset legend="6. Несколько урожая с одного семени">
+            <p-toggleButton formControlName="multiply" onIcon="pi pi-check" offIcon="pi pi-times"
+                            onLabel="Да" offLabel="Нет"></p-toggleButton>
+        </p-fieldset>
+    </div>
+    <div class="p-col-4 p-md-4">
+        <p-fieldset legend="7. Цена семени">
+            <input type="text" pInputText placeholder="Введите цену семени" formControlName="price">
+        </p-fieldset>
+        <p-fieldset legend="8. Цена урожая">
+            <input type="text" pInputText placeholder="Введите цену урожая" formControlName="cropPrice">
+        </p-fieldset>
+        <p-fieldset legend="9. Подтверждение">
+            <span class="p-buttonset">
+                <button pButton pRipple type="button" label="Save" class="p-button-raised p-button-text p-button-success"
+                        icon="pi pi-check" [disabled]="isSaving || form.invalid" (click)="save()"></button>
+                <button pButton pRipple type="button" label="Back" class="p-button-raised p-button-text p-button-danger"
+                        icon="pi pi-undo" routerLink="/seed/list"></button>
+            </span>
+        </p-fieldset>
+    </div>
+</div>

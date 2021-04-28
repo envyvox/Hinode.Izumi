@@ -1,0 +1,38 @@
+<div class="p-fluid p-grid" [formGroup]="form" (ngSubmit)="save()">
+    <div class="p-col-6 p-md-4">
+        <p-fieldset legend="1. ID пользователя">
+            <input type="text" pInputText placeholder="Введите id пользователя" formControlName="id">
+        </p-fieldset>
+        <p-fieldset legend="2. Игровое имя">
+            <input type="text" pInputText placeholder="Введите игровое имя" formControlName="name">
+        </p-fieldset>
+        <p-fieldset legend="3. Информация">
+            <textarea pInputTextarea placeholder="Введите информацию (не обязательно)" formControlName="about" autoResize="autoResize"></textarea>
+        </p-fieldset>
+        <p-fieldset legend="4. Энергия">
+            <input type="text" pInputText placeholder="Введите количество" formControlName="energy">
+        </p-fieldset>
+    </div>
+    <div class="p-col-6 p-md-4">
+        <p-fieldset legend="5. Текущий титул">
+            <p-dropdown [options]="titles" [scrollHeight]="'300px'" formControlName="title"
+                        placeholder="Выберите титул" optionLabel="name" optionValue="value"></p-dropdown>
+        </p-fieldset>
+        <p-fieldset legend="6. Пол пользователя">
+            <p-dropdown [options]="genders" [scrollHeight]="'300px'" formControlName="gender"
+                        placeholder="Выберите пол" optionLabel="name" optionValue="value"></p-dropdown>
+        </p-fieldset>
+        <p-fieldset legend="7. Текущая локация">
+            <p-dropdown [options]="locations" [scrollHeight]="'300px'" formControlName="location"
+                        placeholder="Выберите локацию" optionLabel="name" optionValue="value"></p-dropdown>
+        </p-fieldset>
+        <p-fieldset legend="8. Подтверждение">
+                    <span class="p-buttonset">
+            <button pButton pRipple type="button" label="Save" class="p-button-raised p-button-text p-button-success"
+                    icon="pi pi-check" [disabled]="isSaving || form.invalid" (click)="save()"></button>
+            <button pButton pRipple type="button" label="Back" class="p-button-raised p-button-text p-button-danger"
+                    icon="pi pi-undo" routerLink="/user/list"></button>
+        </span>
+        </p-fieldset>
+    </div>
+</div>

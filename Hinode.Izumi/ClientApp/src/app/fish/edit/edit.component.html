@@ -1,0 +1,37 @@
+<div class="p-fluid p-grid" [formGroup]="form" (ngSubmit)="save()">
+    <div class="p-col-6 p-md-4">
+        <p-fieldset legend="1. Название рыбы">
+            <input type="text" pInputText placeholder="Введите название" formControlName="name">
+        </p-fieldset>
+        <p-fieldset legend="2. Редкость">
+            <p-dropdown [options]="rarities" [scrollHeight]="'300px'" formControlName="rarity" optionLabel="name" optionValue="value"
+                        placeholder="Выберите редкость"></p-dropdown>
+        </p-fieldset>
+        <p-fieldset legend="3. Сезоны">
+            <p-multiSelect [options]="seasons" [filter]="false" [showToggleAll]="false" [scrollHeight]="'300px'"
+                           [showHeader]="false" formControlName="seasons" optionLabel="name" optionValue="value"
+                           placeholder="Выберите сезоны" display="chip"></p-multiSelect>
+        </p-fieldset>
+        <p-fieldset legend="4. Погода">
+            <p-dropdown [options]="weathers" [scrollHeight]="'300px'"  formControlName="weather" optionLabel="name" optionValue="value"
+                        placeholder="Выберите погоду"></p-dropdown>
+        </p-fieldset>
+    </div>
+    <div class="p-col-6 p-md-4">
+        <p-fieldset legend="5. Время суток">
+            <p-dropdown [options]="timesDays" [scrollHeight]="'300px'"  formControlName="timesDay" optionLabel="name" optionValue="value"
+                        placeholder="Выберите время суток"></p-dropdown>
+        </p-fieldset>
+        <p-fieldset legend="6. Стоимость">
+            <input type="text" pInputText placeholder="Введите стоимость" formControlName="price">
+        </p-fieldset>
+        <p-fieldset legend="7. Подтверждение">
+        <span class="p-buttonset">
+            <button pButton pRipple type="button" label="Save" class="p-button-raised p-button-text p-button-success"
+                    icon="pi pi-check" [disabled]="isSaving || form.invalid" (click)="save()"></button>
+            <button pButton pRipple type="button" label="Back" class="p-button-raised p-button-text p-button-danger"
+                    icon="pi pi-undo" routerLink="/fish/list"></button>
+        </span>
+        </p-fieldset>
+    </div>
+</div>

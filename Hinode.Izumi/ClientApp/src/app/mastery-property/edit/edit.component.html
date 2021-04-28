@@ -1,0 +1,40 @@
+<div class="p-fluid p-grid" [formGroup]="form" (ngSubmit)="save()">
+    <div class="p-col-6 p-md-3">
+        <p-fieldset legend="1. Категория свойства">
+            <p-dropdown [options]="propertyCategories" [scrollHeight]="'300px'" formControlName="propertyCategory"
+                        optionLabel="name" optionValue="value" [disabled]="true"></p-dropdown>
+        </p-fieldset>
+        <p-fieldset legend="2. Свойство">
+            <p-dropdown [options]="properties" [scrollHeight]="'300px'" formControlName="property"
+                        optionLabel="name" optionValue="value" [disabled]="true"></p-dropdown>
+        </p-fieldset>
+    </div>
+    <div class="p-col-6 p-md-6">
+        <p-fieldset legend="3. Значения">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">0</span>
+                <input type="text" pInputText placeholder="Value" formControlName="mastery0">
+                <span class="p-inputgroup-addon">50</span>
+                <input type="text" pInputText placeholder="Value" formControlName="mastery50">
+                <span class="p-inputgroup-addon">100</span>
+                <input type="text" pInputText placeholder="Value" formControlName="mastery100">
+                <span class="p-inputgroup-addon">150</span>
+                <input type="text" pInputText placeholder="Value" formControlName="mastery150">
+                <span class="p-inputgroup-addon">200</span>
+                <input type="text" pInputText placeholder="Value" formControlName="mastery200">
+                <span class="p-inputgroup-addon">250</span>
+                <input type="text" pInputText placeholder="Value" formControlName="mastery250">
+            </div>
+        </p-fieldset>
+        <div class="p-col-6 p-md-3">
+            <p-fieldset legend="4. Подтверждение">
+            <span class="p-buttonset">
+                <button pButton pRipple type="button" label="Save" class="p-button-raised p-button-text p-button-success"
+                        icon="pi pi-check" [disabled]="isSaving || form.invalid" (click)="save()"></button>
+                <button pButton pRipple type="button" label="Back" class="p-button-raised p-button-text p-button-danger"
+                        icon="pi pi-undo" routerLink="/mastery-property/list"></button>
+            </span>
+            </p-fieldset>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hinode.Izumi.Data", "Hinode.Izumi.Data\Hinode.Izumi.Data.csproj", "{D2A3470A-2D49-4C48-890F-844DDE3A1A97}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hinode.Izumi.Framework", "Hinode.Izumi.Framework\Hinode.Izumi.Framework.csproj", "{5F4B27B2-CA6B-4405-8E12-621E1D4CB738}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hinode.Izumi", "Hinode.Izumi\Hinode.Izumi.csproj", "{3C313DB5-3B1D-4352-BD04-ED5ACEB51A4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hinode.Izumi.Services", "Hinode.Izumi.Services\Hinode.Izumi.Services.csproj", "{2B0D292E-60C4-4082-85A4-EE3ECF230C49}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D2A3470A-2D49-4C48-890F-844DDE3A1A97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2A3470A-2D49-4C48-890F-844DDE3A1A97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2A3470A-2D49-4C48-890F-844DDE3A1A97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2A3470A-2D49-4C48-890F-844DDE3A1A97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F4B27B2-CA6B-4405-8E12-621E1D4CB738}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F4B27B2-CA6B-4405-8E12-621E1D4CB738}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F4B27B2-CA6B-4405-8E12-621E1D4CB738}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F4B27B2-CA6B-4405-8E12-621E1D4CB738}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C313DB5-3B1D-4352-BD04-ED5ACEB51A4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C313DB5-3B1D-4352-BD04-ED5ACEB51A4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C313DB5-3B1D-4352-BD04-ED5ACEB51A4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C313DB5-3B1D-4352-BD04-ED5ACEB51A4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B0D292E-60C4-4082-85A4-EE3ECF230C49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B0D292E-60C4-4082-85A4-EE3ECF230C49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B0D292E-60C4-4082-85A4-EE3ECF230C49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B0D292E-60C4-4082-85A4-EE3ECF230C49}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,57 @@
+﻿namespace Hinode.Izumi.Data.Enums
+{
+    /// <summary>
+    /// Изображение, которое используются в сообщениях.
+    /// </summary>
+    public enum Image
+    {
+        WeatherClear = 1,
+        WeatherRain = 2,
+        LocationCapital = 3,
+        LocationCastle = 4,
+        LocationGarden = 5,
+        LocationSeaport = 6,
+        LocationVillage = 7,
+        LocationCapitalCasino = 8,
+        LocationCapitalMarket = 9,
+        ExploreGarden = 10,
+        ExploreCastle = 11,
+        Fishing = 12,
+        InTransit = 13,
+        ShopProduct = 14,
+        ShopFisher = 15,
+        ShopSeed = 16,
+        ShopRecipe = 17,
+        ShopBanner = 18,
+        ShopCertificate = 19,
+        Cooking = 20,
+        Crafting = 21,
+        Field = 22,
+        TransitList = 23,
+        Collection = 24,
+        Mastery = 25,
+        WorldInfo = 26,
+        Achievements = 27,
+        Contracts = 28,
+        NpcCapitalJodi = 29,
+        NpcCapitalTodedo = 30,
+        NpcCapitalToku = 31,
+        NpcCastleIoshiro = 32,
+        NpcSeaportIvao = 33,
+        NpcVillageKio = 34,
+        NpcGardenNari = 35,
+        BossCapital = 36,
+        BossCastle = 37,
+        BossGarden = 38,
+        BossSeaport = 39,
+        BossVillage = 40,
+        Effects = 41,
+        RegistryNicknames = 42,
+        RegistryCommand = 43,
+        RegistryGetAnonsRoles = 44,
+        Inventory = 45,
+        Training = 46,
+        CommandError = 47,
+        ShopProject = 48
+    }
+}

@@ -1,0 +1,31 @@
+<div class="p-fluid p-grid" [formGroup]="form" (ngSubmit)="save()">
+    <div class="p-col-6 p-md-4">
+        <p-fieldset legend="1. Локация отправления">
+            <p-dropdown [options]="locations" [scrollHeight]="'300px'" formControlName="departure" optionLabel="name"
+                        optionValue="value" placeholder="Выберите локацию"></p-dropdown>
+        </p-fieldset>
+        <p-fieldset legend="2. Локация прибытия">
+            <p-dropdown [options]="locations" [scrollHeight]="'300px'" formControlName="destination" optionLabel="name"
+                        optionValue="value" placeholder="Выберите локацию"></p-dropdown>
+        </p-fieldset>
+        <p-fieldset legend="3. Длительность поездки">
+            <div class="p-inputgroup">
+                <input type="text" pInputText placeholder="Введите длительность" formControlName="time">
+                <span class="p-inputgroup-addon">минут</span>
+            </div>
+        </p-fieldset>
+    </div>
+    <div class="p-col-6 p-md-4">
+        <p-fieldset legend="4. Стоимость поездки">
+            <input type="text" pInputText placeholder="Введите стоимость" formControlName="price">
+        </p-fieldset>
+        <p-fieldset legend="5. Подтверждение">
+            <span class="p-buttonset">
+                <button pButton pRipple type="button" label="Save" class="p-button-raised p-button-text p-button-success"
+                        icon="pi pi-check" [disabled]="isSaving || form.invalid" (click)="save()"></button>
+                <button pButton pRipple type="button" label="Back" class="p-button-raised p-button-text p-button-danger"
+                        icon="pi pi-undo" routerLink="/transit/list"></button>
+            </span>
+        </p-fieldset>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+<div class="p-fluid p-grid" [formGroup]="form" (ngSubmit)="save()">
+    <div class="p-col-6 p-md-3">
+        <p-fieldset legend="1. Категория достижения">
+            <p-dropdown [options]="achievementCategories" [scrollHeight]="'300px'" formControlName="category"
+                        optionLabel="name" optionValue="value" [disabled]="true"></p-dropdown>
+        </p-fieldset>
+        <p-fieldset legend="2. Достижение">
+            <p-dropdown [options]="achievements" [scrollHeight]="'300px'" formControlName="type"
+                        optionLabel="name" optionValue="value" [disabled]="true"></p-dropdown>
+        </p-fieldset>
+        <p-fieldset legend="3. Тип награды">
+            <p-dropdown [options]="achievementRewardTypes" [scrollHeight]="'300px'" formControlName="reward"
+                        optionLabel="name" optionValue="value"></p-dropdown>
+        </p-fieldset>
+    </div>
+    <div class="p-col-6 p-md-3">
+        <p-fieldset legend="4. Количество или номер награды">
+            <input type="text" pInputText formControlName="number">
+        </p-fieldset>
+        <p-fieldset legend="5. Подтверждение">
+            <span class="p-buttonset">
+                <button pButton pRipple type="button" label="Save" class="p-button-raised p-button-text p-button-success"
+                        icon="pi pi-check" [disabled]="isSaving || form.invalid" (click)="save()"></button>
+                <button pButton pRipple type="button" label="Back" class="p-button-raised p-button-text p-button-danger"
+                        icon="pi pi-undo" routerLink="/achievement/list"></button>
+            </span>
+        </p-fieldset>
+    </div>
+</div>

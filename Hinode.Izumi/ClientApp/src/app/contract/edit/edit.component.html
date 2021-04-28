@@ -1,0 +1,39 @@
+<div class="p-fluid p-grid" [formGroup]="form" (ngSubmit)="save()">
+    <div class="p-col-6 p-md-4">
+        <p-fieldset legend="1. Локация контракта">
+            <p-dropdown [options]="locations" [scrollHeight]="'300px'" formControlName="location" optionLabel="name" optionValue="value"
+                        placeholder="Выберите локацию"></p-dropdown>
+        </p-fieldset>
+        <p-fieldset legend="2. Название">
+            <input type="text" pInputText placeholder="Введите название" formControlName="name">
+        </p-fieldset>
+        <p-fieldset legend="3. Описание">
+            <input type="text" pInputText placeholder="Введите описание" formControlName="description">
+        </p-fieldset>
+        <p-fieldset legend="4. Длительность работы">
+            <div class="p-inputgroup">
+                <input type="text" pInputText placeholder="Введите длительность" formControlName="time">
+                <span class="p-inputgroup-addon">часов</span>
+            </div>
+        </p-fieldset>
+    </div>
+    <div class="p-col-6 p-md-4">
+        <p-fieldset legend="5. Количество иен за выполнение">
+            <input type="text" pInputText placeholder="Введите количество" formControlName="currency">
+        </p-fieldset>
+        <p-fieldset legend="6. Количество репутации за выполнение">
+            <input type="text" pInputText placeholder="Введите количество" formControlName="reputation">
+        </p-fieldset>
+        <p-fieldset legend="7. Количество затрачиваемой энергии">
+            <input type="text" pInputText placeholder="Введите количество" formControlName="energy">
+        </p-fieldset>
+        <p-fieldset legend="8. Подтверждение">
+        <span class="p-buttonset">
+            <button pButton pRipple type="button" label="Save" class="p-button-raised p-button-text p-button-success"
+                    icon="pi pi-check" [disabled]="isSaving || form.invalid" (click)="save()"></button>
+            <button pButton pRipple type="button" label="Back" class="p-button-raised p-button-text p-button-danger"
+                    icon="pi pi-undo" routerLink="/contract/list"></button>
+        </span>
+        </p-fieldset>
+    </div>
+</div>

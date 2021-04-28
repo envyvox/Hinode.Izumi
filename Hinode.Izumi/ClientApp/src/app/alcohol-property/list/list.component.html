@@ -1,0 +1,88 @@
+<p-contextMenu #cm [model]="menuItems"></p-contextMenu>
+<p-table [value]="data" [(contextMenuSelection)]="selectedItem" [contextMenu]="cm"
+         styleClass="p-datatable-sm" autoLayout="autoLayout">
+    <ng-template pTemplate="caption">
+        <button pButton pRipple type="button" label="Refresh" class="p-button-raised p-button-text p-button-plain"
+                icon="pi pi-refresh" (click)="refresh()"></button>
+        <button pButton pRipple type="button" label="Upload" class="p-button-raised p-button-text p-button-plain"
+                icon="pi pi-cloud-upload" (click)="upload()"></button>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="alcoholName">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                    Alcohol
+                    <p-sortIcon field="alcoholName"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="property">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                    Property
+                    <p-sortIcon field="property"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="mastery0">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                    Value at 0
+                    <p-sortIcon field="mastery0"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="mastery50">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                    Value at 50
+                    <p-sortIcon field="mastery50"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="mastery100">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                    Value at 100
+                    <p-sortIcon field="mastery100"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="mastery150">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                    Value at 150
+                    <p-sortIcon field="mastery150"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="mastery200">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                    Value at 200
+                    <p-sortIcon field="mastery200"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="mastery250">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                    Value at 250
+                    <p-sortIcon field="mastery250"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="createdAt">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                    Created At
+                    <p-sortIcon field="createdAt"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="updatedAt">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                    Updated At
+                    <p-sortIcon field="updatedAt"></p-sortIcon>
+                </div>
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-d>
+        <tr [pContextMenuRow]="d">
+            <td>{{d.alcoholName}}</td>
+            <td>{{d.property | enumToString:property}}</td>
+            <td>{{d.mastery0}}</td>
+            <td>{{d.mastery50}}</td>
+            <td>{{d.mastery100}}</td>
+            <td>{{d.mastery150}}</td>
+            <td>{{d.mastery200}}</td>
+            <td>{{d.mastery250}}</td>
+            <td>{{d.createdAt | date:"dd/MM/yy HH:mm"}}</td>
+            <td>{{d.updatedAt | date: "dd/MM/yy HH:mm"}}</td>
+        </tr>
+    </ng-template>
+</p-table>
