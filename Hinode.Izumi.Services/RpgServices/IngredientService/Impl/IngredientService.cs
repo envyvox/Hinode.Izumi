@@ -458,7 +458,7 @@ namespace Hinode.Izumi.Services.RpgServices.IngredientService.Impl
                 var ingredientName = await GetIngredientName(category, ingredientId);
                 // возвращаем ошибку
                 await Task.FromException(new Exception(IzumiReplyMessage.NoRequiredIngredientAmount.Parse(
-                    emotes.GetEmoteOrBlank(ingredientName), _local.Localize(ingredientName, 2))));
+                    emotes.GetEmoteOrBlank(ingredientName), _local.Localize(ingredientName, 5))));
             }
         }
 
