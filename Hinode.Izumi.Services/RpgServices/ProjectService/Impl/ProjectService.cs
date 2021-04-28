@@ -30,6 +30,16 @@ namespace Hinode.Izumi.Services.RpgServices.ProjectService.Impl
                     order by id"))
             .ToArray();
 
+        public async Task<ProjectModel[]> GetUserProject(long userId) =>
+            (await _con.GetConnection()
+                .QueryAsync<ProjectModel>(@"
+                    select p.* from user_projects as up
+                        inner join projects p
+                            on p.id = up.project_id
+                    where up.user_id = @userId",
+                    new {userId}))
+            .ToArray();
+
         public async Task<ProjectModel> GetProject(long projectId)
         {
             // проверяем чертеж в кэше
