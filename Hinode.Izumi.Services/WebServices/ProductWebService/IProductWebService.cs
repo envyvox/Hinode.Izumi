@@ -8,7 +8,7 @@ namespace Hinode.Izumi.Services.WebServices.ProductWebService
     {
         Task<IEnumerable<ProductWebModel>> GetAllProducts();
         Task<ProductWebModel> Get(long id);
-        Task<ProductWebModel> Update(ProductWebModel model);
+        Task<ProductWebModel> Upsert(ProductWebModel model);
         Task Remove(long id);
     }
 }

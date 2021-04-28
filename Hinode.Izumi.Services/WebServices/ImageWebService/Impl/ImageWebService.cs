@@ -44,16 +44,14 @@ namespace Hinode.Izumi.Services.WebServices.ImageWebService.Impl
             // обновляем базу
             return await _con.GetConnection()
                 .QueryFirstOrDefaultAsync<ImageWebModel>(@"
-                    insert into images(id, type, url)
-                    values (@id, @type, @url)
-                    on conflict (type) do update
-                        set url = @url,
-                            updated_at = now()
+                    update images
+                    set url = @url,
+                        updated_at = now()
+                    where id = @id
                     returning *",
                     new
                     {
                         id = model.Id,
-                        type = model.Type,
                         url = model.Url
                     });
         }

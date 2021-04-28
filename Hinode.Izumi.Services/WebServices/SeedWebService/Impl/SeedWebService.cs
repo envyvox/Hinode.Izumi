@@ -39,18 +39,20 @@ namespace Hinode.Izumi.Services.WebServices.SeedWebService.Impl
                     where s.id = @id",
                     new {id});
 
-        public async Task<SeedWebModel> Update(SeedWebModel model)
+        public async Task<SeedWebModel> Upsert(SeedWebModel model)
         {
             // сбрасываем кэш
             _cache.Remove(string.Format(CacheExtensions.SeedKey, model.Id));
             _cache.Remove(string.Format(CacheExtensions.SeedByNameKey, model.Name));
             _cache.Remove(string.Format(CacheExtensions.CropBySeedKey, model.Id));
-            // обновляем семя и получаем результат
-            var seed = await _con.GetConnection()
-                .QueryFirstOrDefaultAsync<SeedWebModel>(@"
+
+            var seedQuery = model.Id == 0
+                ? @"
                     insert into seeds(name, season, growth, re_growth, price, multiply)
                     values (@name, @season, @growth, @reGrowth, @price, @multiply)
-                    on conflict (name) do update
+                    returning *"
+                : @"
+                    update seeds
                     set name = @name,
                         season = @season,
                         growth = @growth,
@@ -58,9 +60,29 @@ namespace Hinode.Izumi.Services.WebServices.SeedWebService.Impl
                         price = @price,
                         multiply = @multiply,
                         updated_at = now()
-                    returning *",
+                    where id = @id
+                    returning *";
+
+            var cropQuery = model.Id == 0
+                ? @"
+                    insert into crops(name, price, seed_id)
+                    values (@cropName, @cropPrice, @seedId)
+                    returning *"
+                : @"
+                    update crops
+                    set name = @cropName,
+                        price = @cropPrice,
+                        seed_id = @seedId,
+                        updated_at = now()
+                    where seed_id = @seedId
+                    returning *";
+
+            // обновляем семя и получаем результат
+            var seed = await _con.GetConnection()
+                .QueryFirstOrDefaultAsync<SeedWebModel>(seedQuery,
                     new
                     {
+                        id = model.Id,
                         name = model.Name,
                         season = model.Season,
                         growth = model.Growth,
@@ -68,37 +90,31 @@ namespace Hinode.Izumi.Services.WebServices.SeedWebService.Impl
                         price = model.Price,
                         multiply = model.Multiply
                     });
+
             // обновляем урожай и получаем результат
             var crop = await _con.GetConnection()
-                .QueryFirstOrDefaultAsync<CropWebModel>(@"
-                    insert into crops(name, price, seed_id)
-                    values (@cropName, @cropPrice, @seedId)
-                    on conflict (name) do update
-                        set name = @cropName,
-                            price = @cropPrice,
-                            seed_id = @seedId,
-                            updated_at = now()
-                    returning *",
+                .QueryFirstOrDefaultAsync<CropWebModel>(cropQuery,
                     new
                     {
                         cropName = model.CropName,
                         cropPrice = model.CropPrice,
                         seedId = seed.Id
                     });
+
             // возвращаем совмещенную модель
             return new SeedWebModel
             {
-                    Id = seed.Id,
-                    Name = seed.Name,
-                    Season = seed.Season,
-                    Growth = seed.Growth,
-                    ReGrowth = seed.ReGrowth,
-                    Price = seed.Price,
-                    Multiply = seed.Multiply,
-                    CreatedAt = seed.CreatedAt,
-                    UpdatedAt = seed.UpdatedAt,
-                    CropName = crop.Name,
-                    CropPrice = crop.Price
+                Id = seed.Id,
+                Name = seed.Name,
+                Season = seed.Season,
+                Growth = seed.Growth,
+                ReGrowth = seed.ReGrowth,
+                Price = seed.Price,
+                Multiply = seed.Multiply,
+                CreatedAt = seed.CreatedAt,
+                UpdatedAt = seed.UpdatedAt,
+                CropName = crop.Name,
+                CropPrice = crop.Price
             };
         }
 

@@ -8,7 +8,7 @@ namespace Hinode.Izumi.Services.WebServices.ContractWebService
     {
         Task<IEnumerable<ContractWebModel>> GetAllContracts();
         Task<ContractWebModel> Get(long id);
-        Task<ContractWebModel> Update(ContractWebModel model);
+        Task<ContractWebModel> Upsert(ContractWebModel model);
         Task Remove(long id);
     }
 }

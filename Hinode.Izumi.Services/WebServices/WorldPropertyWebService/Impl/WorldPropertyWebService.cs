@@ -44,16 +44,14 @@ namespace Hinode.Izumi.Services.WebServices.WorldPropertyWebService.Impl
             // обновляем базу
             return await _con.GetConnection()
                 .QueryFirstOrDefaultAsync<WorldPropertyWebModel>(@"
-                    insert into world_properties(property_category, property, value)
-                    values (@propertyCategory, @property, @value)
-                    on conflict (property) do update
+                    update world_properties
                     set value = @value,
                         updated_at = now()
+                    where id = @id
                     returning *",
                     new
                     {
-                        propertyCategory = model.PropertyCategory,
-                        property = model.Property,
+                        id = model.Id,
                         value = model.Value
                     });
         }

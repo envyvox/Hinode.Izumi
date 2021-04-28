@@ -8,7 +8,7 @@ namespace Hinode.Izumi.Services.WebServices.DrinkWebService
     {
         Task<IEnumerable<DrinkWebModel>> GetAllDrinks();
         Task<DrinkWebModel> Get(long id);
-        Task<DrinkWebModel> Update(DrinkWebModel model);
+        Task<DrinkWebModel> Upsert(DrinkWebModel model);
         Task Remove(long id);
     }
 }

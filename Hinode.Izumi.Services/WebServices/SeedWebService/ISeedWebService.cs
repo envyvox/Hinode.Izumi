@@ -8,7 +8,7 @@ namespace Hinode.Izumi.Services.WebServices.SeedWebService
     {
         Task<IEnumerable<SeedWebModel>> GetAllSeeds();
         Task<SeedWebModel> Get(long id);
-        Task<SeedWebModel> Update(SeedWebModel model);
+        Task<SeedWebModel> Upsert(SeedWebModel model);
         Task Remove(long id);
     }
 }

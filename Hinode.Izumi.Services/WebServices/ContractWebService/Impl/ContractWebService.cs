@@ -34,16 +34,18 @@ namespace Hinode.Izumi.Services.WebServices.ContractWebService.Impl
                     where id = @id",
                     new {id});
 
-        public async Task<ContractWebModel> Update(ContractWebModel model)
+        public async Task<ContractWebModel> Upsert(ContractWebModel model)
         {
             // сбрасываем запись в кэше
             _cache.Remove(string.Format(CacheExtensions.ContractKey, model.Id));
-            // обновляем базу
-            return await _con.GetConnection()
-                .QueryFirstOrDefaultAsync<ContractWebModel>(@"
+
+            var query = model.Id == 0
+                ? @"
                     insert into contracts(location, name, description, time, currency, reputation, energy)
                     values (@location, @name, @description, @time, @currency, @reputation, @energy)
-                    on conflict (name) do update
+                    returning *"
+                : @"
+                    update contracts
                     set location = @location,
                         description = @description,
                         time = @time,
@@ -51,9 +53,15 @@ namespace Hinode.Izumi.Services.WebServices.ContractWebService.Impl
                         reputation = @reputation,
                         energy = @energy,
                         updated_at = now()
-                    returning *",
+                   where id = @id
+                   returning *";
+
+            // обновляем базу
+            return await _con.GetConnection()
+                .QueryFirstOrDefaultAsync<ContractWebModel>(query,
                     new
                     {
+                        id = model.Id,
                         location = model.Location,
                         name = model.Name,
                         description = model.Description,

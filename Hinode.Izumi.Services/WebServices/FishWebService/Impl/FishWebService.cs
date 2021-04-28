@@ -35,7 +35,7 @@ namespace Hinode.Izumi.Services.WebServices.FishWebService.Impl
                     where id = @id",
                     new {id});
 
-        public async Task<FishWebModel> Update(FishWebModel model)
+        public async Task<FishWebModel> Upsert(FishWebModel model)
         {
             // сбрасываем кэш
             _cache.Remove(string.Format(CacheExtensions.FishKey, model.Id));
@@ -43,12 +43,14 @@ namespace Hinode.Izumi.Services.WebServices.FishWebService.Impl
             var seasons = model.Seasons
                 .Select(season => (int) season)
                 .ToArray();
-            // обновляем базу
-            return await _con.GetConnection()
-                .QueryFirstOrDefaultAsync<FishWebModel>(@"
+
+            var query = model.Id == 0
+                ? @"
                     insert into fishes(name, rarity, seasons, weather, times_day, price)
                     values (@name, @rarity, @seasons, @weather, @timesDay, @price)
-                    on conflict (name) do update
+                    returning *"
+                : @"
+                    update fishes
                     set name = @name,
                         rarity = @rarity,
                         seasons = @seasons,
@@ -56,9 +58,15 @@ namespace Hinode.Izumi.Services.WebServices.FishWebService.Impl
                         times_day = @timesDay,
                         price = @price,
                         updated_at = now()
-                    returning *",
+                    where id = @id
+                    returning *";
+
+            // обновляем базу
+            return await _con.GetConnection()
+                .QueryFirstOrDefaultAsync<FishWebModel>(query,
                     new
                     {
+                        id = model.Id,
                         name = model.Name,
                         rarity = model.Rarity,
                         seasons,

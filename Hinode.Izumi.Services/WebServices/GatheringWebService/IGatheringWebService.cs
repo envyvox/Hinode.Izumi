@@ -8,7 +8,7 @@ namespace Hinode.Izumi.Services.WebServices.GatheringWebService
     {
         Task<IEnumerable<GatheringWebModel>> GetAllGathering();
         Task<GatheringWebModel> Get(long id);
-        Task<GatheringWebModel> Update(GatheringWebModel model);
+        Task<GatheringWebModel> Upsert(GatheringWebModel model);
         Task Remove(long id);
     }
 }

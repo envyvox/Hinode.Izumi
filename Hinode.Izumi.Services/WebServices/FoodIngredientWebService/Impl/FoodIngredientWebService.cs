@@ -63,25 +63,31 @@ namespace Hinode.Izumi.Services.WebServices.FoodIngredientWebService.Impl
                     where id = @id",
                     new {id});
 
-        public async Task<FoodIngredientWebModel> Update(FoodIngredientWebModel model) =>
-            await _con.GetConnection()
-                .QueryFirstOrDefaultAsync<FoodIngredientWebModel>(@"
+        public async Task<FoodIngredientWebModel> Upsert(FoodIngredientWebModel model)
+        {
+            var query = model.Id == 0
+                ? @"
                     insert into food_ingredients(food_id, category, ingredient_id, amount)
                     values (@foodId, @category, @ingredientId, @amount)
-                    on conflict (food_id, category, ingredient_id) do update
-                    set food_id = @foodId,
-                        category = @category,
-                        ingredient_id = @ingredientId,
-                        amount = @amount,
+                    returning *"
+                : @"
+                    update food_ingredients
+                    set amount = @amount,
                         updated_at = now()
-                    returning *",
+                    where id = @id
+                    returning *";
+
+            return await _con.GetConnection()
+                .QueryFirstOrDefaultAsync<FoodIngredientWebModel>(query,
                     new
                     {
+                        id = model.Id,
                         foodId = model.FoodId,
                         category = model.Category,
                         ingredientId = model.IngredientId,
                         amount = model.Amount
                     });
+        }
 
         public async Task Remove(long id) =>
             await _con.GetConnection()

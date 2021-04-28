@@ -8,7 +8,7 @@ namespace Hinode.Izumi.Services.WebServices.TransitWebService
     {
         Task<IEnumerable<TransitWebModel>> GetAllTransits();
         Task<TransitWebModel> Get(long id);
-        Task<TransitWebModel> Update(TransitWebModel model);
+        Task<TransitWebModel> Upsert(TransitWebModel model);
         Task Remove(long id);
     }
 }

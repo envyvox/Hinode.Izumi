@@ -25,14 +25,14 @@ namespace Hinode.Izumi.Controllers
             return Ok(await _gatheringPropertyWebService.GetAllGatheringProperties());
         }
 
-        [HttpGet, Route("{id}")]
+        [HttpGet, Route("{id:long}")]
         [ProducesResponseType(typeof(GatheringPropertyWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(long id)
         {
             return Ok(await _gatheringPropertyWebService.Get(id));
         }
 
-        [HttpPost, Route("{id}")]
+        [HttpPost, Route("{id:long}")]
         [ProducesResponseType(typeof(GatheringPropertyWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Edit([FromRoute] long id, GatheringPropertyWebModel model)
         {

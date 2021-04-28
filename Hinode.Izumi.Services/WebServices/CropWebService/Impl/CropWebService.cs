@@ -17,7 +17,7 @@ namespace Hinode.Izumi.Services.WebServices.CropWebService.Impl
 
         public CropWebService(IConnectionManager con, IMemoryCache cache)
         {
-            _con= con;
+            _con = con;
             _cache = cache;
         }
 
@@ -34,23 +34,31 @@ namespace Hinode.Izumi.Services.WebServices.CropWebService.Impl
                     where id = @id",
                     new {id});
 
-        public async Task<CropWebModel> Update(CropWebModel model)
+        public async Task<CropWebModel> Upsert(CropWebModel model)
         {
             // сбрасываем запись в кэше
             _cache.Remove(string.Format(CacheExtensions.CropKey, model.Id));
             _cache.Remove(string.Format(CacheExtensions.CropBySeedKey, model.SeedId));
-            // обновляем базу
-            return await _con.GetConnection()
-                .QueryFirstOrDefaultAsync<CropWebModel>(@"
+
+            var query = model.Id == 0
+                ? @"
                     insert into crops(name, price, seed_id)
-                    values (@name, @price, @seedId)
-                    on conflict (name) do update
+                    values (@name, @price, @seedId)"
+                : @"
+                    update crops
                     set name = @name,
                         price = @price,
                         seed_id = @seedId,
-                        updated_at = now()",
+                        updated_at = now()
+                    where id = @id
+                    returning *";
+
+            // обновляем базу
+            return await _con.GetConnection()
+                .QueryFirstOrDefaultAsync<CropWebModel>(query,
                     new
                     {
+                        id = model.Id,
                         name = model.Name,
                         price = model.Price,
                         seedId = model.SeedId
