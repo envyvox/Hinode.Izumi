@@ -6,13 +6,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Commands\ModerationCommands" />
-      <Folder Include="DiscordServices\DiscordEmbedService\Models" />
-      <Folder Include="RpgServices\CalculationService\Models" />
-      <Folder Include="RpgServices\ReferralService\Models" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="CoordinateSharp" Version="2.10.1.1" />
       <PackageReference Include="Discord.Net" Version="2.3.1" />
       <PackageReference Include="Humanizer.Core" Version="2.8.26" />
