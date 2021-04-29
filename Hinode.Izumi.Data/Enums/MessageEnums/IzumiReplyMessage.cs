@@ -477,6 +477,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         MuteReasonFieldName,
         MuteReasonNull,
         MuteSignatureFieldName,
+        UserBannerFieldDesc
     }
 
     public static class IzumiReplyMessageHelper
@@ -1913,6 +1914,9 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.MuteSignatureFieldName =>
                 "Подпись",
+
+            IzumiReplyMessage.UserBannerFieldDesc =>
+                "[Нажмите сюда]({0}) чтобы посмотреть как он выглядит.",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };

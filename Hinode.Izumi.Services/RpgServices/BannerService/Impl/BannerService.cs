@@ -45,7 +45,8 @@ namespace Hinode.Izumi.Services.RpgServices.BannerService.Impl
                     select * from user_banners as ub
                         inner join banners b
                             on b.id = ub.banner_id
-                    where ub.user_id = @userId",
+                    where ub.user_id = @userId
+                    order by b.id",
                     new {userId});
 
         public async Task<BannerInUser> GetUserActiveBanner(long userId) =>

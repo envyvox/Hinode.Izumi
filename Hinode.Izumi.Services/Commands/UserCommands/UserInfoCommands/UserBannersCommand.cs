@@ -40,13 +40,23 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
                 // рассказываем как менять баннеры
                 .WithDescription(
                     IzumiReplyMessage.UserBannerListDesc.Parse() +
-                    $"\n{emotes.GetEmoteOrBlank("Blank")}")
-                // выводим список баннеров
-                .AddField(IzumiReplyMessage.UserBannerListFieldName.Parse(),
-                    // создаем список баннеров с id, редкостью, названием и ссылкой на просмотр баннера
-                    userBanners.Aggregate(string.Empty, (current, banner) =>
-                        current +
-                        $"{emotes.GetEmoteOrBlank("List")} `{banner.Id}` {banner.Rarity.Localize()} [**«{banner.Name}»**]({banner.Url})\n"));
+                    $"\n{emotes.GetEmoteOrBlank("Blank")}");
+
+            // для каждого баннера у пользователя создаем embed field
+            foreach (var banner in userBanners)
+            {
+                // нельзя создать больше 25 embed field
+                if (embed.Fields.Count == 25)
+                {
+                    embed.WithFooter("Тут отображены только первые 25 ваших баннеров.");
+                    continue;
+                }
+
+                // добавляем информацию о баннере
+                embed.AddField(
+                    $"{emotes.GetEmoteOrBlank("List")} `{banner.Id}` {banner.Rarity.Localize()} «{banner.Name}»",
+                    IzumiReplyMessage.UserBannerFieldDesc.Parse(banner.Url));
+            }
 
             await _discordEmbedService.SendEmbed(Context.User, embed);
             await Task.CompletedTask;
