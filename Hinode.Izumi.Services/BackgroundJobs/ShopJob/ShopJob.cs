@@ -22,14 +22,19 @@ namespace Hinode.Izumi.Services.BackgroundJobs.ShopJob
                     // удаляем все баннеры из динамического магазина
                     "delete from dynamic_shop_banners;"
                     // добавляем 5 случайных баннеров
-                    // за исключением баннера по-умолчанию (id: 1) и персональных баннеров
+                    // за исключением баннера по-умолчанию (id: 1), персональных баннеров и баннеров события
                     + @"
                     insert into dynamic_shop_banners(banner_id)
                     select id from banners
                     where id != 1
                       and rarity != @personalBannerRarity
+                      and rarity != @eventBannerRarity
                     order by random()
                     limit 5",
-                    new {personalBannerRarity = BannerRarity.Personal});
+                    new
+                    {
+                        personalBannerRarity = BannerRarity.Personal,
+                        eventBannerRarity = BannerRarity.Event
+                    });
     }
 }

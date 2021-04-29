@@ -10,7 +10,8 @@ namespace Hinode.Izumi.Data.Enums.RarityEnums
         Common = 1,
         Rare = 2,
         Animated = 3,
-        Personal = 4
+        Personal = 4,
+        Event = 5
     }
 
     public static class BannerRarityHelper
@@ -26,6 +27,7 @@ namespace Hinode.Izumi.Data.Enums.RarityEnums
             BannerRarity.Rare => "Редкий баннер",
             BannerRarity.Animated => "Анимированный баннер",
             BannerRarity.Personal => "Персональный баннер",
+            BannerRarity.Event => "Баннер события",
             _ => throw new ArgumentOutOfRangeException(nameof(bannerRarity), bannerRarity, null)
         };
     }
