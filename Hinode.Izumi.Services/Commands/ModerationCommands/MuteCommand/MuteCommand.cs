@@ -59,6 +59,10 @@ namespace Hinode.Izumi.Services.Commands.ModerationCommands.MuteCommand
             await _discordEmbedService.SendEmbed(
                 await _discordGuildService.GetSocketTextChannel(channels[DiscordChannel.Chat].Id), embed);
 
+            // дублируем сообщение в log-mute
+            await _discordEmbedService.SendEmbed(
+                await _discordGuildService.GetSocketTextChannel(channels[DiscordChannel.LogMute].Id), embed);
+
             // запускаем джобу для снятия блокировки
             BackgroundJob.Schedule<IMuteJob>(x => x.Unmute(userId), TimeSpan.FromMinutes(duration));
         }
