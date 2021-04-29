@@ -84,7 +84,8 @@ namespace Hinode.Izumi.Services.RpgServices.BannerService.Impl
                 .QueryAsync<BannerModel>(@"
                     select * from dynamic_shop_banners as dsb
                         inner join banners b
-                            on b.id = dsb.banner_id");
+                            on b.id = dsb.banner_id
+                    order by b.id");
 
         public async Task<bool> CheckUserHasBanner(long userId, long bannerId) =>
             await _con.GetConnection()
