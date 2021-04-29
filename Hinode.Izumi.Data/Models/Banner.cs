@@ -18,11 +18,6 @@ namespace Hinode.Izumi.Data.Models
         public string Name { get; set; }
 
         /// <summary>
-        /// Название тайтла.
-        /// </summary>
-        public string Anime { get; set; }
-
-        /// <summary>
         /// Ссылка на изображение.
         /// </summary>
         public string Url { get; set; }

@@ -3,15 +3,17 @@ using System;
 using Hinode.Izumi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Hinode.Izumi.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210429090357_UpdateBannerModelRemoveAnime")]
+    partial class UpdateBannerModelRemoveAnime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -238,7 +240,6 @@ namespace Hinode.Izumi.Data.Migrations
                         .HasDefaultValueSql("now()");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
 
@@ -263,6 +264,10 @@ namespace Hinode.Izumi.Data.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_banners");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_banners_name");
 
                     b.ToTable("banners");
                 });

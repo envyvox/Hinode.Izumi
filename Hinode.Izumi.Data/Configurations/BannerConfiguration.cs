@@ -8,9 +8,7 @@ namespace Hinode.Izumi.Data.Configurations
     {
         public override void Configure(EntityTypeBuilder<Banner> b)
         {
-            b.HasIndex(x => x.Name).IsUnique();
-
-            b.Property(x => x.Anime).IsRequired();
+            b.Property(x => x.Name).IsRequired();
             b.Property(x => x.Rarity).IsRequired();
             b.Property(x => x.Url).IsRequired();
             b.Property(x => x.Price).IsRequired();
