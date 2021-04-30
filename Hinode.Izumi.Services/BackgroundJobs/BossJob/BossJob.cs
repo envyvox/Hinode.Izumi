@@ -133,7 +133,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                     channel = DiscordChannel.CapitalEvents;
                     npc = Npc.Toredo;
                     bossImage = Image.BossCapital;
-                    box = Box.CapitalBossReward;
+                    box = Box.Capital;
 
                     break;
                 case Reputation.Garden:
@@ -141,7 +141,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                     channel = DiscordChannel.GardenEvents;
                     npc = Npc.Nari;
                     bossImage = Image.BossGarden;
-                    box = Box.GardenBossReward;
+                    box = Box.Garden;
 
                     break;
                 case Reputation.Seaport:
@@ -149,7 +149,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                     channel = DiscordChannel.SeaportEvents;
                     npc = Npc.Ivao;
                     bossImage = Image.BossSeaport;
-                    box = Box.SeaportBossReward;
+                    box = Box.Seaport;
 
                     break;
                 case Reputation.Castle:
@@ -157,7 +157,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                     channel = DiscordChannel.CastleEvents;
                     npc = Npc.Ioshiro;
                     bossImage = Image.BossCastle;
-                    box = Box.CastleBossReward;
+                    box = Box.Castle;
 
                     break;
                 case Reputation.Village:
@@ -165,7 +165,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                     channel = DiscordChannel.VillageEvents;
                     npc = Npc.Kio;
                     bossImage = Image.BossVillage;
-                    box = Box.VillageBossReward;
+                    box = Box.Village;
 
                     break;
                 default:
