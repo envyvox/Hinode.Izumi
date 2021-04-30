@@ -390,7 +390,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         CraftingFoodReceivedFieldName,
         CraftingFoodCompleteDesc,
         IngredientsSpent,
-        UserTitleListDesc,
+        UserTitleDesc,
         UserTitleListFieldName,
         UserUpdateTitleDontHave,
         UserUpdateTitleAlready,
@@ -1654,7 +1654,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
             IzumiReplyMessage.CraftingFoodInFamilyHouse =>
                 "К счастью, в семейной {0} **{1}** есть все необходимые приборы, что ускорит работу.",
 
-            IzumiReplyMessage.UserTitleListDesc =>
+            IzumiReplyMessage.UserTitleDesc =>
                 "Для смены текущего титула напишите `!титул [номер]`.",
 
             IzumiReplyMessage.UserTitleListFieldName =>

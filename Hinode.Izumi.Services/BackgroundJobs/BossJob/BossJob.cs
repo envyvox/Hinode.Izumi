@@ -182,7 +182,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                 // описание вторжения ежедневного босса
                 .WithDescription(
                     IzumiEventMessage.BossHere.Parse(
-                        location.Localize()) +
+                        location.Localize(), AttackEmote) +
                     $"\n{emotes.GetEmoteOrBlank("Blank")}")
                 // ожидаемая награда
                 .AddField(IzumiEventMessage.BossRewardFieldName.Parse(),

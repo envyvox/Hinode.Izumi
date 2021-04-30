@@ -59,11 +59,18 @@ namespace Hinode.Izumi.Services.RpgServices.UserService
         Task RemoveUser(long userId);
 
         /// <summary>
-        /// Добавляет титул пользователю, если у него его нет. Кэшируется.
+        /// Добавляет титул пользователю.
         /// </summary>
         /// <param name="userId">Id пользователя.</param>
         /// <param name="title">Титул.</param>
         Task AddTitleToUser(long userId, Title title);
+
+        /// <summary>
+        /// Добавляет титул массиву пользователей.
+        /// </summary>
+        /// <param name="usersId">Массив id пользователей.</param>
+        /// <param name="title">Титул.</param>
+        Task AddTitleToUser(long[] usersId, Title title);
 
         /// <summary>
         /// Изменяет игровое имя пользователя на новое.

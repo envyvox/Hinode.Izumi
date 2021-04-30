@@ -19,6 +19,13 @@ namespace Hinode.Izumi.Services.RpgServices.BannerService.Impl
             _con = con;
         }
 
+        public async Task<BannerModel> GetBanner(long bannerId) =>
+            await _con.GetConnection()
+                .QueryFirstOrDefaultAsync<BannerModel>(@"
+                    select * from banners
+                    where id = @bannerId",
+                    new {bannerId});
+
         public async Task<BannerInUser> GetUserBanner(long userId, long bannerId)
         {
             // получаем баннер из базы
@@ -92,7 +99,8 @@ namespace Hinode.Izumi.Services.RpgServices.BannerService.Impl
                 .QueryFirstOrDefaultAsync<bool>(@"
                     select 1 from user_banners
                     where user_id = @userId
-                      and banner_id = @bannerId");
+                      and banner_id = @bannerId",
+                    new {userId, bannerId});
 
         public async Task AddBannerToUser(long userId, long bannerId) =>
             await _con.GetConnection()
@@ -101,6 +109,14 @@ namespace Hinode.Izumi.Services.RpgServices.BannerService.Impl
                     values (@userId, @bannerId, false)
                     on conflict (user_id, banner_id) do nothing",
                     new {userId, bannerId});
+
+        public async Task AddBannerToUser(long[] usersId, long bannerId) =>
+            await _con.GetConnection()
+                .ExecuteAsync(@"
+                    insert into user_banners(user_id, banner_id, active)
+                    values (unnest(array[@usersId]), @bannerId, false)
+                    on conflict (user_id, banner_id) do nothing",
+                    new {usersId, bannerId});
 
         public async Task ToggleBannerInUser(long userId, long bannerId, bool newStatus) =>
             await _con.GetConnection()

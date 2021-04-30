@@ -7719,6 +7719,7 @@ export enum Image {
     Training = 46,
     CommandError = 47,
     ShopProject = 48,
+    EventMayPicnic = 49,
 }
 
 export class LocalizationWebModel extends EntityBaseModel implements ILocalizationWebModel {
@@ -8150,9 +8151,11 @@ export enum Property {
     ActionTimeReduceKitchen = 45,
     ActionTimeReduceWorkshop = 46,
     CurrentEvent = 47,
-    EventMayGrillFoodId = 48,
-    EventMayGrillFoodAmount = 49,
+    EventMayPicnicFoodId = 48,
+    EventMayPicnicFoodAmount = 49,
     EventReduceTransitTime = 50,
+    EventMayBossBannerId = 51,
+    EventMayBossTitleId = 52,
 }
 
 export class SwaggerException extends Error {
