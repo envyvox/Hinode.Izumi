@@ -478,7 +478,8 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         MuteReasonNull,
         MuteSignatureFieldName,
         UserBannerFieldDesc,
-        CookingListCategoryWrong
+        CookingListCategoryWrong,
+        ReferralSetIzumi
     }
 
     public static class IzumiReplyMessageHelper
@@ -1818,13 +1819,13 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Приглашенные пользователи",
 
             IzumiReplyMessage.ReferralListReferrerNull =>
-                "Вы не указали пригласившего вас пользователя.\n\n*Напишите `!пригласил [игровое имя]` чтобы указать его и получить {0} {1} {2}.*",
+                "Вы не указали пригласившего вас пользователя.\nНапишите `!пригласил [игровое имя]` и получите {0} {1}.",
 
             IzumiReplyMessage.ReferralListReferralsNull =>
-                "У вас так много приглашенных пользователей, что мне трудно назвать их всех! Но их точно **{0}**.",
+                "Вы еще не пригласили ни одного пользователя. Приглашайте своих друзей и получайте {0} {1} бонусы реферальной системы вместе.",
 
             IzumiReplyMessage.ReferralListReferralsOutOfLimit =>
-                "Вы еще не пригласили ни одного пользователя. Приглашайте своих друзей и получайте {0} {1} бонусы реферальной системы вместе.",
+                "У вас так много приглашенных пользователей, что мне трудно назвать их всех! Но их точно **{0}**.",
 
             IzumiReplyMessage.FamilyInfoDescriptionNull =>
                 "У вашей семьи нет описания. Глава семьи может добавить его написав `!семья описание [текст]`.",
@@ -1921,6 +1922,9 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.CookingListCategoryWrong =>
                 "Вы указали неверную категорию рецептов.",
+
+            IzumiReplyMessage.ReferralSetIzumi =>
+                "Ну что вы, не стоит указывать меня как пригласившего вас пользователя, лучше укажите своего друга чтобы он получил награды вместе с вами.",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };
