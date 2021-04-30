@@ -477,7 +477,8 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         MuteReasonFieldName,
         MuteReasonNull,
         MuteSignatureFieldName,
-        UserBannerFieldDesc
+        UserBannerFieldDesc,
+        CookingListCategoryWrong
     }
 
     public static class IzumiReplyMessageHelper
@@ -1917,6 +1918,9 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.UserBannerFieldDesc =>
                 "[Нажмите сюда]({0}) чтобы посмотреть как он выглядит.",
+
+            IzumiReplyMessage.CookingListCategoryWrong =>
+                "Вы указали неверную категорию рецептов.",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };

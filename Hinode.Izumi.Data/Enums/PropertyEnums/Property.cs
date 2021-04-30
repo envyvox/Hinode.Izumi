@@ -251,6 +251,11 @@ namespace Hinode.Izumi.Data.Enums.PropertyEnums
         /// Титул, который выдается за победу над боссом майского события.
         /// </summary>
         EventMayBossTitleId = 52,
+
+        /// <summary>
+        /// Стоимость одной единицы энергии.
+        /// </summary>
+        FoodEnergyPrice = 53
     }
 
     public static class PropertyHelper
@@ -311,6 +316,7 @@ namespace Hinode.Izumi.Data.Enums.PropertyEnums
             Property.EventReduceTransitTime => PropertyCategory.Event,
             Property.EventMayBossBannerId => PropertyCategory.Event,
             Property.EventMayBossTitleId => PropertyCategory.Event,
+            Property.FoodEnergyPrice => PropertyCategory.Economy,
             _ => throw new ArgumentOutOfRangeException(nameof(property), property, null)
         };
     }

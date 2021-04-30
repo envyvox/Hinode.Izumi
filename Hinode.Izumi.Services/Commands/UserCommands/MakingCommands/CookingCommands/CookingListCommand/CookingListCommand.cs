@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
@@ -14,7 +16,6 @@ using Hinode.Izumi.Services.RpgServices.CalculationService;
 using Hinode.Izumi.Services.RpgServices.FoodService;
 using Hinode.Izumi.Services.RpgServices.ImageService;
 using Hinode.Izumi.Services.RpgServices.IngredientService;
-using Hinode.Izumi.Services.RpgServices.InventoryService;
 using Hinode.Izumi.Services.RpgServices.LocalizationService;
 using Hinode.Izumi.Services.RpgServices.TrainingService;
 using Humanizer;
@@ -91,8 +92,35 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CookingComm
                         IzumiReplyMessage.CookingListDesc.Parse() +
                         $"\n{_emotes.GetEmoteOrBlank("Blank")}");
 
+                    // определяем какое мастерство ввел пользователь
+                    long foodMastery = 0;
+                    switch (masteryBracket)
+                    {
+                        case 1:
+                            foodMastery = 0;
+                            break;
+                        case 2:
+                            foodMastery = 50;
+                            break;
+                        case 3:
+                            foodMastery = 100;
+                            break;
+                        case 4:
+                            foodMastery = 150;
+                            break;
+                        case 5:
+                            foodMastery = 200;
+                            break;
+                        case 6:
+                            foodMastery = 250;
+                            break;
+                        default:
+                            await Task.FromException(new Exception(IzumiReplyMessage.CookingListCategoryWrong.Parse()));
+                            break;
+                    }
+
                     // для каждого рецепта создаем embed field
-                    foreach (var food in userRecipes)
+                    foreach (var food in userRecipes.Where(x => x.Mastery == foodMastery))
                     {
                         // получаем стоимость приготовления
                         var cookingPrice = await _calc.CraftingPrice(

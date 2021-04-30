@@ -21,10 +21,5 @@ namespace Hinode.Izumi.Services.RpgServices.FoodService.Models
         /// Длительность приготовления одной единицы этого блюда (в секундах).
         /// </summary>
         public long Time { get; set; }
-
-        /// <summary>
-        /// Восстанавливаемая энергия при поедании этого блюда.
-        /// </summary>
-        public long Energy { get; set; }
     }
 }

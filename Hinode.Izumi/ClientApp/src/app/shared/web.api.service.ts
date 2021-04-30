@@ -7409,7 +7409,7 @@ export class FoodWebModel extends EntityBaseModel implements IFoodWebModel {
     time?: number;
     energy?: number;
     costPrice?: number;
-    craftingPrice?: number;
+    cookingPrice?: number;
     npcPrice?: number;
     profit?: number;
     recipePrice?: number;
@@ -7426,7 +7426,7 @@ export class FoodWebModel extends EntityBaseModel implements IFoodWebModel {
             this.time = _data["time"] !== undefined ? _data["time"] : <any>null;
             this.energy = _data["energy"] !== undefined ? _data["energy"] : <any>null;
             this.costPrice = _data["costPrice"] !== undefined ? _data["costPrice"] : <any>null;
-            this.craftingPrice = _data["craftingPrice"] !== undefined ? _data["craftingPrice"] : <any>null;
+            this.cookingPrice = _data["cookingPrice"] !== undefined ? _data["cookingPrice"] : <any>null;
             this.npcPrice = _data["npcPrice"] !== undefined ? _data["npcPrice"] : <any>null;
             this.profit = _data["profit"] !== undefined ? _data["profit"] : <any>null;
             this.recipePrice = _data["recipePrice"] !== undefined ? _data["recipePrice"] : <any>null;
@@ -7447,7 +7447,7 @@ export class FoodWebModel extends EntityBaseModel implements IFoodWebModel {
         data["time"] = this.time !== undefined ? this.time : <any>null;
         data["energy"] = this.energy !== undefined ? this.energy : <any>null;
         data["costPrice"] = this.costPrice !== undefined ? this.costPrice : <any>null;
-        data["craftingPrice"] = this.craftingPrice !== undefined ? this.craftingPrice : <any>null;
+        data["cookingPrice"] = this.cookingPrice !== undefined ? this.cookingPrice : <any>null;
         data["npcPrice"] = this.npcPrice !== undefined ? this.npcPrice : <any>null;
         data["profit"] = this.profit !== undefined ? this.profit : <any>null;
         data["recipePrice"] = this.recipePrice !== undefined ? this.recipePrice : <any>null;
@@ -7462,7 +7462,7 @@ export interface IFoodWebModel extends IEntityBaseModel {
     time?: number;
     energy?: number;
     costPrice?: number;
-    craftingPrice?: number;
+    cookingPrice?: number;
     npcPrice?: number;
     profit?: number;
     recipePrice?: number;
@@ -8156,6 +8156,7 @@ export enum Property {
     EventReduceTransitTime = 50,
     EventMayBossBannerId = 51,
     EventMayBossTitleId = 52,
+    FoodEnergyPrice = 53,
 }
 
 export class SwaggerException extends Error {

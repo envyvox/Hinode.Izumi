@@ -30,5 +30,6 @@ namespace Hinode.Izumi.Services.RpgServices.CalculationService
         Task<long> CraftingAmountAfterMasteryProcs(long craftingId, long userCraftingMastery, long amount);
         Task<long> AlcoholAmountAfterMasteryProcs(long alcoholId, long userCraftingMastery, long amount);
         Task<long> DrinkAmountAfterMasteryProcs(long drinkId, long userCraftingMastery, long amount);
+        Task<long> FoodEnergyRecharge(long costPrice, long cookingPrice);
     }
 }

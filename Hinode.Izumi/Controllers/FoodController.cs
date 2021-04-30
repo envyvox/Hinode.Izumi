@@ -38,13 +38,15 @@ namespace Hinode.Izumi.Controllers
                 // считаем себестоимость
                 food.CostPrice = await _ingredientService.GetFoodCostPrice(food.Id);
                 // считаем стоимость изготовления
-                food.CraftingPrice = await _calc.CraftingPrice(food.CostPrice);
+                food.CookingPrice = await _calc.CraftingPrice(food.CostPrice);
                 // считаем цену нпс
                 food.NpcPrice = await _calc.NpcPrice(MarketCategory.Food, food.CostPrice);
                 // считаем чистую прибыль
-                food.Profit = await _calc.Profit(food.NpcPrice, food.CostPrice, food.CraftingPrice);
+                food.Profit = await _calc.Profit(food.NpcPrice, food.CostPrice, food.CookingPrice);
                 // считаем стоимость рецепта
                 food.RecipePrice = await _calc.FoodRecipePrice(food.CostPrice);
+                // считаем количество восстанавливаемой энергии
+                food.Energy = await _calc.FoodEnergyRecharge(food.CostPrice, food.CookingPrice);
             }
 
             // возвращаем дополненный массив из всех блюд
@@ -61,13 +63,15 @@ namespace Hinode.Izumi.Controllers
             // считаем себестоимость
             food.CostPrice = await _ingredientService.GetFoodCostPrice(food.Id);
             // считаем стоимость изготовления
-            food.CraftingPrice = await _calc.CraftingPrice(food.CostPrice);
+            food.CookingPrice = await _calc.CraftingPrice(food.CostPrice);
             // считаем цену нпс
             food.NpcPrice = await _calc.NpcPrice(MarketCategory.Food, food.CostPrice);
             // считаем чистую прибыль
-            food.Profit = await _calc.Profit(food.NpcPrice, food.CostPrice, food.CraftingPrice);
+            food.Profit = await _calc.Profit(food.NpcPrice, food.CostPrice, food.CookingPrice);
             // считаем стоимость рецепта
             food.RecipePrice = await _calc.FoodRecipePrice(food.CostPrice);
+            // считаем количество восстанавливаемой энергии
+            food.Energy = await _calc.FoodEnergyRecharge(food.CostPrice, food.CookingPrice);
 
             // возвращаем блюдо
             return Ok(food);

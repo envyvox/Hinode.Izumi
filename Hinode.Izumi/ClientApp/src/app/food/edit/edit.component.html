@@ -6,24 +6,22 @@
         <p-fieldset legend="2. Требуемое мастерство">
             <input type="text" pInputText placeholder="Введите мастерство" formControlName="mastery">
         </p-fieldset>
+
+    </div>
+    <div class="p-col-6 p-md-4">
         <p-fieldset legend="3. Длительность приготовления">
             <div class="p-inputgroup">
                 <input type="text" pInputText placeholder="Введите длительность" formControlName="time">
                 <span class="p-inputgroup-addon">секунд</span>
             </div>
         </p-fieldset>
-    </div>
-    <div class="p-col-6 p-md-4">
-        <p-fieldset legend="4. Восстановление энергии">
-            <input type="text" pInputText placeholder="Введите количество" formControlName="energy">
-        </p-fieldset>
-        <p-fieldset legend="5. Подтерждение">
-      <span class="p-buttonset">
-        <button pButton pRipple type="button" label="Save" class="p-button-raised p-button-text p-button-success"
-                icon="pi pi-check" [disabled]="isSaving || form.invalid" (click)="save()"></button>
-        <button pButton pRipple type="button" label="Back" class="p-button-raised p-button-text p-button-danger"
-                icon="pi pi-undo" routerLink="/food/list"></button>
-      </span>
+        <p-fieldset legend="4. Подтерждение">
+          <span class="p-buttonset">
+            <button pButton pRipple type="button" label="Save" class="p-button-raised p-button-text p-button-success"
+                    icon="pi pi-check" [disabled]="isSaving || form.invalid" (click)="save()"></button>
+            <button pButton pRipple type="button" label="Back" class="p-button-raised p-button-text p-button-danger"
+                    icon="pi pi-undo" routerLink="/food/list"></button>
+          </span>
         </p-fieldset>
     </div>
     <div class="p-col-6 p-md-6">
@@ -62,7 +60,7 @@
             </div>
             <div class="p-inputgroup">
                 <span class="p-inputgroup-addon">Стоимость приготовления</span>
-                <input type="number" pInputText placeholder="Себестоимость" formControlName="craftingPrice"
+                <input type="number" pInputText placeholder="Себестоимость" formControlName="cookingPrice"
                        disabled="disabled">
                 <span class="p-inputgroup-addon">иен</span>
             </div>
@@ -83,6 +81,12 @@
                 <input type="number" pInputText placeholder="Себестоимость" formControlName="recipePrice"
                        disabled="disabled">
                 <span class="p-inputgroup-addon">иен</span>
+            </div>
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">Восстановление энергии</span>
+                <input type="number" pInputText placeholder="Себестоимость" formControlName="energy"
+                       disabled="disabled">
+                <span class="p-inputgroup-addon">энергии</span>
             </div>
         </p-fieldset>
     </div>

@@ -12,7 +12,6 @@ namespace Hinode.Izumi.Data.Configurations
 
             b.Property(x => x.Mastery).IsRequired();
             b.Property(x => x.Time).IsRequired();
-            b.Property(x => x.Energy).IsRequired();
 
             base.Configure(b);
         }
