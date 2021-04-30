@@ -49,15 +49,14 @@ namespace Hinode.Izumi.Services.WebServices.FoodWebService.Impl
 
             var query = model.Id == 0
                 ? @"
-                    insert into foods(name, mastery, time, energy)
-                    values (@name, @mastery, @time, @energy)
+                    insert into foods(name, mastery, time)
+                    values (@name, @mastery, @time)
                     returning *"
                 : @"
                     update foods
                     set name = @name,
                         mastery = @mastery,
                         time = @time,
-                        energy = @energy,
                         updated_at = now()
                     where id = @id
                     returning *";
@@ -70,8 +69,7 @@ namespace Hinode.Izumi.Services.WebServices.FoodWebService.Impl
                         id = model.Id,
                         name = model.Name,
                         mastery = model.Mastery,
-                        time = model.Time,
-                        energy = model.Energy
+                        time = model.Time
                     });
         }
 
