@@ -339,7 +339,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                     IzumiEventMessage.BossRewardReputation.Parse(
                         emotes.GetEmoteOrBlank(Reputation.Village.Emote(long.MaxValue)), reputationReward,
                         Location.Village.Localize(true)) +
-                    $"{emotes.GetEmoteOrBlank(Box.VillageBossReward.Emote())} {Box.VillageBossReward.Localize()}\n" +
+                    $"{emotes.GetEmoteOrBlank(Box.Village.Emote())} {Box.Village.Localize()}\n" +
                     $"{banner.Rarity.Localize().ToLower()} «[{banner.Name}]({banner.Url})»\n " +
                     $"титул {emotes.GetEmoteOrBlank(title.Emote())} {title.Localize()}")
                 // изображение босса
@@ -394,7 +394,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
             await message.RemoveAllReactionsAsync();
             // добавляем пользователям коробки
             await _inventoryService.AddItemToUser
-                (usersId, InventoryCategory.Box, Box.VillageBossReward.GetHashCode());
+                (usersId, InventoryCategory.Box, Box.Village.GetHashCode());
             // добавляем пользователям репутацию
             await _reputationService.AddReputationToUser(usersId, Reputation.Village, reputationReward);
             // добавляем пользователям статистику
@@ -436,7 +436,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                 IzumiEventMessage.ReputationAdded.Parse(
                     emotes.GetEmoteOrBlank(Reputation.Village.Emote(long.MaxValue)), reputationReward,
                     Location.Village.Localize(true)) +
-                $"{emotes.GetEmoteOrBlank(Box.VillageBossReward.Emote())} {Box.VillageBossReward.Localize()}, " +
+                $"{emotes.GetEmoteOrBlank(Box.Village.Emote())} {Box.Village.Localize()}, " +
                 $"{banner.Rarity.Localize().ToLower()} «[{banner.Name}]({banner.Url})», титул {emotes.GetEmoteOrBlank(title.Emote())} {title.Localize()}";
 
             var embedReward = new EmbedBuilder()

@@ -7,11 +7,11 @@ namespace Hinode.Izumi.Data.Enums
     /// </summary>
     public enum Box
     {
-        CapitalBossReward = 1,
-        GardenBossReward = 2,
-        SeaportBossReward = 3,
-        CastleBossReward = 4,
-        VillageBossReward = 5
+        Capital = 1,
+        Garden = 2,
+        Seaport = 3,
+        Castle = 4,
+        Village = 5
     }
 
     public static class BoxHelper
@@ -24,11 +24,11 @@ namespace Hinode.Izumi.Data.Enums
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static string Localize(this Box box) => box switch
         {
-            Box.CapitalBossReward => "награда столицы",
-            Box.GardenBossReward => "награда сада",
-            Box.SeaportBossReward => "награда порта",
-            Box.CastleBossReward => "награда замка",
-            Box.VillageBossReward => "награда деревни",
+            Box.Capital => "награда столицы",
+            Box.Garden => "награда сада",
+            Box.Seaport => "награда порта",
+            Box.Castle => "награда замка",
+            Box.Village => "награда деревни",
             _ => throw new ArgumentOutOfRangeException(nameof(box), box, null)
         };
 
@@ -37,15 +37,6 @@ namespace Hinode.Izumi.Data.Enums
         /// </summary>
         /// <param name="box">Коробка.</param>
         /// <returns>Название иконки коробки.</returns>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public static string Emote(this Box box) => box switch
-        {
-            Box.CapitalBossReward => "",
-            Box.GardenBossReward => "",
-            Box.SeaportBossReward => "",
-            Box.CastleBossReward => "",
-            Box.VillageBossReward => "",
-            _ => throw new ArgumentOutOfRangeException(nameof(box), box, null)
-        };
+        public static string Emote(this Box box) => "Box" + box;
     }
 }
