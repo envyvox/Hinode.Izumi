@@ -136,7 +136,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.UserInven
                         .Where(box => userBox.ContainsKey(box))
                         .Aggregate(string.Empty, (current, box) =>
                             current +
-                            $"{emotes.GetEmoteOrBlank(box.ToString())} {userBox[box].Amount} {_local.Localize(box.ToString(), userBox[box].Amount)}, "),
+                            $"{emotes.GetEmoteOrBlank(box.Emote())} {userBox[box].Amount} {_local.Localize(box.ToString(), userBox[box].Amount)}, "),
 
                     _ => throw new ArgumentOutOfRangeException()
                 };
