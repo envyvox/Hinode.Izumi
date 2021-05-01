@@ -12,11 +12,11 @@ namespace Hinode.Izumi.Services.Database
         /// <summary>
         /// Время создания записи.
         /// </summary>
-        public DateTime CreatedAt { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
 
         /// <summary>
         /// Время последнего обновления записи.
         /// </summary>
-        public DateTime UpdatedAt { get; set; }
+        public DateTimeOffset UpdatedAt { get; set; }
     }
 }

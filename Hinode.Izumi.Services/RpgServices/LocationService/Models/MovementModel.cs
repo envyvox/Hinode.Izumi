@@ -27,6 +27,6 @@ namespace Hinode.Izumi.Services.RpgServices.LocationService.Models
         /// <summary>
         /// Дата прибытия пользователя.
         /// </summary>
-        public DateTime Arrival { get; set; }
+        public DateTimeOffset Arrival { get; set; }
     }
 }

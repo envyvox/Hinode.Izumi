@@ -17,7 +17,7 @@ namespace Hinode.Izumi.Services.TimeService
             _timeZoneInfo = timeZoneInfo;
         }
 
-        public string TimeLeft(DateTime dateTime) =>
+        public string TimeLeft(DateTimeOffset dateTime) =>
             $@"заканчивается через {TimeSpan
                 .FromMinutes(dateTime
                     .Subtract(TimeZoneInfo.ConvertTime(DateTime.Now, _timeZoneInfo))

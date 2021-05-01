@@ -27,6 +27,6 @@ namespace Hinode.Izumi.Services.RpgServices.EffectService.Models
         /// <summary>
         /// Окончание эффекта.
         /// </summary>
-        public DateTime? Expiration { get; set; }
+        public DateTimeOffset? Expiration { get; set; }
     }
 }
