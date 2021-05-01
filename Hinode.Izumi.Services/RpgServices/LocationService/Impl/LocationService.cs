@@ -114,7 +114,7 @@ namespace Hinode.Izumi.Services.RpgServices.LocationService.Impl
             if (!destination.SubLocation())
             {
                 // снимаем роль текущей локации
-                await _discordGuildService.ToggleRoleInUser(userId, GetLocationRole(destination), false);
+                await _discordGuildService.ToggleRoleInUser(userId, GetLocationRole(departure), false);
                 // добавляем роль перемещения
                 await _discordGuildService.ToggleRoleInUser(userId, DiscordRole.LocationInTransit, true);
             }
