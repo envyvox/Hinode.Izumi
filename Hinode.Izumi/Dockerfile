@@ -2,7 +2,6 @@
 
 # Copy everything else and build
 COPY Hinode.Izumi ./Hinode.Izumi
-COPY Hinode.Izumi.Commands ./Hinode.Izumi.Commands
 COPY Hinode.Izumi.Data ./Hinode.Izumi.Data
 COPY Hinode.Izumi.Framework ./Hinode.Izumi.Framework
 COPY Hinode.Izumi.Services ./Hinode.Izumi.Services
