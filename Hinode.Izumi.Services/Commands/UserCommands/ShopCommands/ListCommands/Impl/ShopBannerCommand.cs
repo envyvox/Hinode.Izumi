@@ -63,7 +63,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ShopCommands.ListCommands.
                 embed.AddField(
                     $"{emotes.GetEmoteOrBlank("List")} `{banner.Id}` {banner.Rarity.Localize()} «{banner.Name}»",
                     IzumiReplyMessage.ShopBannerFieldDesc.Parse(
-                        banner.Anime, emotes.GetEmoteOrBlank(Currency.Ien.ToString()), banner.Price,
+                        emotes.GetEmoteOrBlank(Currency.Ien.ToString()), banner.Price,
                         _local.Localize(Currency.Ien.ToString(), banner.Price), banner.Url));
             }
 

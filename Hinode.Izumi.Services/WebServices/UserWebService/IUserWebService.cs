@@ -8,7 +8,7 @@ namespace Hinode.Izumi.Services.WebServices.UserWebService
     {
         Task<IEnumerable<UserWebModel>> GetAllUsers();
         Task<UserWebModel> Get(long id);
-        Task<UserWebModel> Update(UserWebModel model);
+        Task<UserWebModel> Upsert(UserWebModel model);
         Task Remove(long id);
     }
 }

@@ -22,6 +22,6 @@ namespace Hinode.Izumi.Services.RpgServices.CooldownService.Models
         /// <summary>
         /// Дата окончания кулдауна.
         /// </summary>
-        public DateTime Expiration { get; set; }
+        public DateTimeOffset Expiration { get; set; }
     }
 }

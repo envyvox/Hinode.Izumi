@@ -52,6 +52,7 @@
         Inventory = 45,
         Training = 46,
         CommandError = 47,
-        ShopProject = 48
+        ShopProject = 48,
+        EventMayPicnic = 49
     }
 }

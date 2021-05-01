@@ -25,29 +25,29 @@ namespace Hinode.Izumi.Controllers
             return Ok(await _contractWebService.GetAllContracts());
         }
 
-        [HttpGet, Route("{id}")]
+        [HttpGet, Route("{id:long}")]
         [ProducesResponseType(typeof(ContractWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(long id)
         {
             return Ok(await _contractWebService.Get(id));
         }
 
-        [HttpPost, Route("{id}")]
+        [HttpPost, Route("{id:long}")]
         [ProducesResponseType(typeof(ContractWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Edit([FromRoute] long id, ContractWebModel model)
         {
             model.Id = id;
-            return Ok(await _contractWebService.Update(model));
+            return Ok(await _contractWebService.Upsert(model));
         }
 
         [HttpPut, Route("add")]
         [ProducesResponseType(typeof(ContractWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Add(ContractWebModel model)
         {
-            return Ok(await _contractWebService.Update(model));
+            return Ok(await _contractWebService.Upsert(model));
         }
 
-        [HttpDelete, Route("{id}")]
+        [HttpDelete, Route("{id:long}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Remove([FromRoute] long id)
         {

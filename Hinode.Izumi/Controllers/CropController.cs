@@ -25,29 +25,29 @@ namespace Hinode.Izumi.Controllers
             return Ok(await _cropWebService.GetAllCrops());
         }
 
-        [HttpGet, Route("{id}")]
+        [HttpGet, Route("{id:long}")]
         [ProducesResponseType(typeof(CropWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(long id)
         {
             return Ok(await _cropWebService.Get(id));
         }
 
-        [HttpPost, Route("{id}")]
+        [HttpPost, Route("{id:long}")]
         [ProducesResponseType(typeof(CropWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Edit([FromRoute] long id, CropWebModel model)
         {
             model.Id = id;
-            return Ok(await _cropWebService.Update(model));
+            return Ok(await _cropWebService.Upsert(model));
         }
 
         [HttpPut, Route("add")]
         [ProducesResponseType(typeof(CropWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Add(CropWebModel model)
         {
-            return Ok(await _cropWebService.Update(model));
+            return Ok(await _cropWebService.Upsert(model));
         }
 
-        [HttpDelete, Route("{id}")]
+        [HttpDelete, Route("{id:long}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Remove([FromRoute] long id)
         {

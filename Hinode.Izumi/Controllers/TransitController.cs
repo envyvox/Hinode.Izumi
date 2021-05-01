@@ -25,29 +25,29 @@ namespace Hinode.Izumi.Controllers
             return Ok(await _transitWebService.GetAllTransits());
         }
 
-        [HttpGet, Route("{id}")]
+        [HttpGet, Route("{id:long}")]
         [ProducesResponseType(typeof(TransitWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(long id)
         {
             return Ok(await _transitWebService.Get(id));
         }
 
-        [HttpPost, Route("{id}")]
+        [HttpPost, Route("{id:long}")]
         [ProducesResponseType(typeof(TransitWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Edit([FromRoute] long id, TransitWebModel model)
         {
             model.Id = id;
-            return Ok(await _transitWebService.Update(model));
+            return Ok(await _transitWebService.Upsert(model));
         }
 
         [HttpPut, Route("add")]
         [ProducesResponseType(typeof(TransitWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Add(TransitWebModel model)
         {
-            return Ok(await _transitWebService.Update(model));
+            return Ok(await _transitWebService.Upsert(model));
         }
 
-        [HttpDelete, Route("{id}")]
+        [HttpDelete, Route("{id:long}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Remove([FromRoute] long id)
         {

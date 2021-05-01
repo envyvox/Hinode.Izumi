@@ -27,7 +27,7 @@ namespace Hinode.Izumi.Controllers
         }
 
         [HttpGet]
-        [Route("{id}")]
+        [Route("{id:long}")]
         [ProducesResponseType(typeof(FishWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(long id)
         {
@@ -35,12 +35,12 @@ namespace Hinode.Izumi.Controllers
         }
 
         [HttpPost]
-        [Route("{id}")]
+        [Route("{id:long}")]
         [ProducesResponseType(typeof(FishWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Edit([FromRoute] long id, FishWebModel model)
         {
             model.Id = id;
-            return Ok(await _fishWebService.Update(model));
+            return Ok(await _fishWebService.Upsert(model));
         }
 
         [HttpPut]
@@ -48,11 +48,11 @@ namespace Hinode.Izumi.Controllers
         [ProducesResponseType(typeof(FishWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Add(FishWebModel model)
         {
-            return Ok(await _fishWebService.Update(model));
+            return Ok(await _fishWebService.Upsert(model));
         }
 
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:long}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Remove([FromRoute] long id)
         {

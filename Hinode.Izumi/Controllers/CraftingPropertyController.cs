@@ -25,14 +25,14 @@ namespace Hinode.Izumi.Controllers
             return Ok(await _craftingPropertyWebService.GetAllCraftingProperties());
         }
 
-        [HttpGet, Route("{id}")]
+        [HttpGet, Route("{id:long}")]
         [ProducesResponseType(typeof(CraftingPropertyWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(long id)
         {
             return Ok(await _craftingPropertyWebService.Get(id));
         }
 
-        [HttpPost, Route("{id}")]
+        [HttpPost, Route("{id:long}")]
         [ProducesResponseType(typeof(CraftingPropertyWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Edit([FromRoute] long id, CraftingPropertyWebModel model)
         {

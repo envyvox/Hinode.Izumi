@@ -17,7 +17,7 @@ namespace Hinode.Izumi.Services.TimeService
             _timeZoneInfo = timeZoneInfo;
         }
 
-        public string TimeLeft(DateTime dateTime) =>
+        public string TimeLeft(DateTimeOffset dateTime) =>
             $@"заканчивается через {TimeSpan
                 .FromMinutes(dateTime
                     .Subtract(TimeZoneInfo.ConvertTime(DateTime.Now, _timeZoneInfo))
@@ -32,8 +32,8 @@ namespace Hinode.Izumi.Services.TimeService
 
         public TimesDay GetCurrentTimesDay()
         {
-            var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, _timeZoneInfo);
-            var c = new Coordinate(55.915379, 37.824598, timeNow);
+            var timeNow = DateTimeOffset.Now;
+            var c = new Coordinate(55.915379, 37.824598, timeNow.DateTime);
 
             return timeNow > c.CelestialInfo.SunRise &&
                    timeNow < c.CelestialInfo.AdditionalSolarTimes.AstronomicalDusk

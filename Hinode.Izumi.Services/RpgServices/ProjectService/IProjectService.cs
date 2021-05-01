@@ -13,6 +13,13 @@ namespace Hinode.Izumi.Services.RpgServices.ProjectService
         Task<ProjectModel[]> GetAllProjects();
 
         /// <summary>
+        /// Возвращает массив чертежей у пользователя.
+        /// </summary>
+        /// <param name="userId">Id пользователя.</param>
+        /// <returns>Массив чертежей.</returns>
+        Task<ProjectModel[]> GetUserProject(long userId);
+
+        /// <summary>
         /// Возвращает чертеж. Кэшируется.
         /// </summary>
         /// <param name="projectId">Id чертежа.</param>

@@ -22,7 +22,21 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         BossRewardFieldName,
         BossRewardReputation,
         CasinoOpen,
-        CasinoClosed
+        CasinoClosed,
+        EventMayPicnicAnonsDesc,
+        EventMayPicnicSpawnDesc,
+        EventMayPicnicSpawnRewardFieldName,
+        EventMayPicnicSpawnRewardFieldDesc,
+        EventMayPicnicSpawnFooter,
+        EventMayPicnicEndDesc,
+        EventMayPicnicEndRewardDesc,
+        EventMayStartDesc,
+        EventMayStartPicnicFieldName,
+        EventMayStartPicnicFieldDesc,
+        EventTimeReduceTransitFieldName,
+        EventTimeReduceTransitFieldDesc,
+        EventMayStartFooter,
+        EventMayEndDesc
     }
 
     public static class IzumiEventMessageHelper
@@ -68,7 +82,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Я только что слышала жуткие толчки, будто землятресение или чьи-то гигантские шаги...\n\nЧто бы это ни было, через полчаса оно уже будет в **{0}**.",
 
             IzumiEventMessage.BossHere =>
-                "Ну что? Все готовы? Босс уже здесь!\n**{0}** нуждается в вашей защите.\n\nПокажем этому монстру где сакура цветет!",
+                "Ну что? Все готовы? Босс уже здесь!\n**{0}** нуждается в вашей защите.\n\nНажмите на реакцию {1} и покажите этому монстру где сакура цветет!",
 
             IzumiEventMessage.BossHereFooter =>
                 "У вас есть {0} минут на убийство босса.",
@@ -96,6 +110,48 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiEventMessage.CasinoClosed =>
                 "Пришла напомнить, что время 6 утра и пора закрываться. Поторопитесь, мне еще все пересчитывать и подготавливать казино к вечеру.\n\nВам же рекомендую выспаться, подзаработать денег, а уже вечером вернуться ко мне. Уверяю, что сегодня удача будет на вашей стороне ;)",
+
+            IzumiEventMessage.EventMayPicnicAnonsDesc =>
+                "В **{0}** через {1} намечается пикник! Самое время отправится туда, чтобы попробовать приготовленные жителями блюда, восстанавливающие {2} энергию.",
+
+            IzumiEventMessage.EventMayPicnicSpawnDesc =>
+                "Приветствую всех любителей приключений на нашем ежегодном майском пикнике! В этом году у нас хороший урожай, и мы решили угостить всех желающих.\n\nНажмите на реакцию {0} чтобы поучаствовать в пикнике.",
+
+            IzumiEventMessage.EventMayPicnicSpawnRewardFieldName =>
+                "Ожидаемая награда",
+
+            IzumiEventMessage.EventMayPicnicSpawnRewardFieldDesc =>
+                "Полное восстановление {0} энергии и {1} {2} {3}",
+
+            IzumiEventMessage.EventMayPicnicSpawnFooter =>
+                "У вас есть {0}, чтобы принять участие.",
+
+            IzumiEventMessage.EventMayPicnicEndDesc =>
+                "Ох, спасибо что приехали к нам сегодня, мы отлично провели время и набили свои животы. У нас осталось ещё много урожая, так что загляните к нам завтра в это же время.\n\nВ качестве подарка можете взять с собой {0} {1} {2}.",
+
+            IzumiEventMessage.EventMayPicnicEndRewardDesc =>
+                "В **{0}** прошел пикник, на котором любители приключений вместе с жителями отлично провели время, восстановили свою {1} энергию и получили {2} {3} {4} в качестве подарка.",
+
+            IzumiEventMessage.EventMayStartDesc =>
+                "Вот и наступил **месяц Май**, а значит пришло время для отличного отдыха на свежем воздухе.",
+
+            IzumiEventMessage.EventMayStartPicnicFieldName =>
+                "Время пикника",
+
+            IzumiEventMessage.EventMayStartPicnicFieldDesc =>
+                "{0} из **деревни «Мура»**, приглашает всех любителей приключений на ежедневный пикник, который он будет проводить по вечерам. Следите за обновлениями в <#{1}>, чтобы не пропустить!",
+
+            IzumiEventMessage.EventTimeReduceTransitFieldName =>
+                "Ускоренное перемещение",
+
+            IzumiEventMessage.EventTimeReduceTransitFieldDesc =>
+                "В течение события жители городов уделяют особенное внимание качеству дорог, поэтому в это время вы сможете перемещаться между локациями на **{0}%** быстрее!",
+
+            IzumiEventMessage.EventMayStartFooter =>
+                "Событие закончится в 00:00 часов, 10 мая.",
+
+            IzumiEventMessage.EventMayEndDesc =>
+                "Вот и подошло к концу **майское событие**, надеюсь, что все любители приключений успели насытиться угощениями жителей. Ну, а теперь нужно возвращаться к ежедневной рутине...\n\nК счастью ненадолго, ведь уже в следующем месяце жители планируют провести еще одно событие, там и встретимся!",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };

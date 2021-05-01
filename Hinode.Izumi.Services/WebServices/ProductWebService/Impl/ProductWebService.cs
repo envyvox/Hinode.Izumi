@@ -34,22 +34,30 @@ namespace Hinode.Izumi.Services.WebServices.ProductWebService.Impl
                     where id = @id",
                     new {id});
 
-        public async Task<ProductWebModel> Update(ProductWebModel model)
+        public async Task<ProductWebModel> Upsert(ProductWebModel model)
         {
             // сбрасываем кэш
             _cache.Remove(string.Format(CacheExtensions.ProductKey, model.Id));
-            // обновляем базу
-            return await _con.GetConnection()
-                .QueryFirstOrDefaultAsync<ProductWebModel>(@"
+
+            var query = model.Id == 0
+                ? @"
                     insert into products(name, price)
                     values (@name, @price)
-                    on conflict (name) do update
+                    returning *"
+                : @"
+                    update products
                     set name = @name,
                         price = @price,
                         updated_at = now()
-                    returning *",
+                    where id = @id
+                    returning *";
+
+            // обновляем базу
+            return await _con.GetConnection()
+                .QueryFirstOrDefaultAsync<ProductWebModel>(query,
                     new
                     {
+                        id = model.Id,
                         name = model.Name,
                         price = model.Price
                     });

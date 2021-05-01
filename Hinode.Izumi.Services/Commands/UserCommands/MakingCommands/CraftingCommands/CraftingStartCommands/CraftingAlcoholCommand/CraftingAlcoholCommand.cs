@@ -43,7 +43,6 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
         private readonly IPropertyService _propertyService;
         private readonly IUserService _userService;
         private readonly IFamilyService _familyService;
-        private readonly TimeZoneInfo _timeZoneInfo;
         private readonly ICalculationService _calc;
         private readonly IImageService _imageService;
 
@@ -51,7 +50,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
             IAlcoholService alcoholService, IIngredientService ingredientService, IInventoryService inventoryService,
             ILocalizationService local, ILocationService locationService, IBuildingService buildingService,
             IPropertyService propertyService, IUserService userService, IFamilyService familyService,
-            TimeZoneInfo timeZoneInfo, ICalculationService calc, IImageService imageService)
+            ICalculationService calc, IImageService imageService)
         {
             _discordEmbedService = discordEmbedService;
             _emoteService = emoteService;
@@ -64,7 +63,6 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
             _propertyService = propertyService;
             _userService = userService;
             _familyService = familyService;
-            _timeZoneInfo = timeZoneInfo;
             _calc = calc;
             _imageService = imageService;
         }
@@ -102,7 +100,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
             else
             {
                 // получаем текущее время
-                var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, _timeZoneInfo);
+                var timeNow = DateTimeOffset.Now;
                 // определяем длительность изготовления
                 var craftingTime = await CalculateCraftingTime(
                     (long) context.User.Id, userLocation, alcohol.Time, amount);

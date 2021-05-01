@@ -11,7 +11,6 @@ namespace Hinode.Izumi.Services.Extensions
         /// <returns>True если валидна, false если нет.</returns>
         public static bool CheckValid(string name) =>
             Regex.IsMatch(name, @"^[A-ZЁА-Я]{1}[a-zёа-я\s]*$") &&
-            name.Length > 2 &&
-            name.Length < 17;
+            name.Length is > 2 and < 17;
     }
 }

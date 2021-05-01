@@ -60,7 +60,7 @@ namespace Hinode.Izumi.Services.RpgServices.LocationService
         /// <param name="departure">Локация отправления.</param>
         /// <param name="destination">Локация назначения.</param>
         /// <param name="arrival">Дата прибытия.</param>
-        Task AddUserMovement(long userId, Location departure, Location destination, DateTime arrival);
+        Task AddUserMovement(long userId, Location departure, Location destination, DateTimeOffset arrival);
 
         /// <summary>
         /// Удаляет информацию о перемещении пользователя.

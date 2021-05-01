@@ -25,29 +25,29 @@ namespace Hinode.Izumi.Controllers
             return Ok(await _drinkWebService.GetAllDrinks());
         }
 
-        [HttpGet, Route("{id}")]
+        [HttpGet, Route("{id:long}")]
         [ProducesResponseType(typeof(DrinkWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(long id)
         {
             return Ok(await _drinkWebService.Get(id));
         }
 
-        [HttpPost, Route("{id}")]
+        [HttpPost, Route("{id:long}")]
         [ProducesResponseType(typeof(DrinkWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Edit([FromRoute] long id, DrinkWebModel model)
         {
             model.Id = id;
-            return Ok(await _drinkWebService.Update(model));
+            return Ok(await _drinkWebService.Upsert(model));
         }
 
         [HttpPut, Route("add")]
         [ProducesResponseType(typeof(DrinkWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Add(DrinkWebModel model)
         {
-            return Ok(await _drinkWebService.Update(model));
+            return Ok(await _drinkWebService.Upsert(model));
         }
 
-        [HttpDelete, Route("{id}")]
+        [HttpDelete, Route("{id:long}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Remove([FromRoute] long id)
         {

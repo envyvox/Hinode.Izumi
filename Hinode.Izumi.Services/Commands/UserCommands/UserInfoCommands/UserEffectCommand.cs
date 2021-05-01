@@ -76,7 +76,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
                         $"{emotes.GetEmoteOrBlank("CardDeck")} {effect.Effect.Localize()}" +
                         (effect.Expiration != null
                             // если эффект имеет время действия, выводим сколько осталось времени до окончания
-                            ? _timeService.TimeLeft((DateTime) effect.Expiration)
+                            ? _timeService.TimeLeft((DateTimeOffset) effect.Expiration)
                             : "") + "\n"));
             }
 

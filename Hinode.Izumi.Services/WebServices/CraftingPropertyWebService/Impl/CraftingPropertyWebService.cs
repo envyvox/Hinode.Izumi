@@ -52,9 +52,7 @@ namespace Hinode.Izumi.Services.WebServices.CraftingPropertyWebService.Impl
             // обновляем базу
             return await _con.GetConnection()
                 .QueryFirstOrDefaultAsync<CraftingPropertyWebModel>(@"
-                    insert into crafting_properties(crafting_id, property, mastery0, mastery50, mastery100, mastery150, mastery200, mastery250)
-                    values (@craftingId, @property, @mastery0, @mastery50, @mastery100, @mastery150, @mastery200, @mastery250)
-                    on conflict (crafting_id, property) do update
+                    update crafting_properties
                     set mastery0 = @mastery0,
                         mastery50 = @mastery50,
                         mastery100 = @mastery100,
@@ -62,11 +60,11 @@ namespace Hinode.Izumi.Services.WebServices.CraftingPropertyWebService.Impl
                         mastery200 = @mastery200,
                         mastery250 = @mastery250,
                         updated_at = now()
+                    where id = @id
                     returning *",
                     new
                     {
-                        craftingId = model.CraftingId,
-                        property = model.Property,
+                        id = model.Id,
                         mastery0 = model.Mastery0,
                         mastery50 = model.Mastery50,
                         mastery100 = model.Mastery100,

@@ -25,14 +25,14 @@ namespace Hinode.Izumi.Controllers
             return Ok(await _worldPropertyWebService.GetAllProperties());
         }
 
-        [HttpGet, Route("{id}")]
+        [HttpGet, Route("{id:long}")]
         [ProducesResponseType(typeof(WorldPropertyWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(long id)
         {
             return Ok(await _worldPropertyWebService.Get(id));
         }
 
-        [HttpPost, Route("{id}")]
+        [HttpPost, Route("{id:long}")]
         [ProducesResponseType(typeof(WorldPropertyWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Edit([FromRoute] long id, WorldPropertyWebModel model)
         {

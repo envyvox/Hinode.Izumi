@@ -37,14 +37,14 @@ namespace Hinode.Izumi.Controllers
         public async Task<IActionResult> Edit([FromRoute] string id, UserWebModel model)
         {
             model.Id = id;
-            return Ok(await _userWebService.Update(model));
+            return Ok(await _userWebService.Upsert(model));
         }
 
         [HttpPut, Route("add")]
         [ProducesResponseType(typeof(UserWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Add(UserWebModel model)
         {
-            return Ok(await _userWebService.Update(model));
+            return Ok(await _userWebService.Upsert(model));
         }
 
         [HttpDelete, Route("{id}")]

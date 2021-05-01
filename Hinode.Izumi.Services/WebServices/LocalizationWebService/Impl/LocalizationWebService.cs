@@ -34,7 +34,8 @@ namespace Hinode.Izumi.Services.WebServices.LocalizationWebService.Impl
         private readonly IFoodWebService _foodWebService;
 
         public LocalizationWebService(IConnectionManager con, IGatheringWebService gatheringWebService,
-            IProductWebService productWebService, ICraftingWebService craftingWebService, ISeedWebService seedWebService,
+            IProductWebService productWebService, ICraftingWebService craftingWebService,
+            ISeedWebService seedWebService,
             ICropWebService cropWebService, IAlcoholWebService alcoholWebService, IDrinkWebService drinkWebService,
             IFishWebService fishWebService, IFoodWebService foodWebService)
         {
@@ -66,22 +67,19 @@ namespace Hinode.Izumi.Services.WebServices.LocalizationWebService.Impl
         public async Task<LocalizationWebModel> Update(LocalizationWebModel model) =>
             await _con.GetConnection()
                 .QueryFirstOrDefaultAsync<LocalizationWebModel>(@"
-                    insert into localizations(category, name, single, double, multiply)
-                    values (@category, @name, @single, @double, @multiply)
-                    on conflict (name) do update
+                    update localizations
                     set single = @single,
                         double = @double,
                         multiply = @multiply,
                         updated_at = now()
+                    where id = @id
                     returning *",
                     new
                     {
-                        category = model.Category,
-                        name = model.Name,
+                        id = model.Id,
                         single = model.Single,
                         @double = model.Double,
                         multiply = model.Multiply
-
                     });
 
         public async Task Upload()
@@ -192,6 +190,18 @@ namespace Hinode.Izumi.Services.WebServices.LocalizationWebService.Impl
                         {
                             categories.Add(LocalizationCategory.Currency.GetHashCode());
                             names.Add(currency.ToString());
+                        }
+
+                        break;
+                    case LocalizationCategory.Bar:
+                        break;
+                    case LocalizationCategory.Box:
+
+                        var boxes = Enum.GetValues(typeof(Box)).Cast<Box>();
+                        foreach (var box in boxes)
+                        {
+                            categories.Add(LocalizationCategory.Box.GetHashCode());
+                            names.Add(box.ToString());
                         }
 
                         break;

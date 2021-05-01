@@ -153,6 +153,14 @@ namespace Hinode.Izumi.Services.RpgServices.UserService.Impl
                     on conflict (user_id, title) do nothing",
                     new {userId, title});
 
+        public async Task AddTitleToUser(long[] usersId, Title title) =>
+            await _con.GetConnection()
+                .ExecuteAsync(@"
+                    insert into user_titles(user_id, title)
+                    values (unnest(array[@usersId]), @title)
+                    on conflict (user_id, title) do nothing",
+                    new {usersId, title});
+
         public async Task UpdateUserName(long userId, string name)
         {
             // удаляем пользователя из кэша

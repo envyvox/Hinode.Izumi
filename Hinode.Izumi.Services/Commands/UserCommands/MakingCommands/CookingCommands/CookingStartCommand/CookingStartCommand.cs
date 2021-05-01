@@ -43,7 +43,6 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CookingComm
         private readonly ILocationService _locationService;
         private readonly IIngredientService _ingredientService;
         private readonly IBuildingService _buildingService;
-        private readonly TimeZoneInfo _timeZoneInfo;
         private readonly IUserService _userService;
         private readonly IPropertyService _propertyService;
         private readonly IFamilyService _familyService;
@@ -52,9 +51,8 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CookingComm
         public CookingStartCommand(IDiscordEmbedService discordEmbedService, IEmoteService emoteService,
             ILocalizationService local, IMasteryService masteryService, IImageService imageService,
             IFoodService foodService, IInventoryService inventoryService, ILocationService locationService,
-            IIngredientService ingredientService, IBuildingService buildingService, TimeZoneInfo timeZoneInfo,
-            IUserService userService, IPropertyService propertyService, IFamilyService familyService,
-            ICalculationService calc)
+            IIngredientService ingredientService, IBuildingService buildingService, IUserService userService,
+            IPropertyService propertyService, IFamilyService familyService, ICalculationService calc)
         {
             _discordEmbedService = discordEmbedService;
             _emoteService = emoteService;
@@ -66,7 +64,6 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CookingComm
             _locationService = locationService;
             _ingredientService = ingredientService;
             _buildingService = buildingService;
-            _timeZoneInfo = timeZoneInfo;
             _userService = userService;
             _propertyService = propertyService;
             _familyService = familyService;
@@ -106,7 +103,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CookingComm
             else
             {
                 // получаем текущее время
-                var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, _timeZoneInfo);
+                var timeNow = DateTimeOffset.Now;
                 // определяем длительность приготовления
                 var cookingTime = await CalculateCookingTime(
                     (long) context.User.Id, userLocation, food.Time, amount);

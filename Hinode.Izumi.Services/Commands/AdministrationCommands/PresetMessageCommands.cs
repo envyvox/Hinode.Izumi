@@ -85,7 +85,8 @@ namespace Hinode.Izumi.Services.Commands.AdministrationCommands
             // собираем сообщение
             var nicknameEmbed = new EmbedBuilder()
                 .WithTitle(IzumiReplyMessage.PresetRegistryNicknameTitle.Parse())
-                .WithDescription(IzumiReplyMessage.PresetRegistryNicknameDesc.Parse())
+                .WithDescription(IzumiReplyMessage.PresetRegistryNicknameDesc.Parse(
+                    emotes.GetEmoteOrBlank("List")))
                 .WithImageUrl(await _imageService.GetImageUrl(Image.RegistryNicknames));
 
             // собираем сообщение

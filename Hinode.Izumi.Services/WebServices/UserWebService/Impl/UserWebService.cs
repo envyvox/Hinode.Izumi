@@ -30,8 +30,7 @@ namespace Hinode.Izumi.Services.WebServices.UserWebService.Impl
                     where id = @id",
                     new {id});
 
-        public async Task<UserWebModel> Update(UserWebModel model) =>
-            // обновляем базу
+        public async Task<UserWebModel> Upsert(UserWebModel model) =>
             await _con.GetConnection()
                 .QueryFirstOrDefaultAsync<UserWebModel>(@"
                     insert into users (id, name, about, title, gender, location, energy)

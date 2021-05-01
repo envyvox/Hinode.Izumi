@@ -23,16 +23,14 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.InfoInter
         private readonly IDiscordEmbedService _discordEmbedService;
         private readonly IUserService _userService;
         private readonly ICooldownService _cooldownService;
-        private readonly TimeZoneInfo _timeZoneInfo;
         private readonly IPropertyService _propertyService;
 
         public UpdateAboutCommand(IDiscordEmbedService discordEmbedService, IUserService userService,
-            ICooldownService cooldownService, TimeZoneInfo timeZoneInfo, IPropertyService propertyService)
+            ICooldownService cooldownService, IPropertyService propertyService)
         {
             _discordEmbedService = discordEmbedService;
             _userService = userService;
             _cooldownService = cooldownService;
-            _timeZoneInfo = timeZoneInfo;
             _propertyService = propertyService;
         }
 
@@ -42,7 +40,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.InfoInter
             // получаем кулдаун на смену информации пользователя
             var cooldown = await _cooldownService.GetUserCooldown((long) Context.User.Id, Cooldown.UpdateAbout);
             // получаем текущее время
-            var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, _timeZoneInfo);
+            var timeNow = DateTimeOffset.Now;
 
             // если смена информации еще на кулдауне - выводим ошибку и пишем сколько осталось до отката
             if (cooldown.Expiration > timeNow)

@@ -42,6 +42,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
         private readonly IFieldService _fieldService;
         private readonly IReputationService _reputationService;
         private readonly IImageService _imageService;
+        private readonly ILocalizationService _local;
 
         private readonly Random _random = new();
 
@@ -53,7 +54,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
         public BossJob(IDiscordEmbedService discordEmbedService, IDiscordGuildService discordGuildService,
             IEmoteService emoteService, IPropertyService propertyService, IStatisticService statisticService,
             IAchievementService achievementService, IInventoryService inventoryService, IFieldService fieldService,
-            IReputationService reputationService, IImageService imageService)
+            IReputationService reputationService, IImageService imageService, ILocalizationService local)
         {
             _discordEmbedService = discordEmbedService;
             _discordGuildService = discordGuildService;
@@ -65,6 +66,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
             _fieldService = fieldService;
             _reputationService = reputationService;
             _imageService = imageService;
+            _local = local;
         }
 
         public async Task Anons()
@@ -133,7 +135,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                     channel = DiscordChannel.CapitalEvents;
                     npc = Npc.Toredo;
                     bossImage = Image.BossCapital;
-                    box = Box.CapitalBossReward;
+                    box = Box.Capital;
 
                     break;
                 case Reputation.Garden:
@@ -141,7 +143,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                     channel = DiscordChannel.GardenEvents;
                     npc = Npc.Nari;
                     bossImage = Image.BossGarden;
-                    box = Box.GardenBossReward;
+                    box = Box.Garden;
 
                     break;
                 case Reputation.Seaport:
@@ -149,7 +151,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                     channel = DiscordChannel.SeaportEvents;
                     npc = Npc.Ivao;
                     bossImage = Image.BossSeaport;
-                    box = Box.SeaportBossReward;
+                    box = Box.Seaport;
 
                     break;
                 case Reputation.Castle:
@@ -157,7 +159,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                     channel = DiscordChannel.CastleEvents;
                     npc = Npc.Ioshiro;
                     bossImage = Image.BossCastle;
-                    box = Box.CastleBossReward;
+                    box = Box.Castle;
 
                     break;
                 case Reputation.Village:
@@ -165,7 +167,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                     channel = DiscordChannel.VillageEvents;
                     npc = Npc.Kio;
                     bossImage = Image.BossVillage;
-                    box = Box.VillageBossReward;
+                    box = Box.Village;
 
                     break;
                 default:
@@ -182,14 +184,14 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                 // описание вторжения ежедневного босса
                 .WithDescription(
                     IzumiEventMessage.BossHere.Parse(
-                        location.Localize()) +
+                        location.Localize(), AttackEmote) +
                     $"\n{emotes.GetEmoteOrBlank("Blank")}")
                 // ожидаемая награда
                 .AddField(IzumiEventMessage.BossRewardFieldName.Parse(),
                     IzumiEventMessage.BossRewardReputation.Parse(
                         emotes.GetEmoteOrBlank(reputation.Emote(long.MaxValue)), reputationReward,
                         location.Localize(true)) +
-                    $"{emotes.GetEmoteOrBlank(box.Emote())} {box.Localize()}")
+                    $"{emotes.GetEmoteOrBlank(box.Emote())} {_local.Localize(box.ToString())}")
                 // изображение босса
                 .WithImageUrl(await _imageService.GetImageUrl(bossImage))
                 // сколько времени дается на убийство ежедневного босса

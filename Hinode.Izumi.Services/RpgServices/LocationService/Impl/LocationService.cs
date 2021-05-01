@@ -21,15 +21,13 @@ namespace Hinode.Izumi.Services.RpgServices.LocationService.Impl
     {
         private readonly IConnectionManager _con;
         private readonly IMemoryCache _cache;
-        private readonly TimeZoneInfo _timeZoneInfo;
         private readonly IDiscordGuildService _discordGuildService;
 
-        public LocationService(IConnectionManager con, IMemoryCache cache, TimeZoneInfo timeZoneInfo,
+        public LocationService(IConnectionManager con, IMemoryCache cache,
             IDiscordGuildService discordGuildService)
         {
             _con = con;
             _cache = cache;
-            _timeZoneInfo = timeZoneInfo;
             _discordGuildService = discordGuildService;
         }
 
@@ -103,7 +101,7 @@ namespace Hinode.Izumi.Services.RpgServices.LocationService.Impl
         public async Task StartUserTransit(long userId, Location departure, Location destination, long time)
         {
             // получаем текущее время
-            var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, _timeZoneInfo);
+            var timeNow = DateTimeOffset.Now;
             // получаем время прибытия
             var arrival = timeNow.AddMinutes(time);
 
@@ -137,7 +135,7 @@ namespace Hinode.Izumi.Services.RpgServices.LocationService.Impl
                     where id = @userId",
                     new {userId, location});
 
-        public async Task AddUserMovement(long userId, Location departure, Location destination, DateTime arrival) =>
+        public async Task AddUserMovement(long userId, Location departure, Location destination, DateTimeOffset arrival) =>
             await _con.GetConnection()
                 .ExecuteAsync(@"
                     insert into movements(user_id, departure, destination, arrival)

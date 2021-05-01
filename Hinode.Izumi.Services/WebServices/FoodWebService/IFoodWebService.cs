@@ -8,7 +8,7 @@ namespace Hinode.Izumi.Services.WebServices.FoodWebService
     {
         Task<IEnumerable<FoodWebModel>> GetAllFood();
         Task<FoodWebModel> Get(long id);
-        Task<FoodWebModel> Update(FoodWebModel model);
+        Task<FoodWebModel> Upsert(FoodWebModel model);
         Task Remove(long id);
     }
 }

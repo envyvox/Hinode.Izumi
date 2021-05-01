@@ -447,7 +447,7 @@ namespace Hinode.Izumi.Services.RpgServices.InventoryService.Impl
             var emotes = await _emoteService.GetEmotes();
             // выводим ошибку
             await Task.FromException(new Exception(IzumiNullableMessage.UserInventory.Parse(
-                emotes.GetEmoteOrBlank(box.Emote()), box.Localize())));
+                emotes.GetEmoteOrBlank(box.Emote()), _local.Localize(box.ToString()))));
 
             return new UserBoxModel();
         }

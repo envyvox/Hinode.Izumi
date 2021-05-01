@@ -8,7 +8,7 @@ namespace Hinode.Izumi.Services.WebServices.CraftingWebService
     {
         Task<IEnumerable<CraftingWebModel>> GetAllCrafting();
         Task<CraftingWebModel> Get(long id);
-        Task<CraftingWebModel> Update(CraftingWebModel model);
+        Task<CraftingWebModel> Upsert(CraftingWebModel model);
         Task Remove(long id);
     }
 }

@@ -34,22 +34,31 @@ namespace Hinode.Izumi.Services.WebServices.CraftingWebService.Impl
                     where id = @id",
                     new {id});
 
-        public async Task<CraftingWebModel> Update(CraftingWebModel model)
+        public async Task<CraftingWebModel> Upsert(CraftingWebModel model)
         {
             // сбрасываем запись в кэше
             _cache.Remove(string.Format(CacheExtensions.CraftingKey, model.Id));
-            // обновляем базу
-            return await _con.GetConnection()
-                .QueryFirstOrDefaultAsync<CraftingWebModel>(@"
+
+            var query = model.Id == 0
+                ? @"
                     insert into craftings(name, time, location)
                     values (@name, @time, @location)
-                    on conflict (name) do update
-                    set time = @time,
+                    returning *"
+                : @"
+                    update craftings
+                    set name = @name,
+                        time = @time,
                         location = @location,
                         updated_at = now()
-                    returning *",
+                    where id = @id
+                    returning *";
+
+            // обновляем базу
+            return await _con.GetConnection()
+                .QueryFirstOrDefaultAsync<CraftingWebModel>(query,
                     new
                     {
+                        id = model.Id,
                         name = model.Name,
                         time = model.Time,
                         location = model.Location

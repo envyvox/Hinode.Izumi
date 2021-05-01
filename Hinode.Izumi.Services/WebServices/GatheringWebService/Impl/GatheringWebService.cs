@@ -34,23 +34,31 @@ namespace Hinode.Izumi.Services.WebServices.GatheringWebService.Impl
                     where id = @id",
                     new {id});
 
-        public async Task<GatheringWebModel> Update(GatheringWebModel model)
+        public async Task<GatheringWebModel> Upsert(GatheringWebModel model)
         {
             // сбрасываем кэш
             _cache.Remove(string.Format(CacheExtensions.GatheringKey, model.Id));
-            // обновляем базу
-            return await _con.GetConnection()
-                .QueryFirstOrDefaultAsync<GatheringWebModel>(@"
+
+            var query = model.Id == 0
+                ? @"
                     insert into gatherings(name, price, location)
                     values (@name, @price, @location)
-                    on conflict (name) do update
+                    returning *"
+                : @"
+                    update gatherings
                     set name = @name,
                         price = @price,
                         location = @location,
                         updated_at = now()
-                    returning *",
+                    where id = @id
+                    returning *";
+
+            // обновляем базу
+            return await _con.GetConnection()
+                .QueryFirstOrDefaultAsync<GatheringWebModel>(query,
                     new
                     {
+                        id = model.Id,
                         name = model.Name,
                         price = model.Price,
                         location = model.Location

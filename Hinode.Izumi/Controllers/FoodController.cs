@@ -26,10 +26,6 @@ namespace Hinode.Izumi.Controllers
             _ingredientService = ingredientService;
         }
 
-        /// <summary>
-        /// Возвращает массив из всех блюд.
-        /// </summary>
-        /// <returns>Массив из всех блюд.</returns>
         [HttpGet, Route("list")]
         [ProducesResponseType(typeof(IEnumerable<FoodWebModel>), StatusCodes.Status200OK)]
         public async Task<IActionResult> List()
@@ -42,24 +38,21 @@ namespace Hinode.Izumi.Controllers
                 // считаем себестоимость
                 food.CostPrice = await _ingredientService.GetFoodCostPrice(food.Id);
                 // считаем стоимость изготовления
-                food.CraftingPrice = await _calc.CraftingPrice(food.CostPrice);
+                food.CookingPrice = await _calc.CraftingPrice(food.CostPrice);
                 // считаем цену нпс
                 food.NpcPrice = await _calc.NpcPrice(MarketCategory.Food, food.CostPrice);
                 // считаем чистую прибыль
-                food.Profit = await _calc.Profit(food.NpcPrice, food.CostPrice, food.CraftingPrice);
+                food.Profit = await _calc.Profit(food.NpcPrice, food.CostPrice, food.CookingPrice);
                 // считаем стоимость рецепта
                 food.RecipePrice = await _calc.FoodRecipePrice(food.CostPrice);
+                // считаем количество восстанавливаемой энергии
+                food.Energy = await _calc.FoodEnergyRecharge(food.CostPrice, food.CookingPrice);
             }
 
             // возвращаем дополненный массив из всех блюд
             return Ok(foods);
         }
 
-        /// <summary>
-        /// Возвращает блюдо с указанным id.
-        /// </summary>
-        /// <param name="id">Id блюда.</param>
-        /// <returns>Блюдо.</returns>
         [HttpGet, Route("{id:long}")]
         [ProducesResponseType(typeof(FoodWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(long id)
@@ -70,56 +63,39 @@ namespace Hinode.Izumi.Controllers
             // считаем себестоимость
             food.CostPrice = await _ingredientService.GetFoodCostPrice(food.Id);
             // считаем стоимость изготовления
-            food.CraftingPrice = await _calc.CraftingPrice(food.CostPrice);
+            food.CookingPrice = await _calc.CraftingPrice(food.CostPrice);
             // считаем цену нпс
             food.NpcPrice = await _calc.NpcPrice(MarketCategory.Food, food.CostPrice);
             // считаем чистую прибыль
-            food.Profit = await _calc.Profit(food.NpcPrice, food.CostPrice, food.CraftingPrice);
+            food.Profit = await _calc.Profit(food.NpcPrice, food.CostPrice, food.CookingPrice);
             // считаем стоимость рецепта
             food.RecipePrice = await _calc.FoodRecipePrice(food.CostPrice);
+            // считаем количество восстанавливаемой энергии
+            food.Energy = await _calc.FoodEnergyRecharge(food.CostPrice, food.CookingPrice);
 
             // возвращаем блюдо
             return Ok(food);
         }
 
-        /// <summary>
-        /// Изменяет блюдо.
-        /// </summary>
-        /// <param name="id">Id блюда.</param>
-        /// <param name="model">Модель блюда.</param>
-        /// <returns>Измененное блюдо.</returns>
         [HttpPost, Route("{id:long}")]
         [ProducesResponseType(typeof(FoodWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Edit([FromRoute] long id, FoodWebModel model)
         {
-            // указываем что id блюда это id полученный из роута
             model.Id = id;
-            // обновляем в базе
-            return Ok(await _foodWebService.Update(model));
+            return Ok(await _foodWebService.Upsert(model));
         }
 
-        /// <summary>
-        /// Добавляет новое блюдо.
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns>Новое блюдо.</returns>
         [HttpPut, Route("add")]
         [ProducesResponseType(typeof(FoodWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Add(FoodWebModel model)
         {
-            // добавляем блюдо в базу
-            return Ok(await _foodWebService.Update(model));
+            return Ok(await _foodWebService.Upsert(model));
         }
 
-        /// <summary>
-        /// Удаляет блюдо.
-        /// </summary>
-        /// <param name="id">Id блюда.</param>
         [HttpDelete, Route("{id:long}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Remove([FromRoute] long id)
         {
-            // удаляем блюло из базы
             await _foodWebService.Remove(id);
             return Ok();
         }

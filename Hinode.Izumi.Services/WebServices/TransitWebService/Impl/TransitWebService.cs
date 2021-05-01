@@ -34,24 +34,32 @@ namespace Hinode.Izumi.Services.WebServices.TransitWebService.Impl
                     where id = @id",
                     new {id});
 
-        public async Task<TransitWebModel> Update(TransitWebModel model)
+        public async Task<TransitWebModel> Upsert(TransitWebModel model)
         {
             // сбрасываем кэш
             _cache.Remove(string.Format(CacheExtensions.TransitKey, model.Departure, model.Destination));
             _cache.Remove(string.Format(CacheExtensions.TransitsLocationKey, model.Departure));
             _cache.Remove(string.Format(CacheExtensions.TransitsLocationKey, model.Destination));
-            // обновляем базу
-            return await _con.GetConnection()
-                .QueryFirstOrDefaultAsync<TransitWebModel>(@"
+
+            var query = model.Id == 0
+                ? @"
                     insert into transits(departure, destination, time, price)
                     values (@departure, @destination, @time, @price)
-                    on conflict (departure, destination) do update
-                        set time = @time,
-                            price = @price,
-                            updated_at = now()
-                    returning *",
+                    returning *"
+                : @"
+                    update transits
+                    set time = @time,
+                        price = @price,
+                        updated_at = now()
+                    where id = @id
+                    returning *";
+
+            // обновляем базу
+            return await _con.GetConnection()
+                .QueryFirstOrDefaultAsync<TransitWebModel>(query,
                     new
                     {
+                        id = model.Id,
                         departure = model.Departure,
                         destination = model.Destination,
                         time = model.Time,

@@ -8,6 +8,13 @@ namespace Hinode.Izumi.Services.RpgServices.BannerService
     public interface IBannerService
     {
         /// <summary>
+        /// Возвращает баннер.
+        /// </summary>
+        /// <param name="bannerId">Id баннера.</param>
+        /// <returns>Баннер.</returns>
+        Task<BannerModel> GetBanner(long bannerId);
+
+        /// <summary>
         /// Возвращает баннер пользователя.
         /// </summary>
         /// <param name="userId">Id пользователя.</param>
@@ -58,6 +65,13 @@ namespace Hinode.Izumi.Services.RpgServices.BannerService
         /// <param name="userId">Id пользователя.</param>
         /// <param name="bannerId">Id баннера.</param>
         Task AddBannerToUser(long userId, long bannerId);
+
+        /// <summary>
+        /// Добавляет баннер массиву пользователей.
+        /// </summary>
+        /// <param name="usersId">Массив id пользователей.</param>
+        /// <param name="bannerId">Id баннера.</param>
+        Task AddBannerToUser(long[] usersId, long bannerId);
 
         /// <summary>
         /// Обновляет статус баннера пользователя.

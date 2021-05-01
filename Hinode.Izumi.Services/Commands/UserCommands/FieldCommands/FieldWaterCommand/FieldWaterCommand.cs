@@ -29,7 +29,6 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.FieldCommands.FieldWaterCo
         private readonly IDiscordEmbedService _discordEmbedService;
         private readonly IFieldService _fieldService;
         private readonly ILocationService _locationService;
-        private readonly TimeZoneInfo _timeZoneInfo;
         private readonly IUserService _userService;
         private readonly IFamilyService _familyService;
         private readonly IImageService _imageService;
@@ -37,14 +36,12 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.FieldCommands.FieldWaterCo
         private readonly ICalculationService _calc;
 
         public FieldWaterCommand(IDiscordEmbedService discordEmbedService, IFieldService fieldService,
-            ILocationService locationService, TimeZoneInfo timeZoneInfo, IUserService userService,
-            IFamilyService familyService, IImageService imageService, IPropertyService propertyService,
-            ICalculationService calc)
+            ILocationService locationService, IUserService userService, IFamilyService familyService,
+            IImageService imageService, IPropertyService propertyService, ICalculationService calc)
         {
             _discordEmbedService = discordEmbedService;
             _fieldService = fieldService;
             _locationService = locationService;
-            _timeZoneInfo = timeZoneInfo;
             _userService = userService;
             _familyService = familyService;
             _imageService = imageService;
@@ -110,7 +107,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.FieldCommands.FieldWaterCo
                     // получаем пользователя который поливает участок
                     var user = await _userService.GetUser((long) context.User.Id);
                     // получаем текущее время
-                    var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, _timeZoneInfo);
+                    var timeNow = DateTimeOffset.Now;
                     // определяем длительность поливки участка
                     var wateringTime = _calc.ActionTime(
                         await _propertyService.GetPropertyValue(Property.ActionTimeFieldWater), user.Energy);

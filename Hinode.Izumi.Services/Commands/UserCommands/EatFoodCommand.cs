@@ -9,7 +9,9 @@ using Hinode.Izumi.Services.Commands.Attributes;
 using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService;
 using Hinode.Izumi.Services.EmoteService;
 using Hinode.Izumi.Services.EmoteService.Impl;
+using Hinode.Izumi.Services.RpgServices.CalculationService;
 using Hinode.Izumi.Services.RpgServices.FoodService;
+using Hinode.Izumi.Services.RpgServices.IngredientService;
 using Hinode.Izumi.Services.RpgServices.InventoryService;
 using Hinode.Izumi.Services.RpgServices.LocalizationService;
 using Hinode.Izumi.Services.RpgServices.TrainingService;
@@ -27,10 +29,13 @@ namespace Hinode.Izumi.Services.Commands.UserCommands
         private readonly ILocalizationService _local;
         private readonly IUserService _userService;
         private readonly ITrainingService _trainingService;
+        private readonly ICalculationService _calc;
+        private readonly IIngredientService _ingredientService;
 
         public EatFoodCommand(IDiscordEmbedService discordEmbedService, IEmoteService emoteService,
             IInventoryService inventoryService, IFoodService foodService, ILocalizationService local,
-            IUserService userService, ITrainingService trainingService)
+            IUserService userService, ITrainingService trainingService, ICalculationService calc,
+            IIngredientService ingredientService)
         {
             _discordEmbedService = discordEmbedService;
             _emoteService = emoteService;
@@ -39,6 +44,8 @@ namespace Hinode.Izumi.Services.Commands.UserCommands
             _local = local;
             _userService = userService;
             _trainingService = trainingService;
+            _calc = calc;
+            _ingredientService = ingredientService;
         }
 
         [Command("съесть"), Alias("eat")]
@@ -61,17 +68,24 @@ namespace Hinode.Izumi.Services.Commands.UserCommands
             }
             else
             {
+                // считаем себестоимость блюда
+                var costPrice = await _ingredientService.GetFoodCostPrice(food.Id);
+                // считаем стоимость приготовления блюда
+                var cookingPrice = await _calc.CraftingPrice(costPrice);
+                // считаем количество энергии восстанавливаемой блюдом
+                var foodEnergy = await _calc.FoodEnergyRecharge(costPrice, cookingPrice);
+
                 // забираем у пользователя еду
                 await _inventoryService.RemoveItemFromUser((long) Context.User.Id, InventoryCategory.Food, food.Id);
                 // добавляем энергию пользователю
-                await _userService.AddEnergyToUser((long) Context.User.Id, food.Energy);
+                await _userService.AddEnergyToUser((long) Context.User.Id, foodEnergy);
 
                 var embed = new EmbedBuilder()
                     // подверждаем что еда съедена и энергия добавлена
                     .WithDescription(IzumiReplyMessage.EatFoodSuccess.Parse(
                         emotes.GetEmoteOrBlank(food.Name), _local.Localize(food.Name),
-                        emotes.GetEmoteOrBlank("Energy"), food.Energy,
-                        _local.Localize("Energy", food.Energy)));
+                        emotes.GetEmoteOrBlank("Energy"), foodEnergy,
+                        _local.Localize("Energy", foodEnergy)));
 
                 await _discordEmbedService.SendEmbed(Context.User, embed);
                 // проверяем нужно ли двинуть прогресс обучения пользователя

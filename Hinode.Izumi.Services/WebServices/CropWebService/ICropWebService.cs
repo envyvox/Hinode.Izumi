@@ -8,7 +8,7 @@ namespace Hinode.Izumi.Services.WebServices.CropWebService
     {
         Task<IEnumerable<CropWebModel>> GetAllCrops();
         Task<CropWebModel> Get(long id);
-        Task<CropWebModel> Update(CropWebModel model);
+        Task<CropWebModel> Upsert(CropWebModel model);
         Task Remove(long id);
     }
 }

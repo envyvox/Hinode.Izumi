@@ -390,7 +390,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         CraftingFoodReceivedFieldName,
         CraftingFoodCompleteDesc,
         IngredientsSpent,
-        UserTitleListDesc,
+        UserTitleDesc,
         UserTitleListFieldName,
         UserUpdateTitleDontHave,
         UserUpdateTitleAlready,
@@ -470,7 +470,21 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         IngredientsFieldName,
         CraftingPriceFieldName,
         LocationFieldName,
-        CraftingItemInfoDesc
+        CraftingItemInfoDesc,
+        UnmuteDesc,
+        MuteTitle,
+        MuteDesc,
+        MuteReasonFieldName,
+        MuteReasonNull,
+        MuteSignatureFieldName,
+        UserBannerFieldDesc,
+        CookingListCategoryWrong,
+        ReferralSetIzumi,
+        OpenBoxWrongAmount,
+        OpenBoxDesc,
+        OpenBoxFieldName,
+        OpenBoxOutOfLimit,
+        InventoryBoxCommand
     }
 
     public static class IzumiReplyMessageHelper
@@ -1558,7 +1572,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Шаг 1: Выбор игрового имени",
 
             IzumiReplyMessage.PresetRegistryNicknameDesc =>
-                "Как и всегда, все начинается с самой сложной части - придумать игровое имя.\nУ нас есть несколько правил, которые сузят круг ваших вариантов и помогут подобрать отличное имя.\n\nИтак, игровое имя:\n<:List:750651302920585245> может состоять как из русских так и английских букв;\n<:List:750651302920585245> должно начинаться с заглавной буквы;\n<:List:750651302920585245> не может содержать других заглавных букв;\n<:List:750651302920585245> не может содержать символы кроме пробела;\n<:List:750651302920585245> не может нарушать правил сервера.",
+                "Как и всегда, все начинается с самой сложной части - придумать игровое имя.\nУ нас есть несколько правил, которые сузят круг ваших вариантов и помогут подобрать отличное имя.\n\nИтак, игровое имя:\n{0} может состоять как из русских так и английских букв;\n{0} должно начинаться с заглавной буквы;\n{0} не может содержать других заглавных букв;\n{0} не может содержать символы кроме пробела;\n{0} не может нарушать правил сервера.",
 
             IzumiReplyMessage.PresetRegistryCommandTitle =>
                 "Шаг 2: Регистрация",
@@ -1585,7 +1599,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Обновление пола пользователя",
 
             IzumiReplyMessage.UpdateGenderNotifyFieldDesc =>
-                "{0} **{1}** `!mod gender {2} 1`\n{3} **{4}** `!mod gender {2} 2`",
+                "{0} **{1}** `!mod update-gender {2} 1`\n{3} **{4}** `!mod update-gender {2} 2`",
 
             IzumiReplyMessage.ModGenderDesc =>
                 "Пол пользователя {0} был успешно обновлен на {1} **{2}**.",
@@ -1647,7 +1661,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
             IzumiReplyMessage.CraftingFoodInFamilyHouse =>
                 "К счастью, в семейной {0} **{1}** есть все необходимые приборы, что ускорит работу.",
 
-            IzumiReplyMessage.UserTitleListDesc =>
+            IzumiReplyMessage.UserTitleDesc =>
                 "Для смены текущего титула напишите `!титул [номер]`.",
 
             IzumiReplyMessage.UserTitleListFieldName =>
@@ -1666,7 +1680,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Для покупки напишите `!магазин купить баннер [номер]`.",
 
             IzumiReplyMessage.ShopBannerFieldDesc =>
-                "Название тайтла: {0}\nСтоимость: {1} {2} {3}\n[Нажмите сюда]({4}) чтобы посмотреть как он выглядит.",
+                "Стоимость: {0} {1} {2}\n[Нажмите сюда]({3}) чтобы посмотреть как он выглядит.",
 
             IzumiReplyMessage.DynamicShopDesc =>
                 "\n\n*Товары этого магазина обновляются каждый день, не пропускайте новые партии!*",
@@ -1810,13 +1824,13 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Приглашенные пользователи",
 
             IzumiReplyMessage.ReferralListReferrerNull =>
-                "Вы не указали пригласившего вас пользователя.\n\n*Напишите `!пригласил [игровое имя]` чтобы указать его и получить {0} {1} {2}.*",
+                "Вы не указали пригласившего вас пользователя.\nНапишите `!пригласил [игровое имя]` и получите {0} {1}.",
 
             IzumiReplyMessage.ReferralListReferralsNull =>
-                "У вас так много приглашенных пользователей, что мне трудно назвать их всех! Но их точно **{0}**.",
+                "Вы еще не пригласили ни одного пользователя. Приглашайте своих друзей и получайте {0} {1} бонусы реферальной системы вместе.",
 
             IzumiReplyMessage.ReferralListReferralsOutOfLimit =>
-                "Вы еще не пригласили ни одного пользователя. Приглашайте своих друзей и получайте {0} {1} бонусы реферальной системы вместе.",
+                "У вас так много приглашенных пользователей, что мне трудно назвать их всех! Но их точно **{0}**.",
 
             IzumiReplyMessage.FamilyInfoDescriptionNull =>
                 "У вашей семьи нет описания. Глава семьи может добавить его написав `!семья описание [текст]`.",
@@ -1889,6 +1903,48 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.CraftingItemInfoDesc =>
                 "Для изготовления отправляйтесь в указанную локацию и напишите `!изготовить предмет [номер] [количество]`.\n*Количество указывать не обязательно, по-умолчанию это 1.*",
+
+            IzumiReplyMessage.UnmuteDesc =>
+                "Блокировка чата истекла, вы можете продолжить общение.",
+
+            IzumiReplyMessage.MuteTitle =>
+                "Указом `#{0}` постановлено",
+
+            IzumiReplyMessage.MuteDesc =>
+                "Пользователь {0} `@{1}`, нарушивший <#{2}> сервера, лишается права на общение во всех чатах.",
+
+            IzumiReplyMessage.MuteReasonFieldName =>
+                "Причина",
+
+            IzumiReplyMessage.MuteReasonNull =>
+                "не указана",
+
+            IzumiReplyMessage.MuteSignatureFieldName =>
+                "Подпись",
+
+            IzumiReplyMessage.UserBannerFieldDesc =>
+                "[Нажмите сюда]({0}) чтобы посмотреть как он выглядит.",
+
+            IzumiReplyMessage.CookingListCategoryWrong =>
+                "Вы указали неверную категорию рецептов.",
+
+            IzumiReplyMessage.ReferralSetIzumi =>
+                "Ну что вы, не стоит указывать меня как пригласившего вас пользователя, лучше укажите своего друга чтобы он получил награды вместе с вами.",
+
+            IzumiReplyMessage.OpenBoxWrongAmount =>
+                "Кажется у вас нет столько {0} {1} сколько вы хотите открыть.",
+
+            IzumiReplyMessage.OpenBoxDesc =>
+                "Вы успешно открыли {0} {1} {2} и вот что оказалось внутри:",
+
+            IzumiReplyMessage.OpenBoxFieldName =>
+                "Содержимое",
+
+            IzumiReplyMessage.OpenBoxOutOfLimit =>
+                "Вы открыли так много коробок, что ни один писарь не соглалился составлять полный список. Однако не стоит переживать, все предметы доставлены в ваш инвентарь.",
+
+            IzumiReplyMessage.InventoryBoxCommand =>
+                "\nВы можете `!открыть [количество] [название]`",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };

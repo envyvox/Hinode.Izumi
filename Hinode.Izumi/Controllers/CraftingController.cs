@@ -26,10 +26,6 @@ namespace Hinode.Izumi.Controllers
             _calc = calc;
         }
 
-        /// <summary>
-        /// Возвращает массив из всех изготавливаемых предметов.
-        /// </summary>
-        /// <returns>Массив из всех изготавливаемых предметов.</returns>
         [HttpGet, Route("list")]
         [ProducesResponseType(typeof(IEnumerable<CraftingWebModel>), StatusCodes.Status200OK)]
         public async Task<IActionResult> List()
@@ -53,11 +49,6 @@ namespace Hinode.Izumi.Controllers
             return Ok(craftings);
         }
 
-        /// <summary>
-        /// Возвращает изготавливаемый предмет с указанным id.
-        /// </summary>
-        /// <param name="id">Id изготавливаемого предмета.</param>
-        /// <returns>Изготавливаемый предмет.</returns>
         [HttpGet, Route("{id:long}")]
         [ProducesResponseType(typeof(CraftingWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(long id)
@@ -78,44 +69,25 @@ namespace Hinode.Izumi.Controllers
             return Ok(crafting);
         }
 
-        /// <summary>
-        /// Изменяет изготавливаемый предмет.
-        /// </summary>
-        /// <param name="id">Id изготавливаемого предмета.</param>
-        /// <param name="model">Модель изготавливаемого предмета.</param>
-        /// <returns>Измененный изготавливаемый предмет.</returns>
         [HttpPost, Route("{id:long}")]
         [ProducesResponseType(typeof(CraftingWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Edit([FromRoute] long id, CraftingWebModel model)
         {
-            // указываем что id изготавливаемого предмета это id полученный из роута
             model.Id = id;
-            // обновляем в базе
-            return Ok(await _craftingWebService.Update(model));
+            return Ok(await _craftingWebService.Upsert(model));
         }
 
-        /// <summary>
-        /// Добавляет новый изготавливаемый предмет.
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns>Новый изготавливаемый предмет.</returns>
         [HttpPut, Route("add")]
         [ProducesResponseType(typeof(CraftingWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Add(CraftingWebModel model)
         {
-            // добавляем изготавливаемый предмет в базу
-            return Ok(await _craftingWebService.Update(model));
+            return Ok(await _craftingWebService.Upsert(model));
         }
 
-        /// <summary>
-        /// Удаляет изготавливаемый предмет.
-        /// </summary>
-        /// <param name="id">Id изготавливаемого предмета.</param>
         [HttpDelete, Route("{id:long}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Remove([FromRoute] long id)
         {
-            // удаляем изготавливаемый предмет из базы
             await _craftingWebService.Remove(id);
             return Ok();
         }

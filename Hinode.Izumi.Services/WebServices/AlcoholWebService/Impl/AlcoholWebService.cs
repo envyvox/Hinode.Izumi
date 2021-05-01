@@ -34,22 +34,30 @@ namespace Hinode.Izumi.Services.WebServices.AlcoholWebService.Impl
                     where id = @id",
                     new {id});
 
-        public async Task<AlcoholWebModel> Update(AlcoholWebModel model)
+        public async Task<AlcoholWebModel> Upsert(AlcoholWebModel model)
         {
             // сбрасываем запись в кэше
             _cache.Remove(string.Format(CacheExtensions.AlcoholKey, model.Id));
-            // обновляем базу
-            return await _con.GetConnection()
-                .QueryFirstOrDefaultAsync<AlcoholWebModel>(@"
+
+            var query = model.Id == 0
+                ? @"
                     insert into alcohols(name, time)
                     values (@name, @time)
-                    on conflict (name) do update
+                    returning *"
+                : @"
+                    update alcohols
                     set name = @name,
                         time = @time,
                         updated_at = now()
-                    returning *",
+                    where id = @id
+                    returning *";
+
+            // обновляем базу
+            return await _con.GetConnection()
+                .QueryFirstOrDefaultAsync<AlcoholWebModel>(query,
                     new
                     {
+                        id = model.Id,
                         name = model.Name,
                         time = model.Time
                     });

@@ -71,5 +71,14 @@ namespace Hinode.Izumi.Services.RpgServices.FishService.Impl
                     order by random()
                     limit 1",
                     new {timesDay, season, weather, rarity});
+
+        public async Task<FishModel> GetRandomFish(FishRarity rarity) =>
+            await _con.GetConnection()
+                .QueryFirstOrDefaultAsync<FishModel>(@"
+                    select * from fishes
+                    where rarity = @rarity
+                    order by random()
+                    limit 1",
+                    new {rarity});
     }
 }

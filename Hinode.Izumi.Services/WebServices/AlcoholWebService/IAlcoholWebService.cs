@@ -8,7 +8,7 @@ namespace Hinode.Izumi.Services.WebServices.AlcoholWebService
     {
         Task<IEnumerable<AlcoholWebModel>> GetAllAlcohols();
         Task<AlcoholWebModel> Get(long id);
-        Task<AlcoholWebModel> Update(AlcoholWebModel model);
+        Task<AlcoholWebModel> Upsert(AlcoholWebModel model);
         Task Remove(long id);
     }
 }

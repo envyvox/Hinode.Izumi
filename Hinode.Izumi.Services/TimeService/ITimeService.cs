@@ -10,7 +10,7 @@ namespace Hinode.Izumi.Services.TimeService
         /// </summary>
         /// <param name="dateTime">Дата.</param>
         /// <returns>Локализированная строка с информацией о том, сколько осталось времени до указанной даты.</returns>
-        public string TimeLeft(DateTime dateTime);
+        public string TimeLeft(DateTimeOffset dateTime);
 
         /// <summary>
         /// Проверяет находится ли текущее время между указанными двумя.

@@ -22,18 +22,15 @@ namespace Hinode.Izumi.Services.BackgroundJobs.SeasonJob
         private readonly IDiscordEmbedService _discordEmbedService;
         private readonly IEmoteService _emoteService;
         private readonly IFieldService _fieldService;
-        private readonly TimeZoneInfo _timeZoneInfo;
         private readonly IDiscordGuildService _discordGuildService;
 
         public SeasonJob(IPropertyService propertyService, IDiscordEmbedService discordEmbedService,
-            IEmoteService emoteService, IFieldService fieldService, TimeZoneInfo timeZoneInfo,
-            IDiscordGuildService discordGuildService)
+            IEmoteService emoteService, IFieldService fieldService, IDiscordGuildService discordGuildService)
         {
             _propertyService = propertyService;
             _discordEmbedService = discordEmbedService;
             _emoteService = emoteService;
             _fieldService = fieldService;
-            _timeZoneInfo = timeZoneInfo;
             _discordGuildService = discordGuildService;
         }
 
@@ -62,7 +59,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.SeasonJob
             // получаем иконки из базы
             var emotes = await _emoteService.GetEmotes();
             // получаем текущее время
-            var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, _timeZoneInfo);
+            var timeNow = DateTimeOffset.Now;
             // получаем каналы дискорда из базы
             var channels = await _discordGuildService.GetChannels();
 

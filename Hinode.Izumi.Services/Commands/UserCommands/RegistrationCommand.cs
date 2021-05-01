@@ -116,7 +116,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands
                             // рассказываем о реферальной системе
                             .AddField(IzumiReplyMessage.RegistrationSuccessReferralTitle.Parse(),
                                 IzumiReplyMessage.RegistrationSuccessReferralDesc.Parse(
-                                    emotes.GetEmoteOrBlank(Currency.Ien.ToString())));
+                                    emotes.GetEmoteOrBlank(Box.Capital.Emote())));
 
                         await _discordEmbedService.SendEmbed(Context.User, embed);
                         await Task.CompletedTask;

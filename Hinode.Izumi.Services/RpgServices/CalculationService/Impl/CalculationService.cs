@@ -349,7 +349,10 @@ namespace Hinode.Izumi.Services.RpgServices.CalculationService.Impl
         public async Task<long> DrinkAmountAfterMasteryProcs(long drinkId, long userCraftingMastery, long amount)
         {
             // TODO добавить сюда проверки после того как обсудим работу изготовления напитков
-            return amount;
+            return await Task.FromResult(amount);
         }
+
+        public async Task<long> FoodEnergyRecharge(long costPrice, long cookingPrice) =>
+            (costPrice + cookingPrice) / await _propertyService.GetPropertyValue(Property.FoodEnergyPrice);
     }
 }

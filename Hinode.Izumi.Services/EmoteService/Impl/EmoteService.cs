@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -45,9 +46,8 @@ namespace Hinode.Izumi.Services.EmoteService.Impl
 
         public async Task UploadEmotes()
         {
-            // сначала нужно удалить все иконки чтобы отсеять удаленные
-            await DeleteEmotes();
-
+            // получаем текущее время
+            var timeNow = DateTimeOffset.Now;
             // получаем клиент
             var socketClient = await _discordClientService.GetSocketClient();
             // создаем списки в которые будет добавлять информацию о иконках
@@ -76,17 +76,27 @@ namespace Hinode.Izumi.Services.EmoteService.Impl
                             unnest(array[@emoteName]),
                             unnest(array[@emoteCode])
                             )
-                    on conflict (id, name) do nothing",
+                    on conflict (id, name) do update
+                        set updated_at = now()",
                     new {emoteId, emoteName, emoteCode});
+
+            // затем удаляем все не обновленные иконки
+            await DeleteEmotes(timeNow);
         }
 
-        private async Task DeleteEmotes()
+        /// <summary>
+        /// Удаляет все иконки, дата обновления которых меньше указанной даты.
+        /// </summary>
+        /// <param name="dateTime"></param>
+        private async Task DeleteEmotes(DateTimeOffset dateTime)
         {
             // удаляем иконки из базы
             await _con
                 .GetConnection()
                 .ExecuteAsync(@"
-                    delete from emotes");
+                    delete from emotes
+                    where updated_at < @dateTime",
+                    new {dateTime});
 
             // удаляем иконки из кэша
             _cache.Remove(CacheExtensions.EmotesKey);

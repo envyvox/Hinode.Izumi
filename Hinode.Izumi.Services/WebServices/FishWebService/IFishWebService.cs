@@ -8,7 +8,7 @@ namespace Hinode.Izumi.Services.WebServices.FishWebService
     {
         Task<IEnumerable<FishWebModel>> GetAllFish();
         Task<FishWebModel> Get(long id);
-        Task<FishWebModel> Update(FishWebModel model);
+        Task<FishWebModel> Upsert(FishWebModel model);
         Task Remove(long id);
     }
 }

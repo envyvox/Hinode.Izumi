@@ -44,9 +44,7 @@ namespace Hinode.Izumi.Services.WebServices.MasteryPropertyWebService.Impl
             // обновляем базу
             return await _con.GetConnection()
                 .QueryFirstOrDefaultAsync<MasteryPropertyWebModel>(@"
-                    insert into mastery_properties(property_category, property, mastery0, mastery50, mastery100, mastery150, mastery200, mastery250)
-                    values (@propertyCategory, @property, @mastery0, @mastery50, @mastery100, @mastery150, @mastery200, @mastery250)
-                    on conflict (property) do update
+                    update mastery_properties
                     set mastery0 = @mastery0,
                         mastery50 = @mastery50,
                         mastery100 = @mastery100,
@@ -54,11 +52,11 @@ namespace Hinode.Izumi.Services.WebServices.MasteryPropertyWebService.Impl
                         mastery200 = @mastery200,
                         mastery250 = @mastery250,
                         updated_at = now()
+                    where id = @id
                     returning *",
                     new
                     {
-                        propertyCategory = model.PropertyCategory,
-                        property = model.Property,
+                        id = model.Id,
                         mastery0 = model.Mastery0,
                         mastery50 = model.Mastery50,
                         mastery100 = model.Mastery100,

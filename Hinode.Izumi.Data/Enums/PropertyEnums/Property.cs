@@ -228,19 +228,79 @@ namespace Hinode.Izumi.Data.Enums.PropertyEnums
         CurrentEvent = 47,
 
         /// <summary>
-        /// Блюдо, которое выдается за сбор мангала в майском событии.
+        /// Блюдо, которое выдается за участие в пикнике майского события.
         /// </summary>
-        EventMayGrillFoodId = 48,
+        EventMayPicnicFoodId = 48,
 
         /// <summary>
-        /// Количество выдаваемого блюда за сбор мангала в майском событии.
+        /// Количество выдаваемого блюда за участие в пикнике майского события.
         /// </summary>
-        EventMayGrillFoodAmount = 49,
+        EventMayPicnicFoodAmount = 49,
 
         /// <summary>
         /// % ускорения перемещения во время события.
         /// </summary>
-        EventReduceTransitTime = 50
+        EventReduceTransitTime = 50,
+
+        /// <summary>
+        /// Баннер, который выдается за победу над боссом майского события.
+        /// </summary>
+        EventMayBossBannerId = 51,
+
+        /// <summary>
+        /// Титул, который выдается за победу над боссом майского события.
+        /// </summary>
+        EventMayBossTitleId = 52,
+
+        /// <summary>
+        /// Стоимость одной единицы энергии.
+        /// </summary>
+        FoodEnergyPrice = 53,
+
+        /// <summary>
+        ///
+        /// </summary>
+        BoxCapitalMinAmount = 54,
+
+        /// <summary>
+        ///
+        /// </summary>
+        BoxCapitalMaxAmount = 55,
+
+        /// <summary>
+        ///
+        /// </summary>
+        BoxSeaportMinAmount = 56,
+
+        /// <summary>
+        ///
+        /// </summary>
+        BoxSeaportMaxAmount = 57,
+
+        /// <summary>
+        ///
+        /// </summary>
+        BoxSeaportRarity = 58,
+
+        /// <summary>
+        ///
+        /// </summary>
+        BoxVillageProductMinAmount = 59,
+
+        /// <summary>
+        ///
+        /// </summary>
+        BoxVillageProductMaxAmount = 60,
+
+        /// <summary>
+        ///
+        /// </summary>
+        BoxVillageCropMinAmount = 61,
+
+        /// <summary>
+        ///
+        /// </summary>
+        BoxVillageCropMaxAmount = 62
     }
 
     public static class PropertyHelper
@@ -296,9 +356,21 @@ namespace Hinode.Izumi.Data.Enums.PropertyEnums
             Property.ActionTimeReduceKitchen => PropertyCategory.ActionTimeReduce,
             Property.ActionTimeReduceWorkshop => PropertyCategory.ActionTimeReduce,
             Property.CurrentEvent => PropertyCategory.WorldState,
-            Property.EventMayGrillFoodId => PropertyCategory.Event,
-            Property.EventMayGrillFoodAmount => PropertyCategory.Event,
+            Property.EventMayPicnicFoodId => PropertyCategory.Event,
+            Property.EventMayPicnicFoodAmount => PropertyCategory.Event,
             Property.EventReduceTransitTime => PropertyCategory.Event,
+            Property.EventMayBossBannerId => PropertyCategory.Event,
+            Property.EventMayBossTitleId => PropertyCategory.Event,
+            Property.FoodEnergyPrice => PropertyCategory.Economy,
+            Property.BoxCapitalMinAmount => PropertyCategory.Box,
+            Property.BoxCapitalMaxAmount => PropertyCategory.Box,
+            Property.BoxSeaportMinAmount => PropertyCategory.Box,
+            Property.BoxSeaportMaxAmount => PropertyCategory.Box,
+            Property.BoxSeaportRarity => PropertyCategory.Box,
+            Property.BoxVillageProductMinAmount => PropertyCategory.Box,
+            Property.BoxVillageProductMaxAmount => PropertyCategory.Box,
+            Property.BoxVillageCropMinAmount => PropertyCategory.Box,
+            Property.BoxVillageCropMaxAmount => PropertyCategory.Box,
             _ => throw new ArgumentOutOfRangeException(nameof(property), property, null)
         };
     }

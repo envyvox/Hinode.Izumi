@@ -35,7 +35,7 @@ namespace Hinode.Izumi.Services.WebServices.FoodWebService.Models
         /// <summary>
         /// Стоимость приготовления.
         /// </summary>
-        public long CraftingPrice { get; set; }
+        public long CookingPrice { get; set; }
 
         /// <summary>
         /// Цена НПС.

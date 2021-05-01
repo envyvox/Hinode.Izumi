@@ -52,9 +52,7 @@ namespace Hinode.Izumi.Services.WebServices.GatheringPropertyWebService.Impl
             // обновляем базу
             return await _con.GetConnection()
                 .QueryFirstOrDefaultAsync<GatheringPropertyWebModel>(@"
-                    insert into gathering_properties(gathering_id, property, mastery0, mastery50, mastery100, mastery150, mastery200, mastery250)
-                    values (@gatheringId, @property, @mastery0, @mastery50, @mastery100, @mastery150, @mastery200, @mastery250)
-                    on conflict (gathering_id, property) do update
+                    update gathering_properties
                     set mastery0 = @mastery0,
                         mastery50 = @mastery50,
                         mastery100 = @mastery100,
@@ -62,11 +60,11 @@ namespace Hinode.Izumi.Services.WebServices.GatheringPropertyWebService.Impl
                         mastery200 = @mastery200,
                         mastery250 = @mastery250,
                         updated_at = now()
+                    where id = @id
                     returning *",
                     new
                     {
-                        gatheringId = model.GatheringId,
-                        property = model.Property,
+                        id = model.Id,
                         mastery0 = model.Mastery0,
                         mastery50 = model.Mastery50,
                         mastery100 = model.Mastery100,

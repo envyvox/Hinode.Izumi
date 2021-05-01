@@ -44,14 +44,14 @@ namespace Hinode.Izumi.Controllers
         public async Task<IActionResult> Edit([FromRoute] long id, CraftingIngredientWebModel model)
         {
             model.Id = id;
-            return Ok(await _craftingIngredientWebService.Update(model));
+            return Ok(await _craftingIngredientWebService.Upsert(model));
         }
 
         [HttpPut, Route("add")]
         [ProducesResponseType(typeof(CraftingIngredientWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Add(CraftingIngredientWebModel model)
         {
-            return Ok(await _craftingIngredientWebService.Update(model));
+            return Ok(await _craftingIngredientWebService.Upsert(model));
         }
 
         [HttpDelete, Route("{id:long}")]

@@ -30,21 +30,30 @@ namespace Hinode.Izumi.Services.WebServices.DrinkWebService.Impl
                     where id = @id",
                     new {id});
 
-        public async Task<DrinkWebModel> Update(DrinkWebModel model) =>
-            await _con.GetConnection()
-                .QueryFirstOrDefaultAsync<DrinkWebModel>(@"
+        public async Task<DrinkWebModel> Upsert(DrinkWebModel model)
+        {
+            var query = model.Id == 0
+                ? @"
                     insert into drinks(name, time)
                     values (@name, @time)
-                    on conflict (name) do update
+                    returning *"
+                : @"
+                    update drinks
                     set name = @name,
                         time = @time,
                         updated_at = now()
-                    returning *",
+                    where id = @id
+                    returning *";
+
+            return await _con.GetConnection()
+                .QueryFirstOrDefaultAsync<DrinkWebModel>(query,
                     new
                     {
+                        id = model.Id,
                         name = model.Name,
                         time = model.Time
                     });
+        }
 
         public async Task Remove(long id) =>
             await _con.GetConnection()

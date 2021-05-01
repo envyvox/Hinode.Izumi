@@ -36,5 +36,12 @@ namespace Hinode.Izumi.Services.RpgServices.FishService
         /// <param name="rarity">Редкость рыбы.</param>
         /// <returns>Случайная рыба.</returns>
         Task<FishModel> GetRandomFish(TimesDay timesDay, Season season, Weather weather, FishRarity rarity);
+
+        /// <summary>
+        /// Возвращает случайную рыбу подходяющую по указанной редкости.
+        /// </summary>
+        /// <param name="rarity">Редкость рыбы.</param>
+        /// <returns>Случайная рыба.</returns>
+        Task<FishModel> GetRandomFish(FishRarity rarity);
     }
 }

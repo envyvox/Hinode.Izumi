@@ -26,10 +26,6 @@ namespace Hinode.Izumi.Controllers
             _ingredientService = ingredientService;
         }
 
-        /// <summary>
-        /// Возвращает массив из всего алкоголя.
-        /// </summary>
-        /// <returns>Массив из всего алкоголя.</returns>
         [HttpGet, Route("list")]
         [ProducesResponseType(typeof(IEnumerable<AlcoholWebModel>), StatusCodes.Status200OK)]
         public async Task<IActionResult> List()
@@ -53,11 +49,6 @@ namespace Hinode.Izumi.Controllers
             return Ok(alcohols);
         }
 
-        /// <summary>
-        /// Возвращает алкоголь с указанным id.
-        /// </summary>
-        /// <param name="id">Id алкоголя.</param>
-        /// <returns>Алкоголь.</returns>
         [HttpGet, Route("{id:long}")]
         [ProducesResponseType(typeof(AlcoholWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(long id)
@@ -78,44 +69,25 @@ namespace Hinode.Izumi.Controllers
             return Ok(alcohol);
         }
 
-        /// <summary>
-        /// Изменяет алкоголь.
-        /// </summary>
-        /// <param name="id">Id алкоголя.</param>
-        /// <param name="model">Модель алкоголя.</param>
-        /// <returns>Измененный алкоголь.</returns>
         [HttpPost, Route("{id:long}")]
         [ProducesResponseType(typeof(AlcoholWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Edit([FromRoute] long id, AlcoholWebModel model)
         {
-            // указываем что id алкоголя это id полученный из роута
             model.Id = id;
-            // обновляем в базе
-            return Ok(await _alcoholWebService.Update(model));
+            return Ok(await _alcoholWebService.Upsert(model));
         }
 
-        /// <summary>
-        /// Добавляет новый алкоголь.
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns>Новый алкоголь.</returns>
         [HttpPut, Route("add")]
         [ProducesResponseType(typeof(AlcoholWebModel), StatusCodes.Status200OK)]
         public async Task<IActionResult> Add(AlcoholWebModel model)
         {
-            // добавляем алкоголь в базу
-            return Ok(await _alcoholWebService.Update(model));
+            return Ok(await _alcoholWebService.Upsert(model));
         }
 
-        /// <summary>
-        /// Удаляет алкоголь.
-        /// </summary>
-        /// <param name="id">Id алкоголя.</param>
         [HttpDelete, Route("{id:long}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Remove([FromRoute] long id)
         {
-            // удаляем алкоголь из базы
             await _alcoholWebService.Remove(id);
             return Ok();
         }

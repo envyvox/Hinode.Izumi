@@ -26,7 +26,7 @@ namespace Hinode.Izumi.Data.Models.UserModels
         /// <summary>
         /// Окончание эффекта.
         /// </summary>
-        public DateTime? Expiration { get; set; }
+        public DateTimeOffset? Expiration { get; set; }
 
         /// <summary>
         /// Пользователь.

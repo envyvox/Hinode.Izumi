@@ -42,27 +42,34 @@ namespace Hinode.Izumi.Services.WebServices.FoodWebService.Impl
                     where id = @id",
                     new {id});
 
-        public async Task<FoodWebModel> Update(FoodWebModel model)
+        public async Task<FoodWebModel> Upsert(FoodWebModel model)
         {
             // сбрасываем кэш
             _cache.Remove(string.Format(CacheExtensions.FoodKey, model.Id));
-            // обновляем базу
-            return await _con.GetConnection()
-                .QueryFirstOrDefaultAsync<FoodWebModel>(@"
-                    insert into foods(name, mastery, time, energy)
-                    values (@name, @mastery, @time, @energy)
-                    on conflict (name) do update
+
+            var query = model.Id == 0
+                ? @"
+                    insert into foods(name, mastery, time)
+                    values (@name, @mastery, @time)
+                    returning *"
+                : @"
+                    update foods
                     set name = @name,
                         mastery = @mastery,
                         time = @time,
-                        energy = @energy,
-                        updated_at = now()",
+                        updated_at = now()
+                    where id = @id
+                    returning *";
+
+            // обновляем базу
+            return await _con.GetConnection()
+                .QueryFirstOrDefaultAsync<FoodWebModel>(query,
                     new
                     {
+                        id = model.Id,
                         name = model.Name,
                         mastery = model.Mastery,
-                        time = model.Time,
-                        energy = model.Energy
+                        time = model.Time
                     });
         }
 

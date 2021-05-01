@@ -152,7 +152,12 @@ namespace Hinode.Izumi.Services.RpgServices.PropertyService.Impl
             return properties;
         }
 
-        public async Task UpdateProperty(Property property, long newValue) =>
+        public async Task UpdateProperty(Property property, long newValue)
+        {
+            // обновляем значение в кэше
+            _cache.Set(string.Format(CacheExtensions.PropertyKey, property), newValue,
+                CacheExtensions.DefaultCacheOptions);
+            // обновляем значение в базе
             await _con.GetConnection()
                 .ExecuteAsync(@"
                     update world_properties
@@ -160,5 +165,6 @@ namespace Hinode.Izumi.Services.RpgServices.PropertyService.Impl
                         updated_at = now()
                     where property = @property",
                     new {property, newValue});
+        }
     }
 }
