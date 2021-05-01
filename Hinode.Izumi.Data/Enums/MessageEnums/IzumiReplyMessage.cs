@@ -479,7 +479,12 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         MuteSignatureFieldName,
         UserBannerFieldDesc,
         CookingListCategoryWrong,
-        ReferralSetIzumi
+        ReferralSetIzumi,
+        OpenBoxWrongAmount,
+        OpenBoxDesc,
+        OpenBoxFieldName,
+        OpenBoxOutOfLimit,
+        InventoryBoxCommand
     }
 
     public static class IzumiReplyMessageHelper
@@ -1925,6 +1930,21 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.ReferralSetIzumi =>
                 "Ну что вы, не стоит указывать меня как пригласившего вас пользователя, лучше укажите своего друга чтобы он получил награды вместе с вами.",
+
+            IzumiReplyMessage.OpenBoxWrongAmount =>
+                "Кажется у вас нет столько {0} {1} сколько вы хотите открыть.",
+
+            IzumiReplyMessage.OpenBoxDesc =>
+                "Вы успешно открыли {0} {1} {2} и вот что оказалось внутри:",
+
+            IzumiReplyMessage.OpenBoxFieldName =>
+                "Содержимое",
+
+            IzumiReplyMessage.OpenBoxOutOfLimit =>
+                "Вы открыли так много коробок, что ни один писарь не соглалился составлять полный список. Однако не стоит переживать, все предметы доставлены в ваш инвентарь.",
+
+            IzumiReplyMessage.InventoryBoxCommand =>
+                "\nВы можете `!открыть [количество] [название]`",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };

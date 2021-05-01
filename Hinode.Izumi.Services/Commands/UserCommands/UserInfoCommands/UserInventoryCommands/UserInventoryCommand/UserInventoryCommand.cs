@@ -157,7 +157,9 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.UserInven
                     embed.AddField(category.Localize(),
                         groupString.Length > 1024
                             ? outOfLimitString
-                            : groupString.Remove(groupString.Length - 2)
+                            : groupString.Remove(groupString.Length - 2) + (category == InventoryCategory.Box
+                                ? IzumiReplyMessage.InventoryBoxCommand.Parse()
+                                : "")
                     );
             }
 

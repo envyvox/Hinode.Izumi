@@ -24,5 +24,11 @@ namespace Hinode.Izumi.Services.RpgServices.CropService
         /// <param name="seedId">Id семени.</param>
         /// <returns>Урожай.</returns>
         Task<CropModel> GetCropBySeedId(long seedId);
+
+        /// <summary>
+        /// Возвращает случайный урожай.
+        /// </summary>
+        /// <returns>Случайный урожай.</returns>
+        Task<CropModel> GetRandomCrop();
     }
 }

@@ -8043,6 +8043,7 @@ export enum Title {
     KingExcitement = 16,
     BelievingInLuck = 17,
     FirstSamurai = 18,
+    ReferralTitle = 19,
     Wanderer = 777,
 }
 
@@ -8104,6 +8105,7 @@ export enum PropertyCategory {
     Family = 8,
     Boss = 9,
     Event = 10,
+    Box = 11,
 }
 
 export enum Property {
@@ -8157,6 +8159,15 @@ export enum Property {
     EventMayBossBannerId = 51,
     EventMayBossTitleId = 52,
     FoodEnergyPrice = 53,
+    BoxCapitalMinAmount = 54,
+    BoxCapitalMaxAmount = 55,
+    BoxSeaportMinAmount = 56,
+    BoxSeaportMaxAmount = 57,
+    BoxSeaportRarity = 58,
+    BoxVillageProductMinAmount = 59,
+    BoxVillageProductMaxAmount = 60,
+    BoxVillageCropMinAmount = 61,
+    BoxVillageCropMaxAmount = 62,
 }
 
 export class SwaggerException extends Error {

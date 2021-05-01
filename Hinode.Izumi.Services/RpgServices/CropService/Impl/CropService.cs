@@ -71,5 +71,12 @@ namespace Hinode.Izumi.Services.RpgServices.CropService.Impl
             // возвращаем урожай
             return crop;
         }
+
+        public async Task<CropModel> GetRandomCrop() =>
+            await _con.GetConnection()
+                .QueryFirstOrDefaultAsync<CropModel>(@"
+                    select * from crops
+                    order by random()
+                    limit 1");
     }
 }

@@ -255,7 +255,52 @@ namespace Hinode.Izumi.Data.Enums.PropertyEnums
         /// <summary>
         /// Стоимость одной единицы энергии.
         /// </summary>
-        FoodEnergyPrice = 53
+        FoodEnergyPrice = 53,
+
+        /// <summary>
+        ///
+        /// </summary>
+        BoxCapitalMinAmount = 54,
+
+        /// <summary>
+        ///
+        /// </summary>
+        BoxCapitalMaxAmount = 55,
+
+        /// <summary>
+        ///
+        /// </summary>
+        BoxSeaportMinAmount = 56,
+
+        /// <summary>
+        ///
+        /// </summary>
+        BoxSeaportMaxAmount = 57,
+
+        /// <summary>
+        ///
+        /// </summary>
+        BoxSeaportRarity = 58,
+
+        /// <summary>
+        ///
+        /// </summary>
+        BoxVillageProductMinAmount = 59,
+
+        /// <summary>
+        ///
+        /// </summary>
+        BoxVillageProductMaxAmount = 60,
+
+        /// <summary>
+        ///
+        /// </summary>
+        BoxVillageCropMinAmount = 61,
+
+        /// <summary>
+        ///
+        /// </summary>
+        BoxVillageCropMaxAmount = 62
     }
 
     public static class PropertyHelper
@@ -317,6 +362,15 @@ namespace Hinode.Izumi.Data.Enums.PropertyEnums
             Property.EventMayBossBannerId => PropertyCategory.Event,
             Property.EventMayBossTitleId => PropertyCategory.Event,
             Property.FoodEnergyPrice => PropertyCategory.Economy,
+            Property.BoxCapitalMinAmount => PropertyCategory.Box,
+            Property.BoxCapitalMaxAmount => PropertyCategory.Box,
+            Property.BoxSeaportMinAmount => PropertyCategory.Box,
+            Property.BoxSeaportMaxAmount => PropertyCategory.Box,
+            Property.BoxSeaportRarity => PropertyCategory.Box,
+            Property.BoxVillageProductMinAmount => PropertyCategory.Box,
+            Property.BoxVillageProductMaxAmount => PropertyCategory.Box,
+            Property.BoxVillageCropMinAmount => PropertyCategory.Box,
+            Property.BoxVillageCropMaxAmount => PropertyCategory.Box,
             _ => throw new ArgumentOutOfRangeException(nameof(property), property, null)
         };
     }

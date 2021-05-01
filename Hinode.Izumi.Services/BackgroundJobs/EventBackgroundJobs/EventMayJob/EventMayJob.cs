@@ -126,8 +126,6 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
         {
             // получаем каналы сервера
             var channels = await _discordGuildService.GetChannels();
-            // получаем иконки из базы
-            var emotes = await _emoteService.GetEmotes();
 
             // обновляем текущее событие в базе
             await _propertyService.UpdateProperty(Property.CurrentEvent, (long) Event.None);
@@ -339,7 +337,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                     IzumiEventMessage.BossRewardReputation.Parse(
                         emotes.GetEmoteOrBlank(Reputation.Village.Emote(long.MaxValue)), reputationReward,
                         Location.Village.Localize(true)) +
-                    $"{emotes.GetEmoteOrBlank(Box.Village.Emote())} {Box.Village.Localize()}\n" +
+                    $"{emotes.GetEmoteOrBlank(Box.Village.Emote())} {_local.Localize(Box.Village.ToString())}\n" +
                     $"{banner.Rarity.Localize().ToLower()} «[{banner.Name}]({banner.Url})»\n " +
                     $"титул {emotes.GetEmoteOrBlank(title.Emote())} {title.Localize()}")
                 // изображение босса
@@ -436,7 +434,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                 IzumiEventMessage.ReputationAdded.Parse(
                     emotes.GetEmoteOrBlank(Reputation.Village.Emote(long.MaxValue)), reputationReward,
                     Location.Village.Localize(true)) +
-                $"{emotes.GetEmoteOrBlank(Box.Village.Emote())} {Box.Village.Localize()}, " +
+                $"{emotes.GetEmoteOrBlank(Box.Village.Emote())} {_local.Localize(Box.Village.ToString())}, " +
                 $"{banner.Rarity.Localize().ToLower()} «[{banner.Name}]({banner.Url})», титул {emotes.GetEmoteOrBlank(title.Emote())} {title.Localize()}";
 
             var embedReward = new EmbedBuilder()

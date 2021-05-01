@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Hinode.Izumi.Data.Enums
+﻿namespace Hinode.Izumi.Data.Enums
 {
     /// <summary>
     /// Коробка с подарком внутри.
@@ -16,22 +14,6 @@ namespace Hinode.Izumi.Data.Enums
 
     public static class BoxHelper
     {
-        /// <summary>
-        /// Возвращает локализированное название коробки.
-        /// </summary>
-        /// <param name="box">Коробка.</param>
-        /// <returns>Локализированное название коробки.</returns>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public static string Localize(this Box box) => box switch
-        {
-            Box.Capital => "награда столицы",
-            Box.Garden => "награда сада",
-            Box.Seaport => "награда порта",
-            Box.Castle => "награда замка",
-            Box.Village => "награда деревни",
-            _ => throw new ArgumentOutOfRangeException(nameof(box), box, null)
-        };
-
         /// <summary>
         /// Возвращает название иконки коробки.
         /// </summary>

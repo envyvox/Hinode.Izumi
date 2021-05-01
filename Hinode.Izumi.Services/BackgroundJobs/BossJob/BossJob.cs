@@ -42,6 +42,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
         private readonly IFieldService _fieldService;
         private readonly IReputationService _reputationService;
         private readonly IImageService _imageService;
+        private readonly ILocalizationService _local;
 
         private readonly Random _random = new();
 
@@ -53,7 +54,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
         public BossJob(IDiscordEmbedService discordEmbedService, IDiscordGuildService discordGuildService,
             IEmoteService emoteService, IPropertyService propertyService, IStatisticService statisticService,
             IAchievementService achievementService, IInventoryService inventoryService, IFieldService fieldService,
-            IReputationService reputationService, IImageService imageService)
+            IReputationService reputationService, IImageService imageService, ILocalizationService local)
         {
             _discordEmbedService = discordEmbedService;
             _discordGuildService = discordGuildService;
@@ -65,6 +66,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
             _fieldService = fieldService;
             _reputationService = reputationService;
             _imageService = imageService;
+            _local = local;
         }
 
         public async Task Anons()
@@ -189,7 +191,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                     IzumiEventMessage.BossRewardReputation.Parse(
                         emotes.GetEmoteOrBlank(reputation.Emote(long.MaxValue)), reputationReward,
                         location.Localize(true)) +
-                    $"{emotes.GetEmoteOrBlank(box.Emote())} {box.Localize()}")
+                    $"{emotes.GetEmoteOrBlank(box.Emote())} {_local.Localize(box.ToString())}")
                 // изображение босса
                 .WithImageUrl(await _imageService.GetImageUrl(bossImage))
                 // сколько времени дается на убийство ежедневного босса

@@ -57,7 +57,12 @@ namespace Hinode.Izumi.Data.Enums.PropertyEnums
         /// <summary>
         /// Событие.
         /// </summary>
-        Event = 10
+        Event = 10,
+
+        /// <summary>
+        /// Коробки.
+        /// </summary>
+        Box = 11
     }
 
     public static class PropertyCategoryHelper
