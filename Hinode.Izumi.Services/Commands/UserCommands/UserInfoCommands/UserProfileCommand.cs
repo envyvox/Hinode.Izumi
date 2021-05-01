@@ -35,7 +35,6 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
         private readonly IUserService _userService;
         private readonly IEmoteService _emoteService;
         private readonly IDiscordGuildService _discordGuildService;
-        private readonly TimeZoneInfo _timeZoneInfo;
         private readonly IBannerService _bannerService;
         private readonly IReputationService _reputationService;
         private readonly ITrainingService _trainingService;
@@ -46,16 +45,15 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
         private readonly IFamilyService _familyService;
 
         public UserProfileCommand(IDiscordEmbedService discordEmbedService, IUserService userService,
-            IEmoteService emoteService, IDiscordGuildService discordGuildService, TimeZoneInfo timeZoneInfo,
-            IBannerService bannerService, IReputationService reputationService, ITrainingService trainingService,
-            ILocationService locationService, ILocalizationService local, ICalculationService calc,
-            IContractService contractService, IFamilyService familyService)
+            IEmoteService emoteService, IDiscordGuildService discordGuildService, IBannerService bannerService,
+            IReputationService reputationService, ITrainingService trainingService, ILocationService locationService,
+            ILocalizationService local, ICalculationService calc, IContractService contractService,
+            IFamilyService familyService)
         {
             _discordEmbedService = discordEmbedService;
             _userService = userService;
             _emoteService = emoteService;
             _discordGuildService = discordGuildService;
-            _timeZoneInfo = timeZoneInfo;
             _bannerService = bannerService;
             _reputationService = reputationService;
             _trainingService = trainingService;
@@ -86,7 +84,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
             // получаем все иконки из базы
             var emotes = await _emoteService.GetEmotes();
             // получаем текущее время
-            var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, _timeZoneInfo);
+            var timeNow = DateTimeOffset.Now;
             // получаем репутации пользователя
             var userReputation = await _reputationService.GetUserReputation(user.Id);
             // получаем среднее значение репутаций пользователя

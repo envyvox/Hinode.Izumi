@@ -28,21 +28,18 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands
         private readonly IDiscordEmbedService _discordEmbedService;
         private readonly IEmoteService _emoteService;
         private readonly ICooldownService _cooldownService;
-        private readonly TimeZoneInfo _timeZoneInfo;
         private readonly IInventoryService _inventoryService;
         private readonly IStatisticService _statisticService;
         private readonly IAchievementService _achievementService;
         private readonly IPropertyService _propertyService;
 
         public BetCommand(IDiscordEmbedService discordEmbedService, IEmoteService emoteService,
-            ICooldownService cooldownService, TimeZoneInfo timeZoneInfo, IInventoryService inventoryService,
-            IStatisticService statisticService, IAchievementService achievementService,
-            IPropertyService propertyService)
+            ICooldownService cooldownService, IInventoryService inventoryService, IStatisticService statisticService,
+            IAchievementService achievementService, IPropertyService propertyService)
         {
             _discordEmbedService = discordEmbedService;
             _emoteService = emoteService;
             _cooldownService = cooldownService;
-            _timeZoneInfo = timeZoneInfo;
             _inventoryService = inventoryService;
             _statisticService = statisticService;
             _achievementService = achievementService;
@@ -53,7 +50,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands
         public async Task BetTask(long amount = 0)
         {
             // получаем текущее время
-            var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, _timeZoneInfo);
+            var timeNow = DateTimeOffset.Now;
             // получаем иконки из базы
             var emotes = await _emoteService.GetEmotes();
             // получаем кулдаун на ставку пользователя

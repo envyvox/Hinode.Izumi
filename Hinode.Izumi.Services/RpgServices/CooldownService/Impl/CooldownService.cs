@@ -36,7 +36,7 @@ namespace Hinode.Izumi.Services.RpgServices.CooldownService.Impl
                     new {userId}))
             .ToDictionary(x => x.Cooldown);
 
-        public async Task AddCooldownToUser(long userId, Cooldown cooldown, DateTime expiration) =>
+        public async Task AddCooldownToUser(long userId, Cooldown cooldown, DateTimeOffset expiration) =>
             await _con.GetConnection()
                 .ExecuteAsync(@"
                     insert into user_cooldowns(user_id, cooldown, expiration)

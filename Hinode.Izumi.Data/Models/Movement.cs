@@ -27,7 +27,7 @@ namespace Hinode.Izumi.Data.Models
         /// <summary>
         /// Дата прибытия пользователя.
         /// </summary>
-        public DateTime Arrival { get; set; }
+        public DateTimeOffset Arrival { get; set; }
 
         /// <summary>
         /// Пользователь.

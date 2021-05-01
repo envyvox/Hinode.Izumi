@@ -36,12 +36,11 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ContractCommands.ContractA
         private readonly IUserService _userService;
         private readonly ILocalizationService _local;
         private readonly ICalculationService _calc;
-        private readonly TimeZoneInfo _timeZoneInfo;
 
         public ContractAcceptCommand(IDiscordEmbedService discordEmbedService, IEmoteService emoteService,
             ILocationService locationService, IReputationService reputationService, IImageService imageService,
             IContractService contractService, IUserService userService, ILocalizationService local,
-            ICalculationService calc, TimeZoneInfo timeZoneInfo)
+            ICalculationService calc)
         {
             _discordEmbedService = discordEmbedService;
             _emoteService = emoteService;
@@ -52,7 +51,6 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ContractCommands.ContractA
             _userService = userService;
             _local = local;
             _calc = calc;
-            _timeZoneInfo = timeZoneInfo;
         }
 
         public async Task Execute(SocketCommandContext context, long contractId)
@@ -73,7 +71,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ContractCommands.ContractA
                 // получаем иконки из базы
                 var emotes = await _emoteService.GetEmotes();
                 // получаем текущее время
-                var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, _timeZoneInfo);
+                var timeNow = DateTimeOffset.Now;
                 // получаем репутацию в этой локации
                 var reputationType = _reputationService.GetReputationByLocation(userLocation);
                 // получаем пользователя из базы

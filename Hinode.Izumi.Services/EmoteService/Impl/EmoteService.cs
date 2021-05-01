@@ -18,15 +18,12 @@ namespace Hinode.Izumi.Services.EmoteService.Impl
         private readonly IConnectionManager _con;
         private readonly IMemoryCache _cache;
         private readonly IDiscordClientService _discordClientService;
-        private readonly TimeZoneInfo _timeZoneInfo;
 
-        public EmoteService(IConnectionManager con, IMemoryCache cache, IDiscordClientService discordClientService,
-            TimeZoneInfo timeZoneInfo)
+        public EmoteService(IConnectionManager con, IMemoryCache cache, IDiscordClientService discordClientService)
         {
             _con = con;
             _cache = cache;
             _discordClientService = discordClientService;
-            _timeZoneInfo = timeZoneInfo;
         }
 
         public async Task<Dictionary<string, EmoteModel>> GetEmotes()
@@ -50,7 +47,7 @@ namespace Hinode.Izumi.Services.EmoteService.Impl
         public async Task UploadEmotes()
         {
             // получаем текущее время
-            var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, _timeZoneInfo);
+            var timeNow = DateTimeOffset.Now;
             // получаем клиент
             var socketClient = await _discordClientService.GetSocketClient();
             // создаем списки в которые будет добавлять информацию о иконках
@@ -91,7 +88,7 @@ namespace Hinode.Izumi.Services.EmoteService.Impl
         /// Удаляет все иконки, дата обновления которых меньше указанной даты.
         /// </summary>
         /// <param name="dateTime"></param>
-        private async Task DeleteEmotes(DateTime dateTime)
+        private async Task DeleteEmotes(DateTimeOffset dateTime)
         {
             // удаляем иконки из базы
             await _con

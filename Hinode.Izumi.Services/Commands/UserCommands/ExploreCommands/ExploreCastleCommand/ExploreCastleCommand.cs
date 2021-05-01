@@ -36,15 +36,14 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ExploreCommands.ExploreCas
         private readonly ILocationService _locationService;
         private readonly IUserService _userService;
         private readonly IPropertyService _propertyService;
-        private readonly TimeZoneInfo _timeZoneInfo;
         private readonly ILocalizationService _local;
         private readonly IImageService _imageService;
         private readonly IGatheringService _gatheringService;
 
         public ExploreCastleCommand(IDiscordEmbedService discordEmbedService, IEmoteService emoteService,
             IMasteryService masteryService, ICalculationService calc, ILocationService locationService,
-            IUserService userService, IPropertyService propertyService, TimeZoneInfo timeZoneInfo,
-            ILocalizationService local, IImageService imageService, IGatheringService gatheringService)
+            IUserService userService, IPropertyService propertyService, ILocalizationService local,
+            IImageService imageService, IGatheringService gatheringService)
         {
             _discordEmbedService = discordEmbedService;
             _emoteService = emoteService;
@@ -53,7 +52,6 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ExploreCommands.ExploreCas
             _locationService = locationService;
             _userService = userService;
             _propertyService = propertyService;
-            _timeZoneInfo = timeZoneInfo;
             _local = local;
             _imageService = imageService;
             _gatheringService = gatheringService;
@@ -64,7 +62,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ExploreCommands.ExploreCas
             // получаем иконки из базы
             var emotes = await _emoteService.GetEmotes();
             // получаем текущее время
-            var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, _timeZoneInfo);
+            var timeNow = DateTimeOffset.Now;
             // получаем пользователя из базы
             var user = await _userService.GetUser((long) context.User.Id);
             // получаем мастерство сбора пользователя

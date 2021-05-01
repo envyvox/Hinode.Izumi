@@ -48,7 +48,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
             // получаем все иконки из базы
             var emotes = await _emoteService.GetEmotes();
             // получаем текущее время
-            var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, _timeZoneInfo);
+            var timeNow = TimeZoneInfo.ConvertTime(DateTimeOffset.Now, _timeZoneInfo);
             // получаем текущее время суток
             var timesDay = _timeService.GetCurrentTimesDay();
             // получаем погоду сегодня

@@ -29,6 +29,6 @@ namespace Hinode.Izumi.Services.RpgServices.CooldownService
         /// <param name="userId">Id пользователя.</param>
         /// <param name="cooldown">Кулдаун.</param>
         /// <param name="expiration">Дата окончания кулдауна.</param>
-        Task AddCooldownToUser(long userId, Cooldown cooldown, DateTime expiration);
+        Task AddCooldownToUser(long userId, Cooldown cooldown, DateTimeOffset expiration);
     }
 }

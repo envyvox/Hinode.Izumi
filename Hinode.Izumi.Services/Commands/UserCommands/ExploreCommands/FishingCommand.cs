@@ -37,13 +37,12 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ExploreCommands
         private readonly IUserService _userService;
         private readonly ICalculationService _calc;
         private readonly IPropertyService _propertyService;
-        private readonly TimeZoneInfo _timeZoneInfo;
         private readonly IBuildingService _buildingService;
 
         public FishingCommand(IDiscordEmbedService discordEmbedService, IEmoteService emoteService,
             ILocationService locationService, IMasteryService masteryService, IImageService imageService,
             IUserService userService, ICalculationService calc, IPropertyService propertyService,
-            TimeZoneInfo timeZoneInfo, IBuildingService buildingService)
+            IBuildingService buildingService)
         {
             _discordEmbedService = discordEmbedService;
             _emoteService = emoteService;
@@ -53,7 +52,6 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ExploreCommands
             _userService = userService;
             _calc = calc;
             _propertyService = propertyService;
-            _timeZoneInfo = timeZoneInfo;
             _buildingService = buildingService;
         }
 
@@ -63,7 +61,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ExploreCommands
             // получаем иконки из базы
             var emotes = await _emoteService.GetEmotes();
             // получаем текущее время
-            var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, _timeZoneInfo);
+            var timeNow = DateTimeOffset.Now;
             // получаем пользователя из базы
             var user = await _userService.GetUser((long) Context.User.Id);
             // получаем мастерство рыбалки пользователя
