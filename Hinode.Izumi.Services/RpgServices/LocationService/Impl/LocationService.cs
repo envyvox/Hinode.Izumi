@@ -108,7 +108,7 @@ namespace Hinode.Izumi.Services.RpgServices.LocationService.Impl
             // обновляем текущую локацию пользователя
             await UpdateUserLocation(userId, Location.InTransit);
             // добавляем информацию о перемещении
-            await AddUserMovement(userId, departure, departure, arrival);
+            await AddUserMovement(userId, departure, destination, arrival);
 
             // если локация прибытия не подлокация
             if (!destination.SubLocation())
