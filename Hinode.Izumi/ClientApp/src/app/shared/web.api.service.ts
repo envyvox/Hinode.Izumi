@@ -7784,6 +7784,7 @@ export enum LocalizationCategory {
     Currency = 10,
     Bar = 11,
     Box = 12,
+    Points = 13,
 }
 
 export class MasteryPropertyWebModel extends EntityBaseModel implements IMasteryPropertyWebModel {

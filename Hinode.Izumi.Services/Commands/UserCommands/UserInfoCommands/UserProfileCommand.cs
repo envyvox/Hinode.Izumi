@@ -105,6 +105,8 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
             var registrationDate = user.CreatedAt.ToString("dd MMMM yyyy", new CultureInfo("ru-ru"));
             // заполняем количество дней в игровом мире
             var daysInGame = (timeNow - user.CreatedAt).TotalDays.Days().Humanize(1, new CultureInfo("ru-RU"));
+            // получаем позицию пользователя в рейтинге очков приключений
+            var userWr = await _userService.GetUserWithRowNumber(user.Id);
 
             // заполняем строку о текущей локации в зависимости от того, чем пользователь сейчас заниматся
             string locationString;
@@ -157,6 +159,11 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
                 .AddField(IzumiReplyMessage.UserProfileBirthdayFieldName.Parse(),
                     IzumiReplyMessage.UserProfileBirthdayFieldDescNull.Parse(
                         emotes.GetEmoteOrBlank("Blank")), true)
+                // рейтинг
+                .AddField(IzumiReplyMessage.UserProfileRatingFieldName.Parse(),
+                    IzumiReplyMessage.UserProfileRatingFieldDesc.Parse(
+                        _calc.RowNumberEmote(emotes, userWr.RowNumber), userWr.RowNumber,
+                        userWr.Points, _local.Localize("AdventurePoints", userWr.Points)))
                 // энергия пользователя
                 .AddField(IzumiReplyMessage.UserProfileEnergyFieldName.Parse(),
                     $"{await _calc.DisplayProgressBar(user.Energy)} {emotes.GetEmoteOrBlank("Energy")} {user.Energy} {_local.Localize("Energy", user.Energy)}")

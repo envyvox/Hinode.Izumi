@@ -486,7 +486,12 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         OpenBoxOutOfLimit,
         InventoryBoxCommand,
         AdmGiveDesc,
-        AdmGivePmDesc
+        AdmGivePmDesc,
+        PointsTopDesc,
+        PointsTopFieldName,
+        PointsTopFooter,
+        UserProfileRatingFieldName,
+        UserProfileRatingFieldDesc
     }
 
     public static class IzumiReplyMessageHelper
@@ -1953,6 +1958,21 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.AdmGivePmDesc =>
                 "С небес спустилось неизвестное божество и оставило для вас {0} {1} {2}, вот это чудеса.",
+
+            IzumiReplyMessage.PointsTopDesc =>
+                "Ваша позиция: {0} `{1}`.\nВ этом месяце вы получили {2} {3}.",
+
+            IzumiReplyMessage.PointsTopFieldName =>
+                "Самые активные любители приключений",
+
+            IzumiReplyMessage.PointsTopFooter =>
+                "Очки приключений сбрасываются первого числа каждого месяца.",
+
+            IzumiReplyMessage.UserProfileRatingFieldName =>
+                "Рейтинг",
+
+            IzumiReplyMessage.UserProfileRatingFieldDesc =>
+                "Позиция: {0} `{1}`\nВ этом месяце получено {2} {3}",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };

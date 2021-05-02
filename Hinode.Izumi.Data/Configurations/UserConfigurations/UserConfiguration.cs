@@ -17,6 +17,7 @@ namespace Hinode.Izumi.Data.Configurations.UserConfigurations
             b.Property(x => x.Gender).IsRequired().HasDefaultValue(Gender.None);
             b.Property(x => x.Location).IsRequired().HasDefaultValue(Location.Capital);
             b.Property(x => x.Energy).IsRequired().HasDefaultValue(100);
+            b.Property(x => x.Points).IsRequired().HasDefaultValue(0);
 
             base.Configure(b);
         }

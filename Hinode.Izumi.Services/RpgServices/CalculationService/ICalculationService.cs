@@ -1,7 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.PropertyEnums;
 using Hinode.Izumi.Data.Enums.RarityEnums;
+using Hinode.Izumi.Services.EmoteService.Models;
 
 namespace Hinode.Izumi.Services.RpgServices.CalculationService
 {
@@ -31,5 +33,6 @@ namespace Hinode.Izumi.Services.RpgServices.CalculationService
         Task<long> AlcoholAmountAfterMasteryProcs(long alcoholId, long userCraftingMastery, long amount);
         Task<long> DrinkAmountAfterMasteryProcs(long drinkId, long userCraftingMastery, long amount);
         Task<long> FoodEnergyRecharge(long costPrice, long cookingPrice);
+        string RowNumberEmote(Dictionary<string, EmoteModel> emotes, long userRowNumber);
     }
 }

@@ -34,5 +34,10 @@ namespace Hinode.Izumi.Services.RpgServices.UserService.Models
         /// Количество энергии у пользователя.
         /// </summary>
         public int Energy { get; set; }
+
+        /// <summary>
+        /// Количество очков приключений.
+        /// </summary>
+        public long Points { get; set; }
     }
 }
