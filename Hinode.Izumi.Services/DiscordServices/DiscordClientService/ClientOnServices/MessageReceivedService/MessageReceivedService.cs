@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using Hangfire;
 using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.AchievementEnums;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Framework.Autofac;
+using Hinode.Izumi.Services.BackgroundJobs.MessageJob;
 using Hinode.Izumi.Services.DiscordServices.DiscordGuildService;
 using Hinode.Izumi.Services.RpgServices.AchievementService;
 using Hinode.Izumi.Services.RpgServices.StatisticService;
@@ -60,6 +63,34 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
                 !socketMessage.Content.Contains("http") &&
                 channelsToRemoveMessages.Contains(socketMessage.Channel.Id))
                 await DeleteMessage(socketMessage);
+
+            // проверяем нужно ли удалить сообщение в общем чате
+            if (socketMessage.Channel.Id == (ulong) channels[DiscordChannel.Chat].Id)
+            {
+                // проверяем есть ли у пользователя нитро буст
+                var hasNitroRole = await _discordGuildService.CheckRoleInUser(
+                    (long) socketMessage.Author.Id, DiscordRole.Nitro);
+                // проверяем есть ли у пользователя роль модератора
+                var hasModeratorRole = await _discordGuildService.CheckRoleInUser(
+                    (long) socketMessage.Author.Id, DiscordRole.Moderator);
+                // проверяем есть ли у пользователя роль ивент-менеджера
+                var hasEventManagerRole = await _discordGuildService.CheckRoleInUser(
+                    (long) socketMessage.Author.Id, DiscordRole.EventManager);
+                // проверяем есть ли у пользователя роль администратора
+                var hasAdministrationRole = await _discordGuildService.CheckRoleInUser(
+                    (long) socketMessage.Author.Id, DiscordRole.Administration);
+                var hasStaffRole = hasModeratorRole || hasEventManagerRole || hasAdministrationRole;
+                // если сообщение имеет вложение или ссылку
+                if ((socketMessage.Attachments.Count > 0 || socketMessage.Content.Contains("http")) &&
+                    // и пользователь не имеет роли нитро-буста или стафа
+                    !(hasNitroRole || hasStaffRole))
+                {
+                    // удаляем сообщение через 5 минут
+                    BackgroundJob.Schedule<IMessageJob>(
+                        x => x.Delete((long) socketMessage.Channel.Id, (long) socketMessage.Id),
+                        TimeSpan.FromMinutes(5));
+                }
+            }
 
             // проверяем нужно ли добавить реакции голосования
             if (channelsToAddVotes.Contains(socketMessage.Channel.Id))
