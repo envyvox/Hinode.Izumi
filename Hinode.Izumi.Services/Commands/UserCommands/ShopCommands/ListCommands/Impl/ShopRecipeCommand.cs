@@ -95,10 +95,14 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ShopCommands.ListCommands.
                     // получаем себестоимость блюда
                     await _ingredientService.GetFoodCostPrice(food.Id));
 
-                displayString += IzumiReplyMessage.ShopRecipeFieldDesc.Parse(
+                var info = IzumiReplyMessage.ShopRecipeFieldDesc.Parse(
                     food.Id, _emotes.GetEmoteOrBlank("Recipe"), _local.Localize(food.Name),
                     _emotes.GetEmoteOrBlank(Currency.Ien.ToString()), recipeCost,
                     _local.Localize(Currency.Ien.ToString(), recipeCost));
+
+                if (displayString.Length + info.Length > 1024) continue;
+
+                displayString += info;
             }
 
             return displayString;
