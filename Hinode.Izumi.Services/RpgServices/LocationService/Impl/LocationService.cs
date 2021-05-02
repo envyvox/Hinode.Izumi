@@ -108,16 +108,11 @@ namespace Hinode.Izumi.Services.RpgServices.LocationService.Impl
             // обновляем текущую локацию пользователя
             await UpdateUserLocation(userId, Location.InTransit);
             // добавляем информацию о перемещении
-            await AddUserMovement(userId, departure, departure, arrival);
-
-            // если локация прибытия не подлокация
-            if (!destination.SubLocation())
-            {
-                // снимаем роль текущей локации
-                await _discordGuildService.ToggleRoleInUser(userId, GetLocationRole(departure), false);
-                // добавляем роль перемещения
-                await _discordGuildService.ToggleRoleInUser(userId, DiscordRole.LocationInTransit, true);
-            }
+            await AddUserMovement(userId, departure, destination, arrival);
+            // снимаем роль текущей локации
+            await _discordGuildService.ToggleRoleInUser(userId, GetLocationRole(departure), false);
+            // добавляем роль перемещения
+            await _discordGuildService.ToggleRoleInUser(userId, DiscordRole.LocationInTransit, true);
 
             // добавляем джобу окончания перемещения
             BackgroundJob.Schedule<ITransitJob>(x =>
@@ -135,7 +130,8 @@ namespace Hinode.Izumi.Services.RpgServices.LocationService.Impl
                     where id = @userId",
                     new {userId, location});
 
-        public async Task AddUserMovement(long userId, Location departure, Location destination, DateTimeOffset arrival) =>
+        public async Task AddUserMovement(long userId, Location departure, Location destination,
+            DateTimeOffset arrival) =>
             await _con.GetConnection()
                 .ExecuteAsync(@"
                     insert into movements(user_id, departure, destination, arrival)
@@ -159,6 +155,9 @@ namespace Hinode.Izumi.Services.RpgServices.LocationService.Impl
             Location.Seaport => DiscordRole.LocationSeaport,
             Location.Castle => DiscordRole.LocationCastle,
             Location.Village => DiscordRole.LocationVillage,
+            Location.CapitalCasino => DiscordRole.LocationCapital,
+            Location.CapitalMarket => DiscordRole.LocationCapital,
+            Location.CapitalShop => DiscordRole.LocationCapital,
             _ => throw new ArgumentOutOfRangeException(nameof(location), location, null)
         };
     }
