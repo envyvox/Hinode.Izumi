@@ -135,7 +135,8 @@ namespace Hinode.Izumi.Services.RpgServices.CalculationService.Impl
                 {0, time + time * 50 / 100},
                 {10, time + time * 25 / 100},
                 {40, time},
-                {70, time - time * 25 / 100}
+                {70, time - time * 25 / 100},
+                {85, time - time * 50 / 100}
             }, energy);
 
         public async Task<long> GatheringTime(long userGatheringMastery) =>
