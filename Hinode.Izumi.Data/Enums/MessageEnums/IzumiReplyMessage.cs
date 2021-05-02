@@ -484,7 +484,9 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         OpenBoxDesc,
         OpenBoxFieldName,
         OpenBoxOutOfLimit,
-        InventoryBoxCommand
+        InventoryBoxCommand,
+        AdmGiveDesc,
+        AdmGivePmDesc
     }
 
     public static class IzumiReplyMessageHelper
@@ -1945,6 +1947,12 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.InventoryBoxCommand =>
                 "\nВы можете `!открыть [количество] [название]`",
+
+            IzumiReplyMessage.AdmGiveDesc =>
+                "Вы успешно выдали {0} {1} **{2}** {3} {4} {5}.",
+
+            IzumiReplyMessage.AdmGivePmDesc =>
+                "С небес спустилось неизвестное божество и оставило для вас {0} {1} {2}, вот это чудеса.",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };
