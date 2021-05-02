@@ -1170,7 +1170,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Временные эффекты можно получить если `!съесть [название]` еду, а постоянные лишь активировав особые {0} карточки.",
 
             IzumiReplyMessage.EatFoodSuccess =>
-                "Вы съели {0} {1} и получили {2} {3} {4}.",
+                "Вы съели {0} {1} {2} и получили {3} {4} {5}.",
 
             IzumiReplyMessage.EatFoodWrongAmount =>
                 "У вас нет в наличии {0} {1}.",
