@@ -16,6 +16,7 @@ using Hinode.Izumi.Services.BackgroundJobs.EnergyJob;
 using Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob;
 using Hinode.Izumi.Services.BackgroundJobs.MarketJob;
 using Hinode.Izumi.Services.BackgroundJobs.NewDayJob;
+using Hinode.Izumi.Services.BackgroundJobs.PointsJob;
 using Hinode.Izumi.Services.BackgroundJobs.SeasonJob;
 using Hinode.Izumi.Services.BackgroundJobs.ShopJob;
 using Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnServices.GuildMemberUpdatedService;
@@ -138,15 +139,20 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.Impl
             {
                 // джобы с определенным кроном
                 RecurringJob.AddOrUpdate<IEmoteJob>(
-                    x => x.UploadEmotes(), "0/5 * * * *", _timeZoneInfo);
+                    x => x.UploadEmotes(),
+                    "0/5 * * * *", _timeZoneInfo);
                 RecurringJob.AddOrUpdate<ICasinoJob>(
-                    x => x.Open(), "0 18 * * *", _timeZoneInfo);
+                    x => x.Open(),
+                    "0 18 * * *", _timeZoneInfo);
                 RecurringJob.AddOrUpdate<ICasinoJob>(
-                    x => x.Close(), "0 6 * * *", _timeZoneInfo);
+                    x => x.Close(),
+                    "0 6 * * *", _timeZoneInfo);
                 RecurringJob.AddOrUpdate<IBossJob>(
-                    x => x.Anons(), "30 19 * * *", _timeZoneInfo);
+                    x => x.Anons(),
+                    "30 19 * * *", _timeZoneInfo);
                 RecurringJob.AddOrUpdate<IEnergyJob>(
-                    x => x.HourlyRecovery(), Cron.Hourly, _timeZoneInfo);
+                    x => x.HourlyRecovery(),
+                    Cron.Hourly, _timeZoneInfo);
 
                 // смена сезонов
                 RecurringJob.AddOrUpdate<ISeasonJob>(
@@ -179,13 +185,22 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.Impl
 
                 // ежедневные джобы
                 RecurringJob.AddOrUpdate<INewDayJob>(
-                    x => x.StartNewDay(), Cron.Daily, _timeZoneInfo);
+                    x => x.StartNewDay(),
+                    Cron.Daily, _timeZoneInfo);
                 RecurringJob.AddOrUpdate<IMarketJob>(
-                    x => x.DailyMarketReset(), Cron.Daily, _timeZoneInfo);
+                    x => x.DailyMarketReset(),
+                    Cron.Daily, _timeZoneInfo);
                 RecurringJob.AddOrUpdate<IShopJob>(
-                    x => x.UpdateBannersInDynamicShop(), Cron.Daily, _timeZoneInfo);
+                    x => x.UpdateBannersInDynamicShop(),
+                    Cron.Daily, _timeZoneInfo);
                 RecurringJob.AddOrUpdate<ICurrencyJob>(
-                    x => x.DailyIncome(), Cron.Daily, _timeZoneInfo);
+                    x => x.DailyIncome(),
+                    Cron.Daily, _timeZoneInfo);
+
+                // ежемесячные джобы
+                RecurringJob.AddOrUpdate<IPointsJob>(
+                    x => x.ResetAdventurePoints(),
+                    Cron.Monthly, _timeZoneInfo);
 
                 _logger.LogInformation("Bot started");
             }
