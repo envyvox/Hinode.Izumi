@@ -109,8 +109,10 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.FieldCommands.FieldWaterCo
                     // получаем текущее время
                     var timeNow = DateTimeOffset.Now;
                     // определяем длительность поливки участка
-                    var wateringTime = _calc.ActionTime(
-                        await _propertyService.GetPropertyValue(Property.ActionTimeFieldWater), user.Energy);
+                    var wateringTime =
+                        _calc.ActionTime(
+                            await _propertyService.GetPropertyValue(Property.ActionTimeFieldWater), user.Energy) *
+                        fieldToWater;
 
                     // обновляем текущую локацию пользователя
                     await _locationService.UpdateUserLocation((long) context.User.Id, Location.FieldWatering);
