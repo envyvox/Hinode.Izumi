@@ -87,11 +87,22 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.TransitCommands
                 var transit = await _locationService.GetTransit(user.Location, destination);
                 // получаем мастерство торговли пользователя
                 var userMastery = await _masteryService.GetUserMastery((long) Context.User.Id, Mastery.Trading);
+                // округляем мастерство пользователя
+                var userRoundedMastery = (long) Math.Round(userMastery.Amount);
                 // определяем стоимость перемещения
-                var transitCost = userMastery.Amount > 50
-                    ? await _calc.TransitCostWithDiscount(
-                        (long) Math.Floor(userMastery.Amount), transit.Price)
-                    : transit.Price;
+                var transitCost =
+                    transit.Price > 0
+                        ? userRoundedMastery > 50
+                            ? await _calc.TransitCostWithDiscount(userRoundedMastery, transit.Price)
+                            : transit.Price
+                        : 0;
+                // заполняем строку стоимости перемещения в зависимости от его стоимости
+                var transitCostString =
+                    transit.Price > 0
+                        ? userRoundedMastery > 50
+                            ? $"{emotes.GetEmoteOrBlank(Currency.Ien.ToString())} ~~{transit.Price}~~ {transitCost} {_local.Localize(Currency.Ien.ToString(), transitCost)}"
+                            : $"{emotes.GetEmoteOrBlank(Currency.Ien.ToString())} {transitCost} {_local.Localize(Currency.Ien.ToString(), transitCost)}"
+                        : $"{emotes.GetEmoteOrBlank(Currency.Ien.ToString())} бесплатно";
                 // получаем валюту пользователя
                 var userCurrency = await _inventoryService.GetUserCurrency((long) Context.User.Id, Currency.Ien);
 
@@ -130,7 +141,10 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.TransitCommands
                             $"\n{emotes.GetEmoteOrBlank("Blank")}")
                         // длительность
                         .AddField(IzumiReplyMessage.TimeFieldName.Parse(),
-                            transitTime.Minutes().Humanize(2, new CultureInfo("ru-RU")), true);
+                            transitTime.Minutes().Humanize(2, new CultureInfo("ru-RU")), true)
+                        // стоимость перемещения
+                        .AddField(IzumiReplyMessage.TransitCostFieldName.Parse(),
+                            transitCostString, true);
 
                     // если перемещение было не в подлокацию
                     if (!destination.SubLocation())
@@ -142,10 +156,6 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.TransitCommands
                         // забираем у пользователя энергию за перемещение
                         await _userService.RemoveEnergyFromUser((long) Context.User.Id,
                             await _propertyService.GetPropertyValue(Property.EnergyCostTransit));
-                        // добавляем embed field с информацией об оплате
-                        embed.AddField(IzumiReplyMessage.TransitCostFieldName.Parse(),
-                            $"{emotes.GetEmoteOrBlank(Currency.Ien.ToString())} {transitCost} {_local.Localize(Currency.Ien.ToString(), transitCost)}",
-                            true);
                     }
 
                     await _discordEmbedService.SendEmbed(Context.User, embed);

@@ -54,6 +54,12 @@ namespace Hinode.Izumi.Services.BackgroundJobs.TransitJob
             await _locationService.UpdateUserLocation(userId, destination);
             // удаляем информацию о перемещении
             await _locationService.RemoveUserMovement(userId);
+            // снимаем с пользователя роль "в пути" в дискорде
+            await _discordGuildService.ToggleRoleInUser(userId, DiscordRole.LocationInTransit, false);
+            // добавляем пользователю роль новой локации в дискорде
+            await _discordGuildService.ToggleRoleInUser(userId,
+                // определяем роль дискорда по локации
+                _locationService.GetLocationRole(destination), true);
 
             var embed = new EmbedBuilder()
                 // баннер перемещения
@@ -67,12 +73,6 @@ namespace Hinode.Izumi.Services.BackgroundJobs.TransitJob
             // если перемещение было не в подлокацию
             if (!destination.SubLocation())
             {
-                // снимаем с пользователя роль "в пути" в дискорде
-                await _discordGuildService.ToggleRoleInUser(userId, DiscordRole.LocationInTransit, false);
-                // добавляем пользователю роль новой локации в дискорде
-                await _discordGuildService.ToggleRoleInUser(userId,
-                    // определяем роль дискорда по локации
-                    _locationService.GetLocationRole(destination), true);
                 // добавляем пользователю статистику перемещений
                 await _statisticService.AddStatisticToUser(userId, Statistic.Transit);
                 // проверяем выполнил ли пользователь достижение
