@@ -15,6 +15,13 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService
         Task<AchievementModel> GetAchievement(long id);
 
         /// <summary>
+        /// Возвращает достижение.
+        /// </summary>
+        /// <param name="type">Достижение.</param>
+        /// <returns>Достижение.</returns>
+        Task<AchievementModel> GetAchievement(Achievement type);
+
+        /// <summary>
         /// Возвращает массив достижений пользователя.
         /// </summary>
         /// <param name="userId">Id пользователя.</param>
@@ -26,15 +33,15 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService
         /// Проверяет нужно ли выполнить достижение пользователю.
         /// </summary>
         /// <param name="userId">Id пользователя.</param>
-        /// <param name="achievement">Достижение.</param>
-        Task CheckAchievement(long userId, Achievement achievement);
+        /// <param name="type">Достижение.</param>
+        Task CheckAchievement(long userId, Achievement type);
 
         /// <summary>
         /// Проверяет нужно ли выполнить достижение у массива пользователей.
         /// </summary>
         /// <param name="usersId">Массив id пользователей.</param>
-        /// <param name="achievement">Достижение.</param>
-        Task CheckAchievement(IEnumerable<long> usersId, Achievement achievement);
+        /// <param name="type">Достижение.</param>
+        Task CheckAchievement(IEnumerable<long> usersId, Achievement type);
 
         /// <summary>
         /// Проверяет нужно ли выполнить массив достижений пользователю.

@@ -59,7 +59,8 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
         private readonly IGatheringService _gatheringService;
         private readonly ICraftingService _craftingService;
 
-        private const string AchievementKey = "achievement_{0}";
+        private const string AchievementIdKey = "achievement_id_{0}";
+        private const string AchievementTypeKey = "achievement_type_{0}";
         private const string UserAchievementKey = "user_{0}_achievement_{1}";
 
         public AchievementService(IConnectionManager con, IMemoryCache cache, IDiscordEmbedService discordEmbedService,
@@ -92,7 +93,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
         public async Task<AchievementModel> GetAchievement(long id)
         {
             // проверяем достижение в кэше
-            if (_cache.TryGetValue(string.Format(AchievementKey, id), out AchievementModel achievement))
+            if (_cache.TryGetValue(string.Format(AchievementIdKey, id), out AchievementModel achievement))
                 return achievement;
 
             // получаем достижение из базы
@@ -103,7 +104,26 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     new {id});
 
             // добавляем достижение в кэш
-            _cache.Set(string.Format(AchievementKey, id), achievement, CacheExtensions.DefaultCacheOptions);
+            _cache.Set(string.Format(AchievementIdKey, id), achievement, CacheExtensions.DefaultCacheOptions);
+
+            // возвращаем достижение
+            return achievement;
+        }
+
+        public async Task<AchievementModel> GetAchievement(Achievement type)
+        {
+            if (_cache.TryGetValue(string.Format(AchievementTypeKey, type), out AchievementModel achievement))
+                return achievement;
+
+            // получаем достижение из базы
+            achievement = await _con.GetConnection()
+                .QueryFirstOrDefaultAsync<AchievementModel>(@"
+                    select * from achievements
+                    where type = @type",
+                    new {type});
+
+            // добавляем достижение в кэш
+            _cache.Set(string.Format(AchievementTypeKey, type), achievement, CacheExtensions.DefaultCacheOptions);
 
             // возвращаем достижение
             return achievement;
@@ -120,10 +140,12 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     new {userId, category}))
             .ToArray();
 
-        public async Task CheckAchievement(long userId, Achievement achievement)
+        public async Task CheckAchievement(long userId, Achievement type)
         {
+            // получаем достижение
+            var achievement = await GetAchievement(type);
             // проверяем есть ли у пользователя это достижение
-            var hasAchievement = await CheckAchievementInUser(userId, achievement.GetHashCode());
+            var hasAchievement = await CheckAchievementInUser(userId, achievement.Id);
             // если есть - пропускаем
             if (hasAchievement) return;
 
@@ -133,7 +155,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
             int collectionLength;
 
             // для каждого достижения необходимо сделать свое действие
-            switch (achievement)
+            switch (achievement.Type)
             {
                 // достижения которые выполняются в один шаг
                 case Achievement.FirstMessage:
@@ -156,7 +178,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                 case Achievement.CatchKoi:
                 case Achievement.FirstCraftAlcohol:
 
-                    await AddAchievementToUser(userId, achievement.GetHashCode());
+                    await AddAchievementToUser(userId, achievement.Type);
 
                     break;
 
@@ -166,7 +188,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.Fishing);
 
                     if (userStatistic?.Amount >= 50)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Catch300Fish:
@@ -174,7 +196,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.Fishing);
 
                     if (userStatistic?.Amount >= 300)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Plant25Seed:
@@ -182,7 +204,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.SeedPlanted);
 
                     if (userStatistic?.Amount >= 25)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Plant150Seed:
@@ -190,7 +212,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.SeedPlanted);
 
                     if (userStatistic?.Amount >= 150)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Craft30Resource:
@@ -198,7 +220,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.CraftingResource);
 
                     if (userStatistic?.Amount >= 30)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Craft250Resource:
@@ -206,7 +228,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.CraftingResource);
 
                     if (userStatistic?.Amount >= 250)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Cook20Food:
@@ -214,7 +236,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.Cooking);
 
                     if (userStatistic?.Amount >= 20)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Cook130Food:
@@ -222,7 +244,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.Cooking);
 
                     if (userStatistic?.Amount >= 130)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Gather40Resources:
@@ -230,7 +252,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.Gathering);
 
                     if (userStatistic?.Amount >= 40)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Gather250Resources:
@@ -238,7 +260,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.Gathering);
 
                     if (userStatistic?.Amount >= 250)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Craft10Alcohol:
@@ -246,7 +268,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.CraftingAlcohol);
 
                     if (userStatistic?.Amount >= 10)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Craft80Alcohol:
@@ -254,7 +276,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.CraftingAlcohol);
 
                     if (userStatistic?.Amount >= 80)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Collect50Crop:
@@ -262,7 +284,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.CropHarvested);
 
                     if (userStatistic?.Amount >= 50)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Collect300Crop:
@@ -270,7 +292,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.CropHarvested);
 
                     if (userStatistic?.Amount >= 300)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Casino33Bet:
@@ -278,7 +300,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.CasinoBet);
 
                     if (userStatistic?.Amount >= 33)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Casino777Bet:
@@ -286,7 +308,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.CasinoBet);
 
                     if (userStatistic?.Amount >= 777)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Casino22LotteryBuy:
@@ -294,7 +316,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.CasinoLotteryBuy);
 
                     if (userStatistic?.Amount >= 22)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Casino99LotteryBuy:
@@ -302,7 +324,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.CasinoLotteryBuy);
 
                     if (userStatistic?.Amount >= 99)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Casino20LotteryGift:
@@ -310,7 +332,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.CasinoLotteryGift);
 
                     if (userStatistic?.Amount >= 20)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Market100Sell:
@@ -318,7 +340,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.MarketSell);
 
                     if (userStatistic?.Amount >= 100)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Market666Sell:
@@ -326,7 +348,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.MarketSell);
 
                     if (userStatistic?.Amount >= 666)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Market50Buy:
@@ -334,7 +356,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.MarketBuy);
 
                     if (userStatistic?.Amount >= 50)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Market333Buy:
@@ -342,7 +364,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.MarketBuy);
 
                     if (userStatistic?.Amount >= 333)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
 
@@ -352,7 +374,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Capital);
 
                     if (userReputation?.Amount >= 500)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach500ReputationSeaport:
@@ -360,7 +382,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Seaport);
 
                     if (userReputation?.Amount >= 500)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach500ReputationGarden:
@@ -368,7 +390,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Garden);
 
                     if (userReputation?.Amount >= 500)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach500ReputationCastle:
@@ -376,7 +398,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Castle);
 
                     if (userReputation?.Amount >= 500)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach500ReputationVillage:
@@ -384,7 +406,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Village);
 
                     if (userReputation?.Amount >= 500)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach1000ReputationCapital:
@@ -392,7 +414,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Capital);
 
                     if (userReputation?.Amount >= 1000)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach1000ReputationSeaport:
@@ -400,7 +422,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Seaport);
 
                     if (userReputation?.Amount >= 1000)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach1000ReputationGarden:
@@ -408,7 +430,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Garden);
 
                     if (userReputation?.Amount >= 1000)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach1000ReputationCastle:
@@ -416,7 +438,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Castle);
 
                     if (userReputation?.Amount >= 1000)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach1000ReputationVillage:
@@ -424,7 +446,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Village);
 
                     if (userReputation?.Amount >= 1000)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach2000ReputationCapital:
@@ -432,7 +454,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Capital);
 
                     if (userReputation?.Amount >= 2000)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach2000ReputationSeaport:
@@ -440,7 +462,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Seaport);
 
                     if (userReputation?.Amount >= 2000)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach2000ReputationGarden:
@@ -448,7 +470,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Garden);
 
                     if (userReputation?.Amount >= 2000)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach2000ReputationCastle:
@@ -456,7 +478,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Castle);
 
                     if (userReputation?.Amount >= 2000)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach2000ReputationVillage:
@@ -464,7 +486,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Village);
 
                     if (userReputation?.Amount >= 2000)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach5000ReputationCapital:
@@ -472,7 +494,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Capital);
 
                     if (userReputation?.Amount >= 5000)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach5000ReputationSeaport:
@@ -480,7 +502,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Seaport);
 
                     if (userReputation?.Amount >= 5000)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach5000ReputationGarden:
@@ -488,7 +510,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Garden);
 
                     if (userReputation?.Amount >= 5000)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach5000ReputationCastle:
@@ -496,7 +518,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Castle);
 
                     if (userReputation?.Amount >= 5000)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach5000ReputationVillage:
@@ -504,7 +526,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Village);
 
                     if (userReputation?.Amount >= 5000)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach10000ReputationCapital:
@@ -512,7 +534,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Capital);
 
                     if (userReputation?.Amount >= 10000)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach10000ReputationSeaport:
@@ -520,7 +542,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Seaport);
 
                     if (userReputation?.Amount >= 10000)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach10000ReputationGarden:
@@ -528,7 +550,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Garden);
 
                     if (userReputation?.Amount >= 10000)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach10000ReputationCastle:
@@ -536,7 +558,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Castle);
 
                     if (userReputation?.Amount >= 10000)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.Reach10000ReputationVillage:
@@ -544,7 +566,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userReputation = await _reputationService.GetUserReputation(userId, Reputation.Village);
 
                     if (userReputation?.Amount >= 10000)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
 
@@ -555,7 +577,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     collectionLength = (await _gatheringService.GetAllGatherings()).Length;
 
                     if (userCollection.Length >= collectionLength)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.CompleteCollectionCrafting:
@@ -564,7 +586,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     collectionLength = (await _craftingService.GetAllCraftings()).Length;
 
                     if (userCollection.Length >= collectionLength)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.CompleteCollectionAlcohol:
@@ -573,7 +595,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     collectionLength = (await _alcoholService.GetAllAlcohol()).Length;
 
                     if (userCollection.Length >= collectionLength)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.CompleteCollectionCrop:
@@ -582,7 +604,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     collectionLength = (await _cropService.GetAllCrops()).Length;
 
                     if (userCollection.Length >= collectionLength)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.CompleteCollectionFish:
@@ -591,7 +613,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     collectionLength = (await _fishService.GetAllFish()).Length;
 
                     if (userCollection.Length >= collectionLength)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
                 case Achievement.CompleteCollectionFood:
@@ -600,7 +622,7 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     collectionLength = (await _foodService.GetAllFood()).Length;
 
                     if (userCollection.Length >= collectionLength)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
 
@@ -610,12 +632,11 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     collectionLength = (await _drinkService.GetAllDrinks()).Length;
 
                     if (userCollection.Length >= collectionLength)
-                        await AddAchievementToUser(userId, achievement.GetHashCode());
+                        await AddAchievementToUser(userId, achievement.Type);
 
                     break;
-
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(achievement), achievement, null);
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -668,10 +689,10 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
             return hasAchievement;
         }
 
-        private async Task AddAchievementToUser(long userId, long achievementId)
+        private async Task AddAchievementToUser(long userId, Achievement type)
         {
             // получаем достижение
-            var achievement = await GetAchievement(achievementId);
+            var achievement = await GetAchievement(type);
 
             // добавляем пользователю достижение
             await _con
@@ -680,10 +701,10 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     insert into user_achievements(user_id, achievement_id)
                     values (@userId, @achievementId)
                     on conflict (user_id, achievement_id) do nothing",
-                    new {userId, achievementId});
+                    new {userId, achievementId = achievement.Id});
 
             // добавляем достижение пользователя в кэш
-            _cache.Set(string.Format(UserAchievementKey, userId, achievementId), true,
+            _cache.Set(string.Format(UserAchievementKey, userId, achievement.Id), true,
                 CacheExtensions.DefaultCacheOptions);
 
             // выдаем пользователю награду за выполнение достижения в зависимости от типа награды
