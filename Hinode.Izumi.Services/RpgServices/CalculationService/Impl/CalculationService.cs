@@ -355,7 +355,7 @@ namespace Hinode.Izumi.Services.RpgServices.CalculationService.Impl
         }
 
         public async Task<long> FoodEnergyRecharge(long costPrice, long cookingPrice) =>
-            (costPrice + cookingPrice) / await _propertyService.GetPropertyValue(Property.FoodEnergyPrice);
+            (costPrice + cookingPrice) / await _propertyService.GetPropertyValue(Property.FoodEnergyPrice) + 2;
 
         public string RowNumberEmote(Dictionary<string, EmoteModel> emotes, long userRowNumber) =>
             userRowNumber switch

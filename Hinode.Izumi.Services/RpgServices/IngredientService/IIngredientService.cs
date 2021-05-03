@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Services.RpgServices.IngredientService.Models;
 
 namespace Hinode.Izumi.Services.RpgServices.IngredientService
@@ -39,6 +41,13 @@ namespace Hinode.Izumi.Services.RpgServices.IngredientService
         /// <param name="projectId">Id чертежа.</param>
         /// <returns>Массив ингрендиентов для строительства.</returns>
         Task<ProjectIngredientModel[]> GetProjectIngredients(long projectId);
+
+        /// <summary>
+        /// Возвращает массив сезонов блюда.
+        /// </summary>
+        /// <param name="foodId">Id блюда.</param>
+        /// <returns>Массив сезонов.</returns>
+        Task<List<Season>> GetFoodSeasons(long foodId);
 
         /// <summary>
         /// Возвращает себестоимость изготавливаемого предмета.

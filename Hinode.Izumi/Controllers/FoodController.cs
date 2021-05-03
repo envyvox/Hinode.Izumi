@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Hinode.Izumi.Data.Enums;
+using Hinode.Izumi.Services.EmoteService;
+using Hinode.Izumi.Services.EmoteService.Impl;
 using Hinode.Izumi.Services.RpgServices.CalculationService;
 using Hinode.Izumi.Services.RpgServices.IngredientService;
 using Hinode.Izumi.Services.WebServices.FoodWebService;
@@ -17,19 +19,23 @@ namespace Hinode.Izumi.Controllers
         private readonly IFoodWebService _foodWebService;
         private readonly ICalculationService _calc;
         private readonly IIngredientService _ingredientService;
+        private readonly IEmoteService _emoteService;
 
         public FoodController(IFoodWebService foodWebService, ICalculationService calc,
-            IIngredientService ingredientService)
+            IIngredientService ingredientService, IEmoteService emoteService)
         {
             _foodWebService = foodWebService;
             _calc = calc;
             _ingredientService = ingredientService;
+            _emoteService = emoteService;
         }
 
         [HttpGet, Route("list")]
         [ProducesResponseType(typeof(IEnumerable<FoodWebModel>), StatusCodes.Status200OK)]
         public async Task<IActionResult> List()
         {
+            // получаем иконки из базы
+            var emotes = await _emoteService.GetEmotes();
             // получаем массив из всех блюд
             var foods = await _foodWebService.GetAllFood();
             // добавляем к каждому блюду его стоимости
@@ -47,6 +53,10 @@ namespace Hinode.Izumi.Controllers
                 food.RecipePrice = await _calc.FoodRecipePrice(food.CostPrice);
                 // считаем количество восстанавливаемой энергии
                 food.Energy = await _calc.FoodEnergyRecharge(food.CostPrice, food.CookingPrice);
+                // получаем сезоны блюда
+                food.Seasons = await _ingredientService.GetFoodSeasons(food.Id);
+                // получаем иконку блюда
+                food.EmoteId = emotes.GetEmoteIdOrBlank(food.Name);
             }
 
             // возвращаем дополненный массив из всех блюд
@@ -72,6 +82,8 @@ namespace Hinode.Izumi.Controllers
             food.RecipePrice = await _calc.FoodRecipePrice(food.CostPrice);
             // считаем количество восстанавливаемой энергии
             food.Energy = await _calc.FoodEnergyRecharge(food.CostPrice, food.CookingPrice);
+            // получаем сезоны блюда
+            food.Seasons = await _ingredientService.GetFoodSeasons(food.Id);
 
             // возвращаем блюдо
             return Ok(food);

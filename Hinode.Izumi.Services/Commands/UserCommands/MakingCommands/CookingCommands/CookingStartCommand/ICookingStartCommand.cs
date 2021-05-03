@@ -5,6 +5,6 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CookingComm
 {
     public interface ICookingStartCommand
     {
-        Task Execute(SocketCommandContext context, long foodId, long amount);
+        Task Execute(SocketCommandContext context, long amount, long foodId);
     }
 }

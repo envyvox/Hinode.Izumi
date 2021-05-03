@@ -1,4 +1,6 @@
-﻿using Hinode.Izumi.Services.Database;
+﻿using System.Collections.Generic;
+using Hinode.Izumi.Data.Enums;
+using Hinode.Izumi.Services.Database;
 
 namespace Hinode.Izumi.Services.WebServices.FoodWebService.Models
 {
@@ -7,6 +9,11 @@ namespace Hinode.Izumi.Services.WebServices.FoodWebService.Models
     /// </summary>
     public class FoodWebModel : EntityBaseModel
     {
+        /// <summary>
+        /// Id иконки.
+        /// </summary>
+        public string EmoteId { get; set; }
+
         /// <summary>
         /// Название блюда.
         /// </summary>
@@ -51,5 +58,20 @@ namespace Hinode.Izumi.Services.WebServices.FoodWebService.Models
         /// Стоимость рецепта.
         /// </summary>
         public long RecipePrice { get; set; }
+
+        /// <summary>
+        /// Продается ли рецепт этого блюда в магазине рецептов?
+        /// </summary>
+        public bool RecipeSellable { get; set; }
+
+        /// <summary>
+        /// Это особое блюдо события?
+        /// </summary>
+        public bool Event { get; set; }
+
+        /// <summary>
+        /// Сезоны блюда.
+        /// </summary>
+        public List<Season> Seasons { get; set; }
     }
 }

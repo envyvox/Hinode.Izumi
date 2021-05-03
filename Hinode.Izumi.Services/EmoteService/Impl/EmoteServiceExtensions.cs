@@ -25,5 +25,26 @@ namespace Hinode.Izumi.Services.EmoteService.Impl
                     // Если такой нет - вероятнее всего словарь пустой и нужно вернуть статичное значение
                     : "<:Blank:813150566695174204>";
         }
+
+        /// <summary>
+        /// Получает id иконки по названию.
+        /// В случае если иконки с таким названием в словаре нет - возвращает id иконки Blank.
+        /// </summary>
+        /// <param name="dictionary">Словарь иконок.</param>
+        /// <param name="key">Название иконки.</param>
+        /// <returns>Id иконки.</returns>
+        public static string GetEmoteIdOrBlank(this Dictionary<string, EmoteModel> dictionary, string key)
+        {
+            // Ищем в словаре нужную иконку
+            return dictionary.TryGetValue(key, out var value)
+                // Если такая есть - возвращаем ее id как строку
+                ? value.Id.ToString()
+                // Если такой нет - ищем id иконки Blank
+                : dictionary.TryGetValue("Blank", out var blankValue)
+                    // Если такая есть - возвращаем ее id как строку
+                    ? blankValue.Id.ToString()
+                    // Если такой нет - вероятнее всего словарь пустой и нужно вернуть статичное значение
+                    : "813150566695174204";
+        }
     }
 }

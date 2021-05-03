@@ -75,7 +75,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands
             if (userFood.Amount < amount)
             {
                 await Task.FromException(new Exception(IzumiReplyMessage.EatFoodWrongAmount.Parse(
-                    emotes.GetEmoteOrBlank(food.Name), _local.Localize(food.Name))));
+                    emotes.GetEmoteOrBlank(food.Name), _local.Localize(LocalizationCategory.Food, food.Id))));
             }
             else
             {
@@ -94,9 +94,9 @@ namespace Hinode.Izumi.Services.Commands.UserCommands
                 var embed = new EmbedBuilder()
                     // подверждаем что еда съедена и энергия добавлена
                     .WithDescription(IzumiReplyMessage.EatFoodSuccess.Parse(
-                        emotes.GetEmoteOrBlank(food.Name), amount, _local.Localize(food.Name, amount),
-                        emotes.GetEmoteOrBlank("Energy"), foodEnergy * amount,
-                        _local.Localize("Energy", foodEnergy * amount)));
+                        emotes.GetEmoteOrBlank(food.Name), amount,
+                        _local.Localize(LocalizationCategory.Food, food.Id, amount), emotes.GetEmoteOrBlank("Energy"),
+                        foodEnergy * amount, _local.Localize("Energy", foodEnergy * amount)));
 
                 await _discordEmbedService.SendEmbed(Context.User, embed);
                 // проверяем нужно ли двинуть прогресс обучения пользователя

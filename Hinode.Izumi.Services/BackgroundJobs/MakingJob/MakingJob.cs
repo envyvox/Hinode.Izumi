@@ -203,9 +203,9 @@ namespace Hinode.Izumi.Services.BackgroundJobs.MakingJob
             await _masteryService.AddMasteryToUser(userId, Mastery.Cooking,
                 // определяем количество полученного мастерства приготовления
                 await _calc.MasteryXp(MasteryXpProperty.Cooking, userMastery, amount));
-            // добавляем пользователю статистику приготовленной еды
+            // добавляем пользователю статистику приготовленного блюда
             await _statisticService.AddStatisticToUser(userId, Statistic.Cooking, amount);
-            // добавляем пользователю статистику приготовленной еды по категории мастерства
+            // добавляем пользователю статистику приготовленного блюда по категории мастерства
             await _statisticService.AddStatisticToUser(userId, food.Mastery switch
             {
                 0 => Statistic.CookingBeginner,
@@ -229,8 +229,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.MakingJob
                 .WithImageUrl(await _imageService.GetImageUrl(Image.Cooking))
                 // оповещаем о окончании приготовления
                 .WithDescription(
-                    IzumiReplyMessage.CraftingFoodCompleteDesc.Parse(
-                        emotes.GetEmoteOrBlank(food.Name), _local.Localize(food.Name)) +
+                    IzumiReplyMessage.CraftingFoodCompleteDesc.Parse() +
                     $"\n{emotes.GetEmoteOrBlank("Blank")}")
                 // полученная еда
                 .AddField(IzumiReplyMessage.CraftingFoodReceivedFieldName.Parse(),

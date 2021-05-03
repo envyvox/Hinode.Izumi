@@ -94,16 +94,13 @@ namespace Hinode.Izumi.Services.RpgServices.LocalizationService.Impl
         public string Localize(string keyword, long amount = 1)
         {
             var localization = GetLocalizationByKeyword(keyword).Result;
-            var n = Math.Abs(amount);
+            return Localize(localization, amount);
+        }
 
-            n %= 100;
-            if (n >= 5 && n <= 20) return localization.Multiply;
-
-            n %= 10;
-            if (n == 1) return localization.Single;
-            if (n >= 2 && n <= 4) return localization.Double;
-
-            return localization.Multiply;
+        public string Localize(LocalizationCategory category, long itemId, long amount = 1)
+        {
+            var localization = GetLocalizationByItemId(category, itemId).Result;
+            return Localize(localization, amount);
         }
 
         /// <summary>
@@ -127,6 +124,38 @@ namespace Hinode.Izumi.Services.RpgServices.LocalizationService.Impl
 
             // возвращаем локализацию
             return localization;
+        }
+
+        private async Task<LocalizationModel> GetLocalizationByItemId(LocalizationCategory category, long itemId)
+        {
+            // ищем локализацию по ключевому названию
+            var localization = await _con.GetConnection()
+                .QueryFirstOrDefaultAsync<LocalizationModel>(@"
+                    select * from localizations
+                    where category = @category
+                      and item_id = @itemId",
+                    new {category, itemId});
+
+            // если локализации нет - выводим ошибку
+            if (localization == null)
+                await Task.FromException(new Exception(IzumiNullableMessage.LocalizationByKeyword.Parse()));
+
+            // возвращаем локализацию
+            return localization;
+        }
+
+        private static string Localize(LocalizationModel localization, long amount)
+        {
+            var n = Math.Abs(amount);
+
+            n %= 100;
+            if (n >= 5 && n <= 20) return localization.Multiply;
+
+            n %= 10;
+            if (n == 1) return localization.Single;
+            if (n >= 2 && n <= 4) return localization.Double;
+
+            return localization.Multiply;
         }
     }
 }

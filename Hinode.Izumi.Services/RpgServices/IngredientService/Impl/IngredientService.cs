@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -33,18 +34,15 @@ namespace Hinode.Izumi.Services.RpgServices.IngredientService.Impl
         private readonly IProductService _productService;
         private readonly IAlcoholService _alcoholService;
         private readonly IDrinkService _drinkService;
-        private readonly ISeedService _seedService;
         private readonly ICropService _cropService;
-        private readonly IFishService _fishService;
         private readonly IFoodService _foodService;
         private readonly ILocalizationService _local;
         private readonly IEmoteService _emoteService;
 
         public IngredientService(IConnectionManager con, IInventoryService inventoryService,
             IGatheringService gatheringService, ICraftingService craftingService, IProductService productService,
-            IAlcoholService alcoholService, IDrinkService drinkService, ISeedService seedService,
-            ICropService cropService, IFishService fishService, IFoodService foodService, ILocalizationService local,
-            IEmoteService emoteService)
+            IAlcoholService alcoholService, IDrinkService drinkService, ICropService cropService,
+            IFoodService foodService, ILocalizationService local, IEmoteService emoteService)
         {
             _con = con;
             _inventoryService = inventoryService;
@@ -53,9 +51,7 @@ namespace Hinode.Izumi.Services.RpgServices.IngredientService.Impl
             _productService = productService;
             _alcoholService = alcoholService;
             _drinkService = drinkService;
-            _seedService = seedService;
             _cropService = cropService;
-            _fishService = fishService;
             _foodService = foodService;
             _local = local;
             _emoteService = emoteService;
@@ -106,6 +102,24 @@ namespace Hinode.Izumi.Services.RpgServices.IngredientService.Impl
                     new {projectId}))
             .ToArray();
 
+        public async Task<List<Season>> GetFoodSeasons(long foodId)
+        {
+            var ingredients = await GetFoodIngredients(foodId);
+            var seasons = new List<Season>();
+
+            foreach (var ingredient in ingredients)
+            {
+                var ingredientSeasons = await GetIngredientSeasons(ingredient.Category, ingredient.IngredientId);
+                foreach (var season in ingredientSeasons)
+                {
+                    if (!seasons.Contains(season)) seasons.Add(season);
+                }
+            }
+
+            seasons.Sort();
+            return seasons;
+        }
+
         public async Task<long> GetCraftingCostPrice(long craftingId)
         {
             // получаем ингредиенты изготавливаемого предмета
@@ -129,7 +143,8 @@ namespace Hinode.Izumi.Services.RpgServices.IngredientService.Impl
             // для каждого ингредиента получаем его стоимость
             foreach (var ingredient in ingredients)
                 costPrice += await GetIngredientCostPrice(ingredient.Category, ingredient.IngredientId) *
-                             ingredient.Amount;;
+                             ingredient.Amount;
+            ;
 
             return costPrice;
         }
@@ -143,7 +158,8 @@ namespace Hinode.Izumi.Services.RpgServices.IngredientService.Impl
             // для каждого ингредиента получаем его стоимость
             foreach (var ingredient in ingredients)
                 costPrice += await GetIngredientCostPrice(ingredient.Category, ingredient.IngredientId) *
-                             ingredient.Amount;;
+                             ingredient.Amount;
+            ;
 
             return costPrice;
         }
@@ -157,7 +173,8 @@ namespace Hinode.Izumi.Services.RpgServices.IngredientService.Impl
             // для каждого ингредиента получаем его стоимость
             foreach (var ingredient in ingredients)
                 costPrice += await GetIngredientCostPrice(ingredient.Category, ingredient.IngredientId) *
-                             ingredient.Amount;;
+                             ingredient.Amount;
+            ;
 
             return costPrice;
         }
@@ -171,7 +188,8 @@ namespace Hinode.Izumi.Services.RpgServices.IngredientService.Impl
             // для каждого ингредиента получаем его стоимость
             foreach (var ingredient in ingredients)
                 costPrice += await GetIngredientCostPrice(ingredient.Category, ingredient.IngredientId) *
-                             ingredient.Amount;;
+                             ingredient.Amount;
+            ;
 
             return costPrice;
         }
@@ -551,6 +569,125 @@ namespace Hinode.Izumi.Services.RpgServices.IngredientService.Impl
             }
 
             return costPrice;
+        }
+
+        private async Task<List<Season>> GetIngredientSeasons(IngredientCategory category, long ingredientId)
+        {
+            var seasons = new List<Season>();
+            switch (category)
+            {
+                // собирательские предметы, продукты и морепродукты игнорируются, т.к. не имеют привязки к сезону
+                case IngredientCategory.Gathering:
+                case IngredientCategory.Product:
+                case IngredientCategory.Seafood:
+                    break;
+                case IngredientCategory.Crafting:
+
+                    var craftingIngredients = await GetCraftingIngredients(ingredientId);
+                    var craftingSeasons = new List<Season>();
+
+                    foreach (var craftingIngredient in craftingIngredients)
+                    {
+                        var craftingIngredientSeasons = await GetIngredientSeasons(
+                            craftingIngredient.Category, craftingIngredient.IngredientId);
+
+                        foreach (var craftingIngredientSeason in craftingIngredientSeasons)
+                        {
+                            if (!craftingSeasons.Contains(craftingIngredientSeason))
+                                craftingSeasons.Add(craftingIngredientSeason);
+                        }
+                    }
+
+                    foreach (var craftingSeason in craftingSeasons)
+                    {
+                        if (!seasons.Contains(craftingSeason))
+                            seasons.Add(craftingSeason);
+                    }
+
+                    break;
+                case IngredientCategory.Alcohol:
+
+                    var alcoholIngredients = await GetAlcoholIngredients(ingredientId);
+                    var alcoholSeasons = new List<Season>();
+
+                    foreach (var alcoholIngredient in alcoholIngredients)
+                    {
+                        var alcoholIngredientSeasons = await GetIngredientSeasons(
+                            alcoholIngredient.Category, alcoholIngredient.IngredientId);
+
+                        foreach (var alcoholIngredientSeason in alcoholIngredientSeasons)
+                        {
+                            if (!alcoholSeasons.Contains(alcoholIngredientSeason))
+                                alcoholSeasons.Add(alcoholIngredientSeason);
+                        }
+                    }
+
+                    foreach (var alcoholSeason in alcoholSeasons)
+                    {
+                        if (!seasons.Contains(alcoholSeason))
+                            seasons.Add(alcoholSeason);
+                    }
+
+                    break;
+                case IngredientCategory.Drink:
+
+                    var drinkIngredients = await GetDrinkIngredients(ingredientId);
+                    var drinkSeasons = new List<Season>();
+
+                    foreach (var drinkIngredient in drinkIngredients)
+                    {
+                        var drinkIngredientSeasons = await GetIngredientSeasons(
+                            drinkIngredient.Category, drinkIngredient.IngredientId);
+
+                        foreach (var drinkIngredientSeason in drinkIngredientSeasons)
+                        {
+                            if (!drinkSeasons.Contains(drinkIngredientSeason))
+                                drinkSeasons.Add(drinkIngredientSeason);
+                        }
+                    }
+
+                    foreach (var drinkSeason in drinkSeasons)
+                    {
+                        if (!seasons.Contains(drinkSeason))
+                            seasons.Add(drinkSeason);
+                    }
+
+                    break;
+                case IngredientCategory.Crop:
+
+                    var crop = await _cropService.GetCrop(ingredientId);
+                    if (!seasons.Contains(crop.Season)) seasons.Add(crop.Season);
+
+                    break;
+                case IngredientCategory.Food:
+
+                    var foodIngredients = await GetFoodIngredients(ingredientId);
+                    var foodSeasons = new List<Season>();
+
+                    foreach (var foodIngredient in foodIngredients)
+                    {
+                        var foodIngredientSeasons = await GetIngredientSeasons(
+                            foodIngredient.Category, foodIngredient.IngredientId);
+
+                        foreach (var foodIngredientSeason in foodIngredientSeasons)
+                        {
+                            if (!foodSeasons.Contains(foodIngredientSeason))
+                                foodSeasons.Add(foodIngredientSeason);
+                        }
+                    }
+
+                    foreach (var foodSeason in foodSeasons)
+                    {
+                        if (!seasons.Contains(foodSeason))
+                            seasons.Add(foodSeason);
+                    }
+
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(category), category, null);
+            }
+
+            return seasons;
         }
     }
 }

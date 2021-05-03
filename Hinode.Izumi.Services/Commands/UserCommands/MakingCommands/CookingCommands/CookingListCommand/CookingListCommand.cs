@@ -89,7 +89,8 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CookingComm
                 {
                     // рассказываем как приготовить блюдо
                     embed.WithDescription(
-                        IzumiReplyMessage.CookingListDesc.Parse() +
+                        IzumiReplyMessage.CookingListDesc.Parse(
+                            _emotes.GetEmoteOrBlank("Recipe")) +
                         $"\n{_emotes.GetEmoteOrBlank("Blank")}");
 
                     // определяем какое мастерство ввел пользователь
@@ -122,21 +123,22 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CookingComm
                     // для каждого рецепта создаем embed field
                     foreach (var food in userRecipes.Where(x => x.Mastery == foodMastery))
                     {
+                        // получаем себестоимость блюда
+                        var costPrice = await _ingredientService.GetFoodCostPrice(food.Id);
                         // получаем стоимость приготовления
-                        var cookingPrice = await _calc.CraftingPrice(
-                            await _ingredientService.GetFoodCostPrice(food.Id));
-                        // получаем локализированную строку ингредиентов
-                        var ingredients = await _ingredientService.DisplayFoodIngredients(food.Id);
+                        var cookingPrice = await _calc.CraftingPrice(costPrice);
+                        // получаем количество восстанавливаемой энергии блюдом
+                        var energy = await _calc.FoodEnergyRecharge(costPrice, cookingPrice);
 
                         embed.AddField(
-                            // выводим иконку и название еду
+                            // выводим иконку и название блюда
                             IzumiReplyMessage.CookingListFieldName.Parse(
-                                food.Id, _emotes.GetEmoteOrBlank(food.Name), _local.Localize(food.Name, 5)),
-                            // выводим информацию о приготовлении еды
+                                _emotes.GetEmoteOrBlank("List"), food.Id, _emotes.GetEmoteOrBlank("Recipe"),
+                                _local.Localize(food.Name, 2)),
+                            // выводим информацию о блюде
                             IzumiReplyMessage.CookingListFieldDesc.Parse(
-                                ingredients, _emotes.GetEmoteOrBlank(Currency.Ien.ToString()), cookingPrice,
-                                _local.Localize(Currency.Ien.ToString(), cookingPrice),
-                                food.Time.Seconds().Humanize(2, new CultureInfo("ru-RU"))));
+                                _emotes.GetEmoteOrBlank(food.Name), _local.Localize(food.Name),
+                                _emotes.GetEmoteOrBlank("Energy"), energy, _local.Localize("Energy", energy)));
                     }
                 }
             }

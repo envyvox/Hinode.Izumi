@@ -14,6 +14,8 @@ import { ContextMenuModule } from 'primeng/contextmenu';
 import { FieldsetModule } from 'primeng/fieldset';
 import { SharedModule } from '../shared/shared.module';
 import { BadgeModule } from 'primeng/badge';
+import {ToggleButtonModule} from "primeng/togglebutton";
+import {MultiSelectModule} from "primeng/multiselect";
 
 const routes: Array<Route> = [
   {
@@ -45,7 +47,7 @@ const routes: Array<Route> = [
 
 @NgModule({
   declarations: [ListComponent, EditComponent],
-    imports:[
+    imports: [
         CommonModule,
         RouterModule.forChild(routes),
         TableModule,
@@ -59,7 +61,9 @@ const routes: Array<Route> = [
         ContextMenuModule,
         FieldsetModule,
         SharedModule,
-        BadgeModule
+        BadgeModule,
+        ToggleButtonModule,
+        MultiSelectModule
     ]
 })
 export class FoodModule { }

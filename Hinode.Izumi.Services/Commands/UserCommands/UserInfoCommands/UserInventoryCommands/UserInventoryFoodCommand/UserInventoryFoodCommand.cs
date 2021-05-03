@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService;
@@ -108,7 +109,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.UserInven
             return userFood.Aggregate(string.Empty,
                 (current, food) =>
                     current + (food.Amount > 0
-                        ? $"{_emotes.GetEmoteOrBlank(food.Name)} {food.Amount} {_local.Localize(food.Name, food.Amount)}, "
+                        ? $"{_emotes.GetEmoteOrBlank(food.Name)} {food.Amount} {_local.Localize(LocalizationCategory.Food, food.FoodId, food.Amount)}, "
                         : ""));
         }
     }

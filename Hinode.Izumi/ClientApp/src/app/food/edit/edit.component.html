@@ -6,14 +6,21 @@
         <p-fieldset legend="2. Требуемое мастерство">
             <input type="text" pInputText placeholder="Введите мастерство" formControlName="mastery">
         </p-fieldset>
-
-    </div>
-    <div class="p-col-6 p-md-4">
         <p-fieldset legend="3. Длительность приготовления">
             <div class="p-inputgroup">
                 <input type="text" pInputText placeholder="Введите длительность" formControlName="time">
                 <span class="p-inputgroup-addon">секунд</span>
             </div>
+        </p-fieldset>
+    </div>
+    <div class="p-col-6 p-md-4">
+        <p-fieldset legend="5. Рецепт продается в магазине?">
+            <p-toggleButton formControlName="recipeSellable" onIcon="pi pi-check" offIcon="pi pi-times"
+                            onLabel="Да" offLabel="Нет"></p-toggleButton>
+        </p-fieldset>
+        <p-fieldset legend="6. Блюдо события?">
+            <p-toggleButton formControlName="event" onIcon="pi pi-check" offIcon="pi pi-times"
+                            onLabel="Да" offLabel="Нет"></p-toggleButton>
         </p-fieldset>
         <p-fieldset legend="4. Подтерждение">
           <span class="p-buttonset">
