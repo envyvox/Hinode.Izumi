@@ -55,10 +55,10 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.UserAchie
             foreach (var achievement in category.Achievements())
             {
                 // получаем информацию о достижении из базы
-                var achievementModel = await _achievementService.GetAchievement(achievement.GetHashCode());
+                var achievementModel = await _achievementService.GetAchievement(achievement);
                 // получаем это достижение у пользователя
                 var userAchievement = userAchievements.FirstOrDefault(x =>
-                    x.AchievementId == achievement.GetHashCode());
+                    x.AchievementId == achievementModel.Id);
                 // определяем какую иконку нужно отобразить в зависимости от того, выполнил ли пользователь достижение
                 var achievementEmote = emotes.GetEmoteOrBlank(
                     "Achievement" + (userAchievement == null ? "BW" : ""));
