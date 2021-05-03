@@ -49,14 +49,25 @@ namespace Hinode.Izumi.Services.Commands.UserCommands
         }
 
         [Command("съесть"), Alias("eat")]
-        public async Task EatFoodTask(long amount, [Remainder] string foodName)
+        public async Task EatFoodCommandTask(long amount, [Remainder] string foodName)
+        {
+            // находим локализацию блюда
+            var foodLocal = await _local.GetLocalizationByLocalizedWord(LocalizationCategory.Food, foodName);
+            // пытаемся съесть
+            await EatFoodTask(amount, foodLocal.ItemId);
+        }
+
+        [Command("съесть"), Alias("eat")]
+        public async Task EatFoodCommandTask(long amount, long foodId) =>
+            // пытаемся съесть
+            await EatFoodTask(amount, foodId);
+
+        private async Task EatFoodTask(long amount, long foodId)
         {
             // получаем иконки из базы
             var emotes = await _emoteService.GetEmotes();
-            // находим локализацию блюда
-            var foodLocal = await _local.GetLocalizationByLocalizedWord(LocalizationCategory.Food, foodName);
             // получаем блюдо
-            var food = await _foodService.GetFood(foodLocal.ItemId);
+            var food = await _foodService.GetFood(foodId);
             // получаем блюдо у пользователя
             var userFood = await _inventoryService.GetUserFood((long) Context.User.Id, food.Id);
 
