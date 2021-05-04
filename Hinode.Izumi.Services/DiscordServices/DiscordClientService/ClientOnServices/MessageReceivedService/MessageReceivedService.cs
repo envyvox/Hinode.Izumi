@@ -85,10 +85,10 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
                     // и пользователь не имеет роли нитро-буста или стафа
                     !(hasNitroRole || hasStaffRole))
                 {
-                    // удаляем сообщение через 5 минут
+                    // удаляем сообщение через 10 минут
                     BackgroundJob.Schedule<IMessageJob>(
                         x => x.Delete((long) socketMessage.Channel.Id, (long) socketMessage.Id),
-                        TimeSpan.FromMinutes(5));
+                        TimeSpan.FromMinutes(10));
                 }
             }
 
