@@ -108,10 +108,11 @@ namespace Hinode.Izumi.Services.RpgServices.FieldService.Impl
             await _con.GetConnection()
                 .ExecuteAsync(@"
                     update user_fields
-                    set state = @state
-                    where state != @planted
+                    set state = @state,
+                        updated_at = now()
+                    where state != @empty
                       and state != @completed",
-                    new {state, planted = FieldState.Planted, completed = FieldState.Completed});
+                    new {state, empty = FieldState.Empty, completed = FieldState.Completed});
 
         public async Task MoveProgress()
         {

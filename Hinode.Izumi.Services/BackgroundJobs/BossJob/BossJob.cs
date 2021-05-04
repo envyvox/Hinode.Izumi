@@ -39,7 +39,6 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
         private readonly IStatisticService _statisticService;
         private readonly IAchievementService _achievementService;
         private readonly IInventoryService _inventoryService;
-        private readonly IFieldService _fieldService;
         private readonly IReputationService _reputationService;
         private readonly IImageService _imageService;
         private readonly ILocalizationService _local;
@@ -53,7 +52,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
 
         public BossJob(IDiscordEmbedService discordEmbedService, IDiscordGuildService discordGuildService,
             IEmoteService emoteService, IPropertyService propertyService, IStatisticService statisticService,
-            IAchievementService achievementService, IInventoryService inventoryService, IFieldService fieldService,
+            IAchievementService achievementService, IInventoryService inventoryService,
             IReputationService reputationService, IImageService imageService, ILocalizationService local)
         {
             _discordEmbedService = discordEmbedService;
@@ -63,7 +62,6 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
             _statisticService = statisticService;
             _achievementService = achievementService;
             _inventoryService = inventoryService;
-            _fieldService = fieldService;
             _reputationService = reputationService;
             _imageService = imageService;
             _local = local;
@@ -255,8 +253,6 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                     Reputation.Village => BossDebuff.VillageStop,
                     _ => throw new ArgumentOutOfRangeException(nameof(reputation), reputation, null)
                 };
-
-                if (reputation == Reputation.Village) await _fieldService.UpdateState(FieldState.Planted);
 
                 embed.WithDescription(IzumiEventMessage.BossNotKilled.Parse(
                     debuff.Localize()));
