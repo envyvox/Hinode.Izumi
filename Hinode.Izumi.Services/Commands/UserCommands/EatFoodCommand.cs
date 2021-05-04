@@ -87,7 +87,8 @@ namespace Hinode.Izumi.Services.Commands.UserCommands
                 var foodEnergy = await _calc.FoodEnergyRecharge(costPrice, cookingPrice);
 
                 // забираем у пользователя еду
-                await _inventoryService.RemoveItemFromUser((long) Context.User.Id, InventoryCategory.Food, food.Id);
+                await _inventoryService.RemoveItemFromUser(
+                    (long) Context.User.Id, InventoryCategory.Food, food.Id, amount);
                 // добавляем энергию пользователю
                 await _userService.AddEnergyToUser((long) Context.User.Id, foodEnergy * amount);
 
