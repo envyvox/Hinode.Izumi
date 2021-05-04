@@ -128,7 +128,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.UserInven
 
                     InventoryCategory.Food => userFood.Aggregate(string.Empty, (current, food) =>
                         current + (food.Amount > 0
-                            ? $"{emotes.GetEmoteOrBlank(food.Name)} {food.Amount} {_local.Localize(food.Name, food.Amount)}, "
+                            ? $"{emotes.GetEmoteOrBlank(food.Name)} {food.Amount} {_local.Localize(LocalizationCategory.Food, food.FoodId, food.Amount)}, "
                             : "")),
 
                     InventoryCategory.Box => Enum.GetValues(typeof(Box))
