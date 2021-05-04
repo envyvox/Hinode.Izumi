@@ -484,7 +484,29 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         OpenBoxDesc,
         OpenBoxFieldName,
         OpenBoxOutOfLimit,
-        InventoryBoxCommand
+        InventoryBoxCommand,
+        AdmGiveDesc,
+        AdmGivePmDesc,
+        PointsTopDesc,
+        PointsTopFieldName,
+        PointsTopFooter,
+        UserProfileRatingFieldName,
+        UserProfileRatingFieldDesc,
+        ShopRecipeCategoryListEmpty,
+        CookingWrongLocation,
+        CookingRecipeNull,
+        RecipeInfoDesc,
+        RecipeInfoFoodFieldName,
+        RecipeInfoMasteryFieldName,
+        RecipeInfoMasteryFieldDesc,
+        RecipeInfoCheckRecipeFieldName,
+        RecipeInfoCheckRecipeTrue,
+        RecipeInfoCheckRecipeFalse,
+        RecipeInfoIngredientsFieldName,
+        RecipeInfoCookingPriceFieldName,
+        RecipeInfoCookingTimeFieldName,
+        RecipeInfoFooter,
+        ShopRecipeMasteryWrongAmount
     }
 
     public static class IzumiReplyMessageHelper
@@ -1086,7 +1108,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Ингредиенты:\n{0}Стоимость: {1} {2} {3}\nДлительность: {4}",
 
             IzumiReplyMessage.ShopRecipeDesc =>
-                "Для покупки напишите `!магазин купить рецепт [номер]`.",
+                "Напишите `!рецепт [номер]` или `!рецепт [название]` чтобы посмотреть информацию о приготовлении блюда, не обязательно того, к которому у вас есть {0} рецепт.\n\nДля покупки напишите `!магазин купить рецепт [номер]`.\n\n*Товары этого магазина обновляются каждый сезон.*",
 
             IzumiReplyMessage.ShopRecipeFieldNameMastery0 =>
                 "Рецепты начинающего повара",
@@ -1125,10 +1147,10 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "У вас недостаточно {0} {1} для оплаты инструментов.",
 
             IzumiReplyMessage.CookingListFieldName =>
-                "`{0}` {1} {2}",
+                "{0} `{1}` {2} {3}",
 
             IzumiReplyMessage.CookingListFieldDesc =>
-                "Ингредиенты: {0}\nСтоимость: {1} {2} {3}\nДлительность: {4}",
+                "После приготовления вы получите {0} {1}\nВосстанавливает {2} {3} {4}",
 
             IzumiReplyMessage.CookingListWrongMasteryBracket =>
                 "Вы указали неправильную категорию рецептов, попробуйте свериться с `!приготовление` и попробовать еще раз.",
@@ -1146,7 +1168,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "{0} `1` {1}\n{0} `2` {2}\n{0} `3` {3}\n{0} `4` {4}\n{0} `5` {5}\n{0} `6` {6}",
 
             IzumiReplyMessage.CookingListDesc =>
-                "Напишите `!приготовить [номер] [количество]` для приготовления блюда.",
+                "Напишите `!рецепт [номер]` или `!рецепт [название]` чтобы посмотреть информацию о приготовлении блюда, не обязательно того, к которому у вас есть {0} рецепт.\n\nНапишите `!приготовить [количество] [название]`\nили `!приготовить [количество] [номер]` для приготовления блюда.",
 
             IzumiReplyMessage.UserCollectionWrongGroup =>
                 "В коллекции не сохраняются предметы этой категории.",
@@ -1170,7 +1192,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Временные эффекты можно получить если `!съесть [название]` еду, а постоянные лишь активировав особые {0} карточки.",
 
             IzumiReplyMessage.EatFoodSuccess =>
-                "Вы съели {0} {1} и получили {2} {3} {4}.",
+                "Вы съели {0} {1} {2} и получили {3} {4} {5}.",
 
             IzumiReplyMessage.EatFoodWrongAmount =>
                 "У вас нет в наличии {0} {1}.",
@@ -1647,7 +1669,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Полученные блюда",
 
             IzumiReplyMessage.CraftingFoodCompleteDesc =>
-                "После рабочего процесса, вы с улыбкой смотрите на идеальный {0} {1} приготовленный собственными руками.",
+                "После рабочего процесса, вы с улыбкой смотрите на идеальное блюдо приготовленное собственными руками.",
 
             IzumiReplyMessage.IngredientsSpent =>
                 "Затраченные ингредиенты",
@@ -1945,6 +1967,72 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.InventoryBoxCommand =>
                 "\nВы можете `!открыть [количество] [название]`",
+
+            IzumiReplyMessage.AdmGiveDesc =>
+                "Вы успешно выдали {0} {1} **{2}** {3} {4} {5}.",
+
+            IzumiReplyMessage.AdmGivePmDesc =>
+                "С небес спустилось неизвестное божество и оставило для вас {0} {1} {2}, вот это чудеса.",
+
+            IzumiReplyMessage.PointsTopDesc =>
+                "Ваша позиция: {0} `{1}`.\nВ этом месяце вы получили {2} {3}.",
+
+            IzumiReplyMessage.PointsTopFieldName =>
+                "Самые активные любители приключений",
+
+            IzumiReplyMessage.PointsTopFooter =>
+                "Очки приключений сбрасываются первого числа каждого месяца.",
+
+            IzumiReplyMessage.UserProfileRatingFieldName =>
+                "Рейтинг",
+
+            IzumiReplyMessage.UserProfileRatingFieldDesc =>
+                "Позиция: {0} `{1}`\nВ этом месяце получено {2} {3}",
+
+            IzumiReplyMessage.ShopRecipeCategoryListEmpty =>
+                "У вас есть все продаваемые на текущий момент {0} рецепты этой категории!",
+
+            IzumiReplyMessage.CookingWrongLocation =>
+                "Приготовить это блюдо можно только в **{0}**.",
+
+            IzumiReplyMessage.CookingRecipeNull =>
+                "Вы не сможете приготовить блюдо без {0} соответствующего рецепта!",
+
+            IzumiReplyMessage.RecipeInfoDesc =>
+                "Напишите `!приготовить [количество] [название]`\nили `!приготовить [количество] [номер]` для приготовления блюда.",
+
+            IzumiReplyMessage.RecipeInfoFoodFieldName =>
+                "Получаемое блюдо",
+
+            IzumiReplyMessage.RecipeInfoMasteryFieldName =>
+                "Необходимое мастерство",
+
+            IzumiReplyMessage.RecipeInfoMasteryFieldDesc =>
+                "{0} {1} мастерства «{2}»",
+
+            IzumiReplyMessage.RecipeInfoCheckRecipeFieldName =>
+                "Наличие рецепта",
+
+            IzumiReplyMessage.RecipeInfoCheckRecipeTrue =>
+                "У вас есть {0} рецепт",
+
+            IzumiReplyMessage.RecipeInfoCheckRecipeFalse =>
+                "У вас нет {0} рецепта",
+
+            IzumiReplyMessage.RecipeInfoIngredientsFieldName =>
+                "Необходимые ингредиенты",
+
+            IzumiReplyMessage.RecipeInfoCookingPriceFieldName =>
+                "Стоимость приготовления",
+
+            IzumiReplyMessage.RecipeInfoCookingTimeFieldName =>
+                "Длительность приготовления *",
+
+            IzumiReplyMessage.RecipeInfoFooter =>
+                "*Длительность приготовления указана без учета энергии или нахождения на кухне.",
+
+            IzumiReplyMessage.ShopRecipeMasteryWrongAmount =>
+                "У вас недостаточно мастерства {0} «{1}» для того чтобы разобраться с этим {2} рецептом.",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };

@@ -42,5 +42,7 @@ namespace Hinode.Izumi.Services.RpgServices.LocalizationService
         /// <returns>Локализированное название.</returns>
         /// <exception cref="IzumiNullableMessage.LocalizationByKeyword"></exception>
         string Localize(string keyword, long amount = 1);
+
+        string Localize(LocalizationCategory category, long itemId, long amount = 1);
     }
 }

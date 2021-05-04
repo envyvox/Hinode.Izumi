@@ -14,6 +14,7 @@ using Hinode.Izumi.Services.RpgServices.ImageService;
 using Hinode.Izumi.Services.RpgServices.IngredientService;
 using Hinode.Izumi.Services.RpgServices.InventoryService;
 using Hinode.Izumi.Services.RpgServices.LocalizationService;
+using Hinode.Izumi.Services.RpgServices.MasteryService;
 using Image = Hinode.Izumi.Data.Enums.Image;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.ShopCommands.BuyCommands.Impl
@@ -29,10 +30,12 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ShopCommands.BuyCommands.I
         private readonly IInventoryService _inventoryService;
         private readonly IIngredientService _ingredientService;
         private readonly ILocalizationService _local;
+        private readonly IMasteryService _masteryService;
 
         public ShopBuyRecipeCommand(IDiscordEmbedService discordEmbedService, IEmoteService emoteService,
             IImageService imageService, IFoodService foodService, ICalculationService calc,
-            IInventoryService inventoryService, IIngredientService ingredientService, ILocalizationService local)
+            IInventoryService inventoryService, IIngredientService ingredientService, ILocalizationService local,
+            IMasteryService masteryService)
         {
             _discordEmbedService = discordEmbedService;
             _emoteService = emoteService;
@@ -42,6 +45,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ShopCommands.BuyCommands.I
             _inventoryService = inventoryService;
             _ingredientService = ingredientService;
             _local = local;
+            _masteryService = masteryService;
         }
 
         public async Task Execute(SocketCommandContext context, long foodId)
@@ -60,37 +64,50 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ShopCommands.BuyCommands.I
             {
                 // получаем еду этого рецепта
                 var food = await _foodService.GetFood(foodId);
-                // получаем валюту пользователя
-                var userCurrency = await _inventoryService.GetUserCurrency((long) context.User.Id, Currency.Ien);
-                // определяем стоимость рецепта
-                var recipeCost = await _calc.FoodRecipePrice(
-                    // определяем себестоимость блюда
-                    await _ingredientService.GetFoodCostPrice(food.Id));
+                // получаем мастерство кулинарии пользователя
+                var userMastery = await _masteryService.GetUserMastery((long) context.User.Id, Mastery.Cooking);
 
-                // проверяем хватит ли пользователю денег на оплату рецепта
-                if (userCurrency.Amount < recipeCost)
+                // проверяем что у пользователя достаточно мастерства
+                if (food.Mastery > userMastery.Amount)
                 {
-                    await Task.FromException(new Exception(IzumiReplyMessage.RecipeBuyNoCurrency.Parse(
-                        emotes.GetEmoteOrBlank(Currency.Ien.ToString()),
-                        _local.Localize(Currency.Ien.ToString(), 5), emotes.GetEmoteOrBlank("Recipe"))));
+                    await Task.FromException(new Exception(IzumiReplyMessage.ShopRecipeMasteryWrongAmount.Parse(
+                        emotes.GetEmoteOrBlank(Mastery.Cooking.ToString()), Mastery.Cooking.Localize(),
+                        emotes.GetEmoteOrBlank("Recipe"))));
                 }
                 else
                 {
-                    // отнимаем у пользователя деньги на оплату рецепта
-                    await _inventoryService.RemoveItemFromUser(
-                        (long) context.User.Id, InventoryCategory.Currency, Currency.Ien.GetHashCode(), recipeCost);
-                    // добавляем пользователю рецепт
-                    await _foodService.AddRecipeToUser((long) context.User.Id, food.Id);
+                    // получаем валюту пользователя
+                    var userCurrency = await _inventoryService.GetUserCurrency((long) context.User.Id, Currency.Ien);
+                    // определяем стоимость рецепта
+                    var recipeCost = await _calc.FoodRecipePrice(
+                        // определяем себестоимость блюда
+                        await _ingredientService.GetFoodCostPrice(food.Id));
 
-                    var embed = new EmbedBuilder()
-                        // баннер магазина рецептов
-                        .WithImageUrl(await _imageService.GetImageUrl(Image.ShopRecipe))
-                        // подверждаем успешную покупку рецепта
-                        .WithDescription(IzumiReplyMessage.RecipeBuySuccess.Parse(
-                            emotes.GetEmoteOrBlank("Recipe"), _local.Localize(food.Name)));
+                    // проверяем хватит ли пользователю денег на оплату рецепта
+                    if (userCurrency.Amount < recipeCost)
+                    {
+                        await Task.FromException(new Exception(IzumiReplyMessage.RecipeBuyNoCurrency.Parse(
+                            emotes.GetEmoteOrBlank(Currency.Ien.ToString()),
+                            _local.Localize(Currency.Ien.ToString(), 5), emotes.GetEmoteOrBlank("Recipe"))));
+                    }
+                    else
+                    {
+                        // отнимаем у пользователя деньги на оплату рецепта
+                        await _inventoryService.RemoveItemFromUser(
+                            (long) context.User.Id, InventoryCategory.Currency, Currency.Ien.GetHashCode(), recipeCost);
+                        // добавляем пользователю рецепт
+                        await _foodService.AddRecipeToUser((long) context.User.Id, food.Id);
 
-                    await _discordEmbedService.SendEmbed(context.User, embed);
-                    await Task.CompletedTask;
+                        var embed = new EmbedBuilder()
+                            // баннер магазина рецептов
+                            .WithImageUrl(await _imageService.GetImageUrl(Image.ShopRecipe))
+                            // подверждаем успешную покупку рецепта
+                            .WithDescription(IzumiReplyMessage.RecipeBuySuccess.Parse(
+                                emotes.GetEmoteOrBlank("Recipe"), _local.Localize(food.Name)));
+
+                        await _discordEmbedService.SendEmbed(context.User, embed);
+                        await Task.CompletedTask;
+                    }
                 }
             }
         }

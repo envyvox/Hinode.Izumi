@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FoodService, FoodWebModel } from '../../shared/web.api.service';
+import {FoodService, FoodWebModel, Season} from '../../shared/web.api.service';
 import { MenuItem, MessageService, SelectItem } from 'primeng/api';
 import { Router } from '@angular/router';
+import {EnumEx} from "../../shared/enum.extensions";
 
 @Component({
   selector: 'app-list',
@@ -10,6 +11,8 @@ import { Router } from '@angular/router';
 })
 export class ListComponent implements OnInit {
 
+  season = Season;
+  seasons: SelectItem[];
   masteryBrackets: SelectItem[];
   data: FoodWebModel[];
   selectedItem: FoodWebModel;
@@ -18,6 +21,7 @@ export class ListComponent implements OnInit {
   constructor(private _messageService: MessageService,
               private _foodService: FoodService,
               private _router: Router) {
+    this.seasons = EnumEx.getNamesAndValues(Season);
     this.masteryBrackets = [
       { label: '0', value: '0' },
       { label: '50', value: '50' },

@@ -196,7 +196,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                 .AddField(IzumiEventMessage.EventMayPicnicSpawnRewardFieldName.Parse(),
                     IzumiEventMessage.EventMayPicnicSpawnRewardFieldDesc.Parse(
                         emotes.GetEmoteOrBlank("Energy"), emotes.GetEmoteOrBlank(food.Name), foodAmount,
-                        _local.Localize(food.Name, foodAmount)))
+                        _local.Localize(LocalizationCategory.Food, food.Id, foodAmount)))
                 // изображение пикника
                 .WithImageUrl(await _imageService.GetImageUrl(Image.EventMayPicnic))
                 // длительность пикника
@@ -257,7 +257,8 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                 .WithImageUrl(await _imageService.GetImageUrl(Image.EventMayPicnic))
                 // подверждаем что пикник закончен и пользователи получили награду
                 .WithDescription(IzumiEventMessage.EventMayPicnicEndDesc.Parse(
-                    emotes.GetEmoteOrBlank(food.Name), foodAmount, _local.Localize(food.Name, foodAmount)));
+                    emotes.GetEmoteOrBlank(food.Name), foodAmount,
+                    _local.Localize(LocalizationCategory.Food, food.Id, foodAmount)));
 
             // изменяем сообщение
             await _discordEmbedService.ModifyEmbed(message, embed);
@@ -271,7 +272,8 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                 // оповещаем о том, что пользователи получили награду за пикник
                 .WithDescription(IzumiEventMessage.EventMayPicnicEndRewardDesc.Parse(
                     Location.Village.Localize(true), emotes.GetEmoteOrBlank("Energy"),
-                    emotes.GetEmoteOrBlank(food.Name), foodAmount, _local.Localize(food.Name, foodAmount)));
+                    emotes.GetEmoteOrBlank(food.Name), foodAmount,
+                    _local.Localize(LocalizationCategory.Food, food.Id, foodAmount)));
 
             await _discordEmbedService.SendEmbed(
                 await _discordGuildService.GetSocketTextChannel(channels[DiscordChannel.Diary].Id), embedReward);

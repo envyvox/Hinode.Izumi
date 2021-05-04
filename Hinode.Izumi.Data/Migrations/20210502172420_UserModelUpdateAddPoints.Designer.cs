@@ -3,15 +3,17 @@ using System;
 using Hinode.Izumi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Hinode.Izumi.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210502172420_UserModelUpdateAddPoints")]
+    partial class UserModelUpdateAddPoints
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1144,12 +1146,6 @@ namespace Hinode.Izumi.Data.Migrations
                         .HasColumnName("created_at")
                         .HasDefaultValueSql("now()");
 
-                    b.Property<bool>("Event")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false)
-                        .HasColumnName("event");
-
                     b.Property<long>("Mastery")
                         .HasColumnType("bigint")
                         .HasColumnName("mastery");
@@ -1157,12 +1153,6 @@ namespace Hinode.Izumi.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text")
                         .HasColumnName("name");
-
-                    b.Property<bool>("RecipeSellable")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false)
-                        .HasColumnName("recipe_sellable");
 
                     b.Property<long>("Time")
                         .HasColumnType("bigint")
@@ -1177,9 +1167,9 @@ namespace Hinode.Izumi.Data.Migrations
                     b.HasKey("Id")
                         .HasName("pk_foods");
 
-                    b.HasIndex("Name", "Event")
+                    b.HasIndex("Name")
                         .IsUnique()
-                        .HasDatabaseName("ix_foods_name_event");
+                        .HasDatabaseName("ix_foods_name");
 
                     b.ToTable("foods");
                 });
@@ -1431,9 +1421,9 @@ namespace Hinode.Izumi.Data.Migrations
                     b.HasKey("Id")
                         .HasName("pk_localizations");
 
-                    b.HasIndex("Category", "ItemId")
+                    b.HasIndex("Name")
                         .IsUnique()
-                        .HasDatabaseName("ix_localizations_category_item_id");
+                        .HasDatabaseName("ix_localizations_name");
 
                     b.ToTable("localizations");
                 });
@@ -1942,7 +1932,7 @@ namespace Hinode.Izumi.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
-                    b.Property<long>("Points")
+                    b.Property<long>("AdventurePoints")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasDefaultValue(0L)

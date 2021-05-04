@@ -36,5 +36,10 @@ namespace Hinode.Izumi.Data.Models.UserModels
         /// Количество энергии у пользователя.
         /// </summary>
         public int Energy { get; set; }
+
+        /// <summary>
+        /// Количество очков приключений.
+        /// </summary>
+        public long Points { get; set; }
     }
 }

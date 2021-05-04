@@ -63,6 +63,11 @@
         /// <summary>
         /// Коробка.
         /// </summary>
-        Box = 12
+        Box = 12,
+
+        /// <summary>
+        /// Очки.
+        /// </summary>
+        Points = 13
     }
 }

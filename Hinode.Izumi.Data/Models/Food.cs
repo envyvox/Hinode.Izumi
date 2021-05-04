@@ -19,5 +19,15 @@
         /// Длительность приготовления одной единицы этого блюда.
         /// </summary>
         public long Time { get; set; }
+
+        /// <summary>
+        /// Продается ли рецепт этого блюда в магазине рецептов?
+        /// </summary>
+        public bool RecipeSellable { get; set; }
+
+        /// <summary>
+        /// Это особое блюдо события?
+        /// </summary>
+        public bool Event { get; set; }
     }
 }

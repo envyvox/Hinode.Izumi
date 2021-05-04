@@ -12,6 +12,12 @@ namespace Hinode.Izumi.Services.RpgServices.FoodService
         Task<FoodModel[]> GetAllFood();
 
         /// <summary>
+        /// Возвращает массив блюд, рецепт которых продается в магазине рецептов.
+        /// </summary>
+        /// <returns>Массив блюд.</returns>
+        Task<FoodModel[]> GetAllRecipeSellableFood();
+
+        /// <summary>
         /// Возвращает блюдо. Кэшируется.
         /// </summary>
         /// <param name="id">Id блюда.</param>

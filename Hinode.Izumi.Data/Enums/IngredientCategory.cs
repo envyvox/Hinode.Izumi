@@ -38,6 +38,11 @@
         /// <summary>
         /// Блюдо.
         /// </summary>
-        Food = 7
+        Food = 7,
+
+        /// <summary>
+        /// Морепродукт.
+        /// </summary>
+        Seafood = 8
     }
 }

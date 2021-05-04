@@ -25,6 +25,15 @@ namespace Hinode.Izumi.Services.RpgServices.FoodService.Impl
             (await _con.GetConnection()
                 .QueryAsync<FoodModel>(@"
                     select * from foods
+                    where event = false
+                    order by id"))
+            .ToArray();
+
+        public async Task<FoodModel[]> GetAllRecipeSellableFood() =>
+            (await _con.GetConnection()
+                .QueryAsync<FoodModel>(@"
+                    select * from foods
+                    where recipe_sellable = true
                     order by id"))
             .ToArray();
 

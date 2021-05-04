@@ -8,7 +8,7 @@ namespace Hinode.Izumi.Data.Configurations
     {
         public override void Configure(EntityTypeBuilder<Localization> b)
         {
-            b.HasIndex(x => x.Name).IsUnique();
+            b.HasIndex(x => new {x.Category, x.ItemId}).IsUnique();
 
             b.Property(x => x.Category).IsRequired();
             b.Property(x => x.ItemId).IsRequired();

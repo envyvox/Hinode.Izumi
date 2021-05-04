@@ -9,6 +9,12 @@ namespace Hinode.Izumi.Services.RpgServices.UserService
     public interface IUserService
     {
         /// <summary>
+        /// Возвращает массив из топ-10 пользователей (сортировка по очкам приключений а затем по дате регистрации).
+        /// </summary>
+        /// <returns>Массив пользователей.</returns>
+        Task<UserWithRowNumber[]> GetTopUsers();
+
+        /// <summary>
         /// Возвращает модель пользователя.
         /// </summary>
         /// <param name="userId">Id пользователя.</param>
@@ -44,6 +50,8 @@ namespace Hinode.Izumi.Services.RpgServices.UserService
         /// <param name="name">Игровое имя.</param>
         /// <returns>True есть есть, false если нет.</returns>
         Task<bool> CheckUser(string name);
+
+        Task<UserWithRowNumber> GetUserWithRowNumber(long userId);
 
         /// <summary>
         /// Добавляет пользователя в базу и кэш.

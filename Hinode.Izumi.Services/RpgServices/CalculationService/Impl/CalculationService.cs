@@ -8,6 +8,7 @@ using Hinode.Izumi.Data.Enums.RarityEnums;
 using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Services.EmoteService;
 using Hinode.Izumi.Services.EmoteService.Impl;
+using Hinode.Izumi.Services.EmoteService.Models;
 using Hinode.Izumi.Services.Extensions;
 using Hinode.Izumi.Services.RpgServices.IngredientService;
 using Hinode.Izumi.Services.RpgServices.PropertyService;
@@ -135,7 +136,8 @@ namespace Hinode.Izumi.Services.RpgServices.CalculationService.Impl
                 {0, time + time * 50 / 100},
                 {10, time + time * 25 / 100},
                 {40, time},
-                {70, time - time * 25 / 100}
+                {70, time - time * 25 / 100},
+                {85, time - time * 50 / 100}
             }, energy);
 
         public async Task<long> GatheringTime(long userGatheringMastery) =>
@@ -353,6 +355,17 @@ namespace Hinode.Izumi.Services.RpgServices.CalculationService.Impl
         }
 
         public async Task<long> FoodEnergyRecharge(long costPrice, long cookingPrice) =>
-            (costPrice + cookingPrice) / await _propertyService.GetPropertyValue(Property.FoodEnergyPrice);
+            (costPrice + cookingPrice) / await _propertyService.GetPropertyValue(Property.FoodEnergyPrice) + 2;
+
+        public string RowNumberEmote(Dictionary<string, EmoteModel> emotes, long userRowNumber) =>
+            userRowNumber switch
+            {
+                1 => emotes.GetEmoteOrBlank("CupGold"),
+                2 => emotes.GetEmoteOrBlank("CupSilver"),
+                3 => emotes.GetEmoteOrBlank("CupBronze"),
+                < 10 => "🔸",
+                _ => "🔹"
+            };
+
     }
 }

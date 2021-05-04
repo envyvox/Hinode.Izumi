@@ -104,8 +104,8 @@ namespace Hinode.Izumi.Services.RpgServices.TrainingService.Impl
 
             if (nextStep == TrainingStep.TransitToCastle)
             {
-                // выдаем пользователю яичницу на первое время
-                await _inventoryService.AddItemToUser(userId, InventoryCategory.Food, 4, 20);
+                // выдаем пользователю особые тыквенные пироги на первое время
+                await _inventoryService.AddItemToUser(userId, InventoryCategory.Food, 79, 30);
             }
 
             await _discordEmbedService.SendEmbed(

@@ -49,22 +49,33 @@ namespace Hinode.Izumi.Services.Commands.UserCommands
         }
 
         [Command("съесть"), Alias("eat")]
-        public async Task EatFoodTask([Remainder] string foodName)
+        public async Task EatFoodCommandTask(long amount, [Remainder] string foodName)
+        {
+            // находим локализацию блюда
+            var foodLocal = await _local.GetLocalizationByLocalizedWord(LocalizationCategory.Food, foodName);
+            // пытаемся съесть
+            await EatFoodTask(amount, foodLocal.ItemId);
+        }
+
+        [Command("съесть"), Alias("eat")]
+        public async Task EatFoodCommandTask(long amount, long foodId) =>
+            // пытаемся съесть
+            await EatFoodTask(amount, foodId);
+
+        private async Task EatFoodTask(long amount, long foodId)
         {
             // получаем иконки из базы
             var emotes = await _emoteService.GetEmotes();
-            // находим локализацию блюда
-            var foodLocal = await _local.GetLocalizationByLocalizedWord(LocalizationCategory.Food, foodName);
             // получаем блюдо
-            var food = await _foodService.GetFood(foodLocal.ItemId);
+            var food = await _foodService.GetFood(foodId);
             // получаем блюдо у пользователя
             var userFood = await _inventoryService.GetUserFood((long) Context.User.Id, food.Id);
 
             // проверяем что у пользователя есть это блюдо в наличии
-            if (userFood.Amount < 1)
+            if (userFood.Amount < amount)
             {
                 await Task.FromException(new Exception(IzumiReplyMessage.EatFoodWrongAmount.Parse(
-                    emotes.GetEmoteOrBlank(food.Name), _local.Localize(food.Name))));
+                    emotes.GetEmoteOrBlank(food.Name), _local.Localize(LocalizationCategory.Food, food.Id))));
             }
             else
             {
@@ -76,16 +87,17 @@ namespace Hinode.Izumi.Services.Commands.UserCommands
                 var foodEnergy = await _calc.FoodEnergyRecharge(costPrice, cookingPrice);
 
                 // забираем у пользователя еду
-                await _inventoryService.RemoveItemFromUser((long) Context.User.Id, InventoryCategory.Food, food.Id);
+                await _inventoryService.RemoveItemFromUser(
+                    (long) Context.User.Id, InventoryCategory.Food, food.Id, amount);
                 // добавляем энергию пользователю
-                await _userService.AddEnergyToUser((long) Context.User.Id, foodEnergy);
+                await _userService.AddEnergyToUser((long) Context.User.Id, foodEnergy * amount);
 
                 var embed = new EmbedBuilder()
                     // подверждаем что еда съедена и энергия добавлена
                     .WithDescription(IzumiReplyMessage.EatFoodSuccess.Parse(
-                        emotes.GetEmoteOrBlank(food.Name), _local.Localize(food.Name),
-                        emotes.GetEmoteOrBlank("Energy"), foodEnergy,
-                        _local.Localize("Energy", foodEnergy)));
+                        emotes.GetEmoteOrBlank(food.Name), amount,
+                        _local.Localize(LocalizationCategory.Food, food.Id, amount), emotes.GetEmoteOrBlank("Energy"),
+                        foodEnergy * amount, _local.Localize("Energy", foodEnergy * amount)));
 
                 await _discordEmbedService.SendEmbed(Context.User, embed);
                 // проверяем нужно ли двинуть прогресс обучения пользователя

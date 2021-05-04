@@ -68,7 +68,7 @@ namespace Hinode.Izumi.Data.Enums
             Location.WorkOnContract => declension ? "." : "..", // Вместо названия локации выводится название контракта
             Location.MakingCrafting => declension ? "изготовлении предметов" : "Изготовление предметов",
             Location.MakingAlcohol => declension ? "изготовлении алкоголя" : "Изготовление алкоголя",
-            Location.MakingFood => declension ? "приготовлении еды" : "Приготовление еды",
+            Location.MakingFood => declension ? "приготовлении блюда" : "Приготовление блюда",
             Location.MakingDrink => declension ? "изготовлении напитков" : "Приготовление напитков",
             _ => throw new ArgumentOutOfRangeException(nameof(location), location, null)
         };

@@ -194,6 +194,10 @@ namespace Hinode.Izumi.Services.WebServices.LocalizationWebService.Impl
 
                         break;
                     case LocalizationCategory.Bar:
+
+                        categories.Add(LocalizationCategory.Bar.GetHashCode());
+                        names.Add("Energy");
+
                         break;
                     case LocalizationCategory.Box:
 
@@ -203,6 +207,12 @@ namespace Hinode.Izumi.Services.WebServices.LocalizationWebService.Impl
                             categories.Add(LocalizationCategory.Box.GetHashCode());
                             names.Add(box.ToString());
                         }
+
+                        break;
+                    case LocalizationCategory.Points:
+
+                        categories.Add(LocalizationCategory.Points.GetHashCode());
+                        names.Add("AdventurePoints");
 
                         break;
                     default:

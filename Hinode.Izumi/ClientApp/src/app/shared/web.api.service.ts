@@ -6790,6 +6790,7 @@ export enum IngredientCategory {
     Drink = 5,
     Crop = 6,
     Food = 7,
+    Seafood = 8,
 }
 
 export class AlcoholPropertyWebModel extends EntityBaseModel implements IAlcoholPropertyWebModel {
@@ -7404,6 +7405,7 @@ export enum TimesDay {
 }
 
 export class FoodWebModel extends EntityBaseModel implements IFoodWebModel {
+    emoteId?: string | null;
     name?: string | null;
     mastery?: number;
     time?: number;
@@ -7413,6 +7415,9 @@ export class FoodWebModel extends EntityBaseModel implements IFoodWebModel {
     npcPrice?: number;
     profit?: number;
     recipePrice?: number;
+    recipeSellable?: boolean;
+    event?: boolean;
+    seasons?: Season[] | null;
 
     constructor(data?: IFoodWebModel) {
         super(data);
@@ -7421,6 +7426,7 @@ export class FoodWebModel extends EntityBaseModel implements IFoodWebModel {
     init(_data?: any) {
         super.init(_data);
         if (_data) {
+            this.emoteId = _data["emoteId"] !== undefined ? _data["emoteId"] : <any>null;
             this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
             this.mastery = _data["mastery"] !== undefined ? _data["mastery"] : <any>null;
             this.time = _data["time"] !== undefined ? _data["time"] : <any>null;
@@ -7430,6 +7436,13 @@ export class FoodWebModel extends EntityBaseModel implements IFoodWebModel {
             this.npcPrice = _data["npcPrice"] !== undefined ? _data["npcPrice"] : <any>null;
             this.profit = _data["profit"] !== undefined ? _data["profit"] : <any>null;
             this.recipePrice = _data["recipePrice"] !== undefined ? _data["recipePrice"] : <any>null;
+            this.recipeSellable = _data["recipeSellable"] !== undefined ? _data["recipeSellable"] : <any>null;
+            this.event = _data["event"] !== undefined ? _data["event"] : <any>null;
+            if (Array.isArray(_data["seasons"])) {
+                this.seasons = [] as any;
+                for (let item of _data["seasons"])
+                    this.seasons!.push(item);
+            }
         }
     }
 
@@ -7442,6 +7455,7 @@ export class FoodWebModel extends EntityBaseModel implements IFoodWebModel {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["emoteId"] = this.emoteId !== undefined ? this.emoteId : <any>null;
         data["name"] = this.name !== undefined ? this.name : <any>null;
         data["mastery"] = this.mastery !== undefined ? this.mastery : <any>null;
         data["time"] = this.time !== undefined ? this.time : <any>null;
@@ -7451,12 +7465,20 @@ export class FoodWebModel extends EntityBaseModel implements IFoodWebModel {
         data["npcPrice"] = this.npcPrice !== undefined ? this.npcPrice : <any>null;
         data["profit"] = this.profit !== undefined ? this.profit : <any>null;
         data["recipePrice"] = this.recipePrice !== undefined ? this.recipePrice : <any>null;
+        data["recipeSellable"] = this.recipeSellable !== undefined ? this.recipeSellable : <any>null;
+        data["event"] = this.event !== undefined ? this.event : <any>null;
+        if (Array.isArray(this.seasons)) {
+            data["seasons"] = [];
+            for (let item of this.seasons)
+                data["seasons"].push(item);
+        }
         super.toJSON(data);
         return data; 
     }
 }
 
 export interface IFoodWebModel extends IEntityBaseModel {
+    emoteId?: string | null;
     name?: string | null;
     mastery?: number;
     time?: number;
@@ -7466,6 +7488,9 @@ export interface IFoodWebModel extends IEntityBaseModel {
     npcPrice?: number;
     profit?: number;
     recipePrice?: number;
+    recipeSellable?: boolean;
+    event?: boolean;
+    seasons?: Season[] | null;
 }
 
 export class FoodIngredientWebModel extends EntityBaseModel implements IFoodIngredientWebModel {
@@ -7784,6 +7809,7 @@ export enum LocalizationCategory {
     Currency = 10,
     Bar = 11,
     Box = 12,
+    Points = 13,
 }
 
 export class MasteryPropertyWebModel extends EntityBaseModel implements IMasteryPropertyWebModel {

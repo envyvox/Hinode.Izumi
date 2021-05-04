@@ -25,6 +25,16 @@ namespace Hinode.Izumi.Services.RpgServices.UserService.Impl
             _cache = cache;
         }
 
+        public async Task<UserWithRowNumber[]> GetTopUsers() =>
+            (await _con.GetConnection()
+                .QueryAsync<UserWithRowNumber>(@"
+                    select * from (
+                        select *,
+                               row_number() over (order by points desc, created_at desc) as RowNumber
+                        from users) tmp
+                    where RowNumber <= 10"))
+            .ToArray();
+
         public async Task<UserModel> GetUser(long userId)
         {
             // получаем пользователя из базы
@@ -108,6 +118,16 @@ namespace Hinode.Izumi.Services.RpgServices.UserService.Impl
             // возвращаем ответ
             return check;
         }
+
+        public async Task<UserWithRowNumber> GetUserWithRowNumber(long userId) =>
+            await _con.GetConnection()
+                .QueryFirstOrDefaultAsync<UserWithRowNumber>(@"
+                    select * from (
+                        select *,
+                               row_number() over (order by points desc, created_at desc) as RowNumber
+                        from users) tmp
+                    where tmp.id = @userId",
+                    new {userId});
 
         public async Task AddUser(long userId, string name)
         {
@@ -248,12 +268,17 @@ namespace Hinode.Izumi.Services.RpgServices.UserService.Impl
             // удаляем пользователя из кэша
             _cache.Remove(string.Format(CacheExtensions.UserWithIdCheckKey, userId));
             // отнимаем энергию, убеждаясь что новое значение не будет ниже 0
+            // добавляем очки приключений за каждую потраченную единицу энергии
             await _con.GetConnection()
                 .ExecuteAsync(@"
                     update users
                     set energy = (
                         case when energy - @amount >= 0 then energy - @amount
                              else 0
+                        end),
+                        points = (
+                            case when energy - @amount > 0 then points + @amount
+                            else points + users.energy
                         end),
                         updated_at = now()
                     where id = @userId",

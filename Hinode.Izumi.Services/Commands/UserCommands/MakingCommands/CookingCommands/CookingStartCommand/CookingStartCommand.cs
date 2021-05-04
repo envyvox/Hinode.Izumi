@@ -21,9 +21,7 @@ using Hinode.Izumi.Services.RpgServices.IngredientService;
 using Hinode.Izumi.Services.RpgServices.InventoryService;
 using Hinode.Izumi.Services.RpgServices.LocalizationService;
 using Hinode.Izumi.Services.RpgServices.LocationService;
-using Hinode.Izumi.Services.RpgServices.MasteryService;
 using Hinode.Izumi.Services.RpgServices.PropertyService;
-using Hinode.Izumi.Services.RpgServices.TrainingService;
 using Hinode.Izumi.Services.RpgServices.UserService;
 using Humanizer;
 using Image = Hinode.Izumi.Data.Enums.Image;
@@ -36,7 +34,6 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CookingComm
         private readonly IDiscordEmbedService _discordEmbedService;
         private readonly IEmoteService _emoteService;
         private readonly ILocalizationService _local;
-        private readonly IMasteryService _masteryService;
         private readonly IImageService _imageService;
         private readonly IFoodService _foodService;
         private readonly IInventoryService _inventoryService;
@@ -49,15 +46,14 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CookingComm
         private readonly ICalculationService _calc;
 
         public CookingStartCommand(IDiscordEmbedService discordEmbedService, IEmoteService emoteService,
-            ILocalizationService local, IMasteryService masteryService, IImageService imageService,
-            IFoodService foodService, IInventoryService inventoryService, ILocationService locationService,
-            IIngredientService ingredientService, IBuildingService buildingService, IUserService userService,
-            IPropertyService propertyService, IFamilyService familyService, ICalculationService calc)
+            ILocalizationService local, IImageService imageService, IFoodService foodService,
+            IInventoryService inventoryService, ILocationService locationService, IIngredientService ingredientService,
+            IBuildingService buildingService, IUserService userService, IPropertyService propertyService,
+            IFamilyService familyService, ICalculationService calc)
         {
             _discordEmbedService = discordEmbedService;
             _emoteService = emoteService;
             _local = local;
-            _masteryService = masteryService;
             _imageService = imageService;
             _foodService = foodService;
             _inventoryService = inventoryService;
@@ -70,95 +66,107 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CookingComm
             _calc = calc;
         }
 
-        public async Task Execute(SocketCommandContext context, long foodId, long amount)
+        public async Task Execute(SocketCommandContext context, long amount, long foodId)
         {
             // получаем иконки из базы
             var emotes = await _emoteService.GetEmotes();
             // получаем приготавливаемое блюдо
             var food = await _foodService.GetFood(foodId);
-            // получаем текущую локацию пользователя
-            var userLocation = await _locationService.GetUserLocation((long) context.User.Id);
+            // проверяем есть ли у пользователя рецепт
+            var hasRecipe = await _foodService.CheckUserRecipe((long) context.User.Id, food.Id);
 
-            // проверяем что пользователь находится в нужной для приготовления локации
-            await CheckCookingLocation((long) context.User.Id, userLocation, Location.Garden);
-            // проверяем что у пользователя есть все необходимые для приготовления ингредиенты
-            await _ingredientService.CheckFoodIngredients((long) context.User.Id, food.Id);
-
-            // получаем валюту пользователя
-            var userCurrency = await _inventoryService.GetUserCurrency((long) context.User.Id, Currency.Ien);
-            // проверяем нужно ли ему оплачивать стоимость приготовления
-            var freeCooking = await CheckFreeCooking((long) context.User.Id, userLocation);
-            // считаем стоимость приготовления
-            var cookingPrice = freeCooking
-                ? 0
-                : await _calc.CraftingPrice(
-                    await _ingredientService.GetFoodCostPrice(food.Id));
-
-            // проверяем что у пользователя хватит денег на оплату приготовления
-            if (userCurrency.Amount < cookingPrice)
+            // если у пользователя нет рецепта - выводим ошибку
+            if (!hasRecipe)
             {
-                await Task.FromException(new Exception(IzumiReplyMessage.CookingNoCurrency.Parse(
-                    emotes.GetEmoteOrBlank(Currency.Ien.ToString()), _local.Localize(Currency.Ien.ToString(), 5))));
+                await Task.FromException(new Exception(IzumiReplyMessage.CookingRecipeNull.Parse(
+                    emotes.GetEmoteOrBlank("Recipe"))));
             }
             else
             {
-                // получаем текущее время
-                var timeNow = DateTimeOffset.Now;
-                // определяем длительность приготовления
-                var cookingTime = await CalculateCookingTime(
-                    (long) context.User.Id, userLocation, food.Time, amount);
+                // получаем текущую локацию пользователя
+                var userLocation = await _locationService.GetUserLocation((long) context.User.Id);
 
-                // отнимаем у пользователя ингредиенты для приготовления
-                await _ingredientService.RemoveFoodIngredients((long) context.User.Id, foodId);
-                // обновляем пользователю текущую локацию
-                await _locationService.UpdateUserLocation((long) context.User.Id, Location.MakingFood);
-                // добавляем информацию о перемещении
-                await _locationService.AddUserMovement(
-                    (long) context.User.Id, Location.MakingFood, userLocation, timeNow.AddSeconds(cookingTime));
-                // отнимаем энергию у пользователя
-                await _userService.RemoveEnergyFromUser((long) context.User.Id,
-                    // получаем количество энергии
-                    await _propertyService.GetPropertyValue(Property.EnergyCostCraft) * amount);
-                // отнимаем у пользователя валюту для оплаты стоимости приготовления
-                await _inventoryService.RemoveItemFromUser(
-                    (long) context.User.Id, InventoryCategory.Currency, Currency.Ien.GetHashCode(), cookingPrice);
+                // проверяем что пользователь находится в нужной для приготовления локации
+                await CheckCookingLocation((long) context.User.Id, userLocation, Location.Garden);
+                // проверяем что у пользователя есть все необходимые для приготовления ингредиенты
+                await _ingredientService.CheckFoodIngredients((long) context.User.Id, food.Id);
 
-                // запускаем джобу завершения приготовления
-                BackgroundJob.Schedule<IMakingJob>(x =>
-                        x.CompleteFood((long) context.User.Id, food.Id, amount, userLocation),
-                    TimeSpan.FromSeconds(cookingTime));
+                // получаем валюту пользователя
+                var userCurrency = await _inventoryService.GetUserCurrency((long) context.User.Id, Currency.Ien);
+                // проверяем нужно ли ему оплачивать стоимость приготовления
+                var freeCooking = await CheckFreeCooking((long) context.User.Id, userLocation);
+                // считаем стоимость приготовления
+                var cookingPrice = freeCooking
+                    ? 0
+                    : await _calc.CraftingPrice(
+                        await _ingredientService.GetFoodCostPrice(food.Id));
 
-                var buildingKitchen = await _buildingService.GetBuilding(Building.Kitchen);
-                var embed = new EmbedBuilder()
-                    // баннер приготовления
-                    .WithImageUrl(await _imageService.GetImageUrl(Image.Cooking))
-                    .WithAuthor(Location.MakingFood.Localize())
-                    .WithDescription(
-                        // подтверждаем что приготовление начато
-                        IzumiReplyMessage.CraftingFoodDesc.Parse(
-                            emotes.GetEmoteOrBlank(food.Name), _local.Localize(food.Name)) +
-                        (cookingPrice == 0
-                            ? IzumiReplyMessage.CraftingFoodInFamilyHouse.Parse(
-                                emotes.GetEmoteOrBlank(buildingKitchen.Type.ToString()),
-                                buildingKitchen.Name)
-                            : "") +
-                        $"\n{emotes.GetEmoteOrBlank("Blank")}")
-                    // потраченные ингредиенты
-                    .AddField(IzumiReplyMessage.IngredientsSpent.Parse(),
-                        await _ingredientService.DisplayFoodIngredients(food.Id, amount) +
-                        (cookingPrice == 0
-                            ? ""
-                            : $"{emotes.GetEmoteOrBlank(Currency.Ien.ToString())} {cookingPrice} {_local.Localize(Currency.Ien.ToString(), cookingPrice)}"
-                        ), true)
-                    // длительность
-                    .AddField(IzumiReplyMessage.TimeFieldName.Parse(),
-                        cookingTime.Seconds().Humanize(2, new CultureInfo("ru-RU")), true)
-                    // ожидаемая еда
-                    .AddField(IzumiReplyMessage.CraftingFoodExpectedFieldName.Parse(),
-                        $"{emotes.GetEmoteOrBlank(food.Name)} {amount} {_local.Localize(food.Name, amount)}");
+                // проверяем что у пользователя хватит денег на оплату приготовления
+                if (userCurrency.Amount < cookingPrice)
+                {
+                    await Task.FromException(new Exception(IzumiReplyMessage.CookingNoCurrency.Parse(
+                        emotes.GetEmoteOrBlank(Currency.Ien.ToString()), _local.Localize(Currency.Ien.ToString(), 5))));
+                }
+                else
+                {
+                    // получаем текущее время
+                    var timeNow = DateTimeOffset.Now;
+                    // определяем длительность приготовления
+                    var cookingTime = await CalculateCookingTime(
+                        (long) context.User.Id, userLocation, food.Time, amount);
 
-                await _discordEmbedService.SendEmbed(context.User, embed);
-                await Task.CompletedTask;
+                    // отнимаем у пользователя ингредиенты для приготовления
+                    await _ingredientService.RemoveFoodIngredients((long) context.User.Id, foodId);
+                    // обновляем пользователю текущую локацию
+                    await _locationService.UpdateUserLocation((long) context.User.Id, Location.MakingFood);
+                    // добавляем информацию о перемещении
+                    await _locationService.AddUserMovement(
+                        (long) context.User.Id, Location.MakingFood, userLocation, timeNow.AddSeconds(cookingTime));
+                    // отнимаем энергию у пользователя
+                    await _userService.RemoveEnergyFromUser((long) context.User.Id,
+                        // получаем количество энергии
+                        await _propertyService.GetPropertyValue(Property.EnergyCostCraft) * amount);
+                    // отнимаем у пользователя валюту для оплаты стоимости приготовления
+                    await _inventoryService.RemoveItemFromUser(
+                        (long) context.User.Id, InventoryCategory.Currency, Currency.Ien.GetHashCode(), cookingPrice);
+
+                    // запускаем джобу завершения приготовления
+                    BackgroundJob.Schedule<IMakingJob>(x =>
+                            x.CompleteFood((long) context.User.Id, food.Id, amount, userLocation),
+                        TimeSpan.FromSeconds(cookingTime));
+
+                    var buildingKitchen = await _buildingService.GetBuilding(Building.Kitchen);
+                    var embed = new EmbedBuilder()
+                        // баннер приготовления
+                        .WithImageUrl(await _imageService.GetImageUrl(Image.Cooking))
+                        .WithAuthor(Location.MakingFood.Localize())
+                        .WithDescription(
+                            // подтверждаем что приготовление начато
+                            IzumiReplyMessage.CraftingFoodDesc.Parse(
+                                emotes.GetEmoteOrBlank(food.Name), _local.Localize(food.Name)) +
+                            (cookingPrice == 0
+                                ? IzumiReplyMessage.CraftingFoodInFamilyHouse.Parse(
+                                    emotes.GetEmoteOrBlank(buildingKitchen.Type.ToString()),
+                                    buildingKitchen.Name)
+                                : "") +
+                            $"\n{emotes.GetEmoteOrBlank("Blank")}")
+                        // потраченные ингредиенты
+                        .AddField(IzumiReplyMessage.IngredientsSpent.Parse(),
+                            await _ingredientService.DisplayFoodIngredients(food.Id, amount) +
+                            (cookingPrice == 0
+                                ? ""
+                                : $", {emotes.GetEmoteOrBlank(Currency.Ien.ToString())} {cookingPrice} {_local.Localize(Currency.Ien.ToString(), cookingPrice)}"
+                            ))
+                        // ожидаемая еда
+                        .AddField(IzumiReplyMessage.CraftingFoodExpectedFieldName.Parse(),
+                            $"{emotes.GetEmoteOrBlank(food.Name)} {amount} {_local.Localize(food.Name, amount)}", true)
+                        // длительность
+                        .AddField(IzumiReplyMessage.TimeFieldName.Parse(),
+                            cookingTime.Seconds().Humanize(2, new CultureInfo("ru-RU")), true);
+
+                    await _discordEmbedService.SendEmbed(context.User, embed);
+                    await Task.CompletedTask;
+                }
             }
         }
 
@@ -185,20 +193,20 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CookingComm
                     if (familyHasBuilding) return;
 
                     // если нет - он не может приготовить блюло в деревне
-                    await Task.FromException(new Exception(IzumiReplyMessage.ResourceCraftWrongLocation.Parse(
+                    await Task.FromException(new Exception(IzumiReplyMessage.CookingWrongLocation.Parse(
                         cookingLocation.Localize(true))));
                 }
                 // если пользователь не состоит в семье - он не может приготовить блюдо в деревне
                 else
                 {
-                    await Task.FromException(new Exception(IzumiReplyMessage.ResourceCraftWrongLocation.Parse(
+                    await Task.FromException(new Exception(IzumiReplyMessage.CookingWrongLocation.Parse(
                         cookingLocation.Localize(true))));
                 }
             }
             // если пользователь находится в другой локации - он не может приготовить блюдо
             else
             {
-                await Task.FromException(new Exception(IzumiReplyMessage.ResourceCraftWrongLocation.Parse(
+                await Task.FromException(new Exception(IzumiReplyMessage.CookingWrongLocation.Parse(
                     cookingLocation.Localize(true))));
             }
         }

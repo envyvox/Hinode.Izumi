@@ -16,6 +16,7 @@
     </ng-template>
     <ng-template pTemplate="header">
         <tr>
+            <th>Emote</th>
             <th pSortableColumn="name">
                 <div class="p-d-flex p-jc-between p-ai-center">
                     Name
@@ -45,6 +46,38 @@
                 <div class="p-d-flex p-jc-between p-ai-center">
                     Time
                     <p-sortIcon field="time"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="recipeSellable">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                    Recipe Sellable
+                    <p-sortIcon field="recipeSellable"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="event">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                    Event
+                    <p-sortIcon field="event"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="seasons">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                    Seasons
+                    <p-sortIcon field="seasons"></p-sortIcon>
+                    <p-columnFilter field="seasons" matchMode="contains" display="menu" [showMatchModes]="false"
+                                    [showOperator]="false" [showAddButton]="false" class="p-ml-auto">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                            <p-multiSelect [ngModel]="value" [options]="seasons" [scrollHeight]="'300px'"
+                                           [showHeader]="false" placeholder="All" (onChange)="filter($event.value)"
+                                           optionLabel="name" optionValue="value" display="chip">
+                                <ng-template let-option pTemplate="item">
+                                    <div class="p-multiselect-representative-option">
+                                        <span class="p-ml-1">{{option.name}}</span>
+                                    </div>
+                                </ng-template>
+                            </p-multiSelect>
+                        </ng-template>
+                    </p-columnFilter>
                 </div>
             </th>
             <th pSortableColumn="energy">
@@ -99,9 +132,13 @@
     </ng-template>
     <ng-template pTemplate="body" let-d>
         <tr [pContextMenuRow]="d">
+            <td><img src="https://cdn.discordapp.com/emojis/{{d.emoteId}}" height="35" width="35" alt="not found"></td>
             <td>{{d.name}}</td>
             <td>{{d.mastery}}</td>
             <td>{{d.time}}</td>
+            <td class="p-text-center"><i class="pi" [ngClass]="{'pi-check': d.recipeSellable, 'pi-times': !d.recipeSellable}"></i></td>
+            <td class="p-text-center"><i class="pi" [ngClass]="{'pi-check': d.event, 'pi-times': !d.event}"></i></td>
+            <td>{{d.seasons | arrayEnumToString:season}}</td>
             <td>{{d.energy}}</td>
             <td>{{d.costPrice}}</td>
             <td>{{d.cookingPrice}}</td>
