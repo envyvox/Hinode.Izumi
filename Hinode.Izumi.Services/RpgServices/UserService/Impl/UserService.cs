@@ -69,6 +69,26 @@ namespace Hinode.Izumi.Services.RpgServices.UserService.Impl
             return user;
         }
 
+        public async Task<UserWithRowNumber> GetUserWithRowNumber(long userId) =>
+            await _con.GetConnection()
+                .QueryFirstOrDefaultAsync<UserWithRowNumber>(@"
+                    select * from (
+                        select *,
+                               row_number() over (order by points desc, created_at desc) as RowNumber
+                        from users) tmp
+                    where tmp.id = @userId",
+                    new {userId});
+
+        public async Task<UserWithRowNumber> GetUserWithRowNumber(string namePattern) =>
+            await _con.GetConnection()
+                .QueryFirstOrDefaultAsync<UserWithRowNumber>(@"
+                    select * from (
+                        select *,
+                               row_number() over (order by points desc, created_at desc) as RowNumber
+                        from users) tmp
+                    where tmp.name ilike '%'||@namePattern||'%'",
+                    new {namePattern});
+
         public async Task<Dictionary<Title, UserTitleModel>> GetUserTitle(long userId) =>
             (await _con.GetConnection()
                 .QueryAsync<UserTitleModel>(@"
@@ -118,16 +138,6 @@ namespace Hinode.Izumi.Services.RpgServices.UserService.Impl
             // возвращаем ответ
             return check;
         }
-
-        public async Task<UserWithRowNumber> GetUserWithRowNumber(long userId) =>
-            await _con.GetConnection()
-                .QueryFirstOrDefaultAsync<UserWithRowNumber>(@"
-                    select * from (
-                        select *,
-                               row_number() over (order by points desc, created_at desc) as RowNumber
-                        from users) tmp
-                    where tmp.id = @userId",
-                    new {userId});
 
         public async Task AddUser(long userId, string name)
         {
