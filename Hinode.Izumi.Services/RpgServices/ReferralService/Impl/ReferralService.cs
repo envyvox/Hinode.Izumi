@@ -142,10 +142,10 @@ namespace Hinode.Izumi.Services.RpgServices.ReferralService.Impl
                     await _inventoryService.AddItemToUser(
                         referrerId, InventoryCategory.Currency, Currency.Pearl.GetHashCode(), 10);
                     // добавляем титул реферреру
-                    await _userService.AddTitleToUser(referrerId, Title.ReferralTitle);
+                    await _userService.AddTitleToUser(referrerId, Title.Yatagarasu);
                     rewardString =
                         $"{emotes.GetEmoteOrBlank(Currency.Pearl.ToString())} 10 {_local.Localize(Currency.Pearl.ToString(), 10)}, " +
-                        $"титул {emotes.GetEmoteOrBlank(Title.ReferralTitle.Emote())} {Title.ReferralTitle.Localize()}";
+                        $"титул {emotes.GetEmoteOrBlank(Title.Yatagarasu.Emote())} {Title.Yatagarasu.Localize()}";
 
                     break;
                 case > 10:

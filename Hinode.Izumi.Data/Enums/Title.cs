@@ -7,7 +7,7 @@ namespace Hinode.Izumi.Data.Enums
     /// </summary>
     public enum Title
     {
-        Newbie = 1,
+        Newbie = 1, // титул по-умолчанию
         Lucky = 2,
         ResourcefulCatcher = 3,
         DescendantAristocracy = 4,
@@ -25,7 +25,7 @@ namespace Hinode.Izumi.Data.Enums
         KingExcitement = 16,
         BelievingInLuck = 17,
         FirstSamurai = 18,
-        ReferralTitle = 19,
+        Yatagarasu = 19, // титул реферальной системы
         Wanderer = 777 // титул для Изуми
     }
 
@@ -57,7 +57,7 @@ namespace Hinode.Izumi.Data.Enums
             Title.BelievingInLuck => "Верящий в удачу",
             Title.Wanderer => "Странница",
             Title.FirstSamurai => "Первый самурай",
-            Title.ReferralTitle => "Дружелюбный",
+            Title.Yatagarasu => "Ятагарасу",
             _ => throw new ArgumentOutOfRangeException(nameof(title), title, null)
         };
 

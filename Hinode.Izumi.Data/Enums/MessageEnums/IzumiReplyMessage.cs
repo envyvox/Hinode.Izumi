@@ -506,7 +506,10 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         RecipeInfoCookingPriceFieldName,
         RecipeInfoCookingTimeFieldName,
         RecipeInfoFooter,
-        ShopRecipeMasteryWrongAmount
+        ShopRecipeMasteryWrongAmount,
+        ReferralListReferrerFieldDesc,
+        ReferralListRewardsFieldName,
+        ReferralListRewardsFieldDesc
     }
 
     public static class IzumiReplyMessageHelper
@@ -564,7 +567,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Реферальная система",
 
             IzumiReplyMessage.RegistrationSuccessReferralDesc =>
-                "Если вас пригласил пользователь - вам определенно стоит написать\n`!пригласил [игровое имя]`, чтобы получить {0} бонусы.",
+                "Если вас пригласил пользователь - вам определенно стоит написать\n`!пригласил [игровое имя]`, чтобы получить {0} бонусы.\nВы можете посмотреть подробную информацию о реферальной системе заглянув в `!приглашения`.",
 
             IzumiReplyMessage.ProfileTitle =>
                 "{0} {1} **{2}** `@{3}`",
@@ -591,7 +594,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Отлично, {0} {1} **{2}** теперь ваш реферер.",
 
             IzumiReplyMessage.ReferralSetNotifyPm =>
-                "{0} {1} **{2}** указал вас своим реферером.",
+                "{0} {1} **{2}** указал вас своим реферером.\nЗагляните в `!приглашения` чтобы посмотреть обновленную информацию вашего участия в реферальной системе.",
 
             IzumiReplyMessage.RegistrationSuccessButCantRename =>
                 "@everyone, Я не смогла изменить имя на сервере пользователю {0}, однако его игровое имя теперь `{1}`.",
@@ -2033,6 +2036,20 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.ShopRecipeMasteryWrongAmount =>
                 "У вас недостаточно мастерства {0} «{1}» для того чтобы разобраться с этим {2} рецептом.",
+
+            IzumiReplyMessage.ReferralListReferrerFieldDesc =>
+                "Вы указали {0} {1} **{2}** как пригласившего вас пользователя и получили {3} {4}.",
+
+            IzumiReplyMessage.ReferralListRewardsFieldName =>
+                "Награды реферальной системы",
+
+            IzumiReplyMessage.ReferralListRewardsFieldDesc =>
+                "{11} За `1`, `2` приглашенных вы получите {0} {1}.\n" +
+                "{12} За `3`, `4` приглашенных вы получите {0} {2} {3}.\n" +
+                "{13} За `5` приглашенных вы получите {0} {4} {3}.\n" +
+                "{14} За `6`, `7`, `8`, `9` пользователей вы получите {5} {6} {7}.\n" +
+                "{15} За `10` приглашенных вы получите {5} {6} {7} и титул {8} {9}.\n" +
+                "{16} За каждого последующего вы будете получать {5} {10} {7}.",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };

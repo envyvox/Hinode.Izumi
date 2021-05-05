@@ -8069,7 +8069,7 @@ export enum Title {
     KingExcitement = 16,
     BelievingInLuck = 17,
     FirstSamurai = 18,
-    ReferralTitle = 19,
+    Yatagarasu = 19,
     Wanderer = 777,
 }
 
