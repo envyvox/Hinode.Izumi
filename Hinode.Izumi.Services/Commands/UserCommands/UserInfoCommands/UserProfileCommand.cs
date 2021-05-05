@@ -86,11 +86,14 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
             // получаем текущее время
             var timeNow = DateTimeOffset.Now;
             // получаем репутации пользователя
-            var userReputation = await _reputationService.GetUserReputation(user.Id);
+            var userReputations = await _reputationService.GetUserReputation(user.Id);
+            // получаем массив доступных репутаций
+            var reputations = Enum.GetValues(typeof(Reputation)).Cast<Reputation>().ToArray();
             // получаем среднее значение репутаций пользователя
-            var userAverageReputation = userReputation.Count > 0
-                ? userReputation.Values.Average(x => x.Amount)
-                : 0;
+            var userAverageReputation =
+                reputations.Sum(reputation =>
+                    userReputations.ContainsKey(reputation) ? userReputations[reputation].Amount : 0) /
+                reputations.Length;
             // определяем репутационный статус по среднему значению репутаций пользователя
             var userReputationStatus = ReputationStatusHelper.GetReputationStatus(userAverageReputation);
             // получаем информацию о передвижениях пользователя
@@ -193,7 +196,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
                         .Cast<Reputation>()
                         .Aggregate(string.Empty, (current, reputationType) =>
                             current +
-                            $"{emotes.GetEmoteOrBlank(reputationType.Emote(userReputation.ContainsKey(reputationType) ? userReputation[reputationType].Amount : 0))} {(userReputation.ContainsKey(reputationType) ? $"{userReputation[reputationType].Amount}" : "0")} в **{reputationType.Location().Localize(true)}**\n") +
+                            $"{emotes.GetEmoteOrBlank(reputationType.Emote(userReputations.ContainsKey(reputationType) ? userReputations[reputationType].Amount : 0))} {(userReputations.ContainsKey(reputationType) ? $"{userReputations[reputationType].Amount}" : "0")} в **{reputationType.Location().Localize(true)}**\n") +
                     $"{emotes.GetEmoteOrBlank("Blank")}")
                 // дата регистрации и количество дней в игровом мире
                 .AddField(IzumiReplyMessage.ProfileRegistrationDateTitle.Parse(),
