@@ -1,6 +1,6 @@
 <p-contextMenu #cm [model]="menuItems"></p-contextMenu>
-<p-table [value]="data" [(contextMenuSelection)]="selectedItem" [contextMenu]="cm"
-         styleClass="p-datatable-sm" autoLayout="autoLayout">
+<p-table [value]="data" [(contextMenuSelection)]="selectedItem" [contextMenu]="cm" styleClass="p-datatable-sm"
+         autoLayout="autoLayout" stateStorage="session" stateKey="world-property-list-session">
     <ng-template pTemplate="caption">
         <button pButton pRipple type="button" label="Refresh" class="p-button-raised p-button-text p-button-plain"
                 icon="pi pi-refresh" (click)="refresh()"></button>

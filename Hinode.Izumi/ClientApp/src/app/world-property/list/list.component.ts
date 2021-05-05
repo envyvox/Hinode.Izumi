@@ -5,7 +5,7 @@ import {
   WorldPropertyService,
   WorldPropertyWebModel
 } from '../../shared/web.api.service';
-import { MenuItem, MessageService, SelectItem } from 'primeng/api';
+import {MenuItem, MessageService, SelectItem} from 'primeng/api';
 import { EnumEx } from '../../shared/enum.extensions';
 import { Router } from '@angular/router';
 
@@ -31,14 +31,6 @@ export class ListComponent implements OnInit {
 
   ngOnInit(): void {
     this.refresh();
-
-    this.menuItems = [
-      {
-        label: 'Edit',
-        icon: 'pi pi-pencil',
-        command: () => this.edit(this.selectedItem)
-      }
-    ];
   }
 
   refresh() {
@@ -47,6 +39,13 @@ export class ListComponent implements OnInit {
         .subscribe(x => {
           this.data = x;
         });
+
+    this.menuItems = [
+      {
+        label: 'Edit',
+        icon: 'pi pi-pencil',
+        command: () => this.edit(this.selectedItem)
+      }];
   }
 
   upload() {
@@ -58,7 +57,7 @@ export class ListComponent implements OnInit {
         });
   }
 
-  edit( selectedItem: WorldPropertyWebModel ) {
+  private edit(selectedItem: WorldPropertyWebModel) {
     this._router.navigateByUrl(`/world-property/edit/${selectedItem.id}`);
   }
 }

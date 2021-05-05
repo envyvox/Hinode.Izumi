@@ -52,7 +52,7 @@
         <p-fieldset legend="Ингредиенты">
             <p-contextMenu #cm [model]="menuItems"></p-contextMenu>
             <p-table #d [value]="ingredients" [(contextMenuSelection)]="selectedItem" [contextMenu]="cm"
-                     styleClass="p-datatable-sm" autoLayout="autoLayout">
+                     styleClass="p-datatable-sm" autoLayout="autoLayout" stateStorage="session" stateKey="alcohol-edit-ingredients-session">
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Category</th>
@@ -77,7 +77,7 @@
     <div class="p-col-6 p-md-6">
         <p-fieldset legend="Свойства">
             <p-table [value]="properties" [(contextMenuSelection)]="selectedItem" [contextMenu]="cm"
-                     styleClass="p-datatable-sm" autoLayout="autoLayout">
+                     styleClass="p-datatable-sm" autoLayout="autoLayout" stateStorage="session" stateKey="alcohol-edit-properties-session">
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Property</th>
