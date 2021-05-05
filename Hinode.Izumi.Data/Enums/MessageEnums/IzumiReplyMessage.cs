@@ -507,7 +507,10 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         ShopRecipeMasteryWrongAmount,
         ReferralListReferrerFieldDesc,
         ReferralListRewardsFieldName,
-        ReferralListRewardsFieldDesc
+        ReferralListRewardsFieldDesc,
+        UserReputationListDesc,
+        UserReputationListFieldName,
+        UserReputationListFooter
     }
 
     public static class IzumiReplyMessageHelper
@@ -1547,7 +1550,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Репутационный рейтинг",
 
             IzumiReplyMessage.UserProfileRepRatingFieldDesc =>
-                "У вас {0} {1} рейтинга\nСтатус в обществе: **{2}**",
+                "Статус в обществе: **{0}**\nУ вас {1} {2} репутационного рейтинга",
 
             IzumiReplyMessage.UserProfileBirthdayFieldName =>
                 "День рождения",
@@ -1979,7 +1982,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Очки приключений сбрасываются первого числа каждого месяца.",
 
             IzumiReplyMessage.UserProfileRatingFieldName =>
-                "Рейтинг",
+                "Рейтинг приключений",
 
             IzumiReplyMessage.UserProfileRatingFieldDesc =>
                 "Позиция: {0} `{1}`\nВ этом месяце получено {2} {3}",
@@ -2042,6 +2045,15 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "{14} За `6`, `7`, `8`, `9` пользователей вы получите {5} {6} {7}.\n" +
                 "{15} За `10` приглашенных вы получите {5} {6} {7} и титул {8} {9}.\n" +
                 "{16} За каждого последующего вы будете получать {5} {10} {7}.",
+
+            IzumiReplyMessage.UserReputationListDesc =>
+                "Статус в обществе: **{0}**.\nУ вас {1} {2} репутационного рейтинга.\n\nНапишите `!репутация [номер]` чтобы посмотреть подробную информацию о репутации конкретной локации.",
+
+            IzumiReplyMessage.UserReputationListFieldName =>
+                "Репутация в городах",
+
+            IzumiReplyMessage.UserReputationListFooter =>
+                "Репутационный рейтинг это среднее количество всех репутаций.",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };

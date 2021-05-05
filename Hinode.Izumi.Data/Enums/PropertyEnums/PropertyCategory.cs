@@ -62,7 +62,12 @@ namespace Hinode.Izumi.Data.Enums.PropertyEnums
         /// <summary>
         /// Коробки.
         /// </summary>
-        Box = 11
+        Box = 11,
+
+        /// <summary>
+        /// Репутация.
+        /// </summary>
+        Reputation = 12
     }
 
     public static class PropertyCategoryHelper

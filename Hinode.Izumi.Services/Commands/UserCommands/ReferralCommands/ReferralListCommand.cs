@@ -71,6 +71,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ReferralCommands
                 .AddField(IzumiReplyMessage.ReferralListReferrerFieldName.Parse(),
                     referrerString +
                     $"\n{emotes.GetEmoteOrBlank("Blank")}")
+                // награды реферальной системы
                 .AddField(IzumiReplyMessage.ReferralListRewardsFieldName.Parse(),
                     IzumiReplyMessage.ReferralListRewardsFieldDesc.Parse(
                         emotes.GetEmoteOrBlank(Box.Capital.Emote()), _local.Localize(Box.Capital.ToString()),

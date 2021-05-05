@@ -69,9 +69,9 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
         {
             var embed = await GetProfileEmbed(name != null
                 // если пользователь указал игровое имя в команде, нужно вывести профиль желаемого пользователя
-                ? await _userService.GetUser(name)
+                ? await _userService.GetUserWithRowNumber(name)
                 // если нет - его собственный профиль
-                : await _userService.GetUser((long) Context.User.Id));
+                : await _userService.GetUserWithRowNumber((long) Context.User.Id));
 
             await _discordEmbedService.SendEmbed(Context.User, embed);
             // проверяем нужно ли двинуть прогресс обучения пользователя
@@ -79,7 +79,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
             await Task.CompletedTask;
         }
 
-        private async Task<EmbedBuilder> GetProfileEmbed(UserModel user)
+        private async Task<EmbedBuilder> GetProfileEmbed(UserWithRowNumber user)
         {
             // получаем все иконки из базы
             var emotes = await _emoteService.GetEmotes();
@@ -108,8 +108,6 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
             var registrationDate = user.CreatedAt.ToString("dd MMMM yyyy", new CultureInfo("ru-ru"));
             // заполняем количество дней в игровом мире
             var daysInGame = (timeNow - user.CreatedAt).TotalDays.Days().Humanize(1, new CultureInfo("ru-RU"));
-            // получаем позицию пользователя в рейтинге очков приключений
-            var userWr = await _userService.GetUserWithRowNumber(user.Id);
 
             // заполняем строку о текущей локации в зависимости от того, чем пользователь сейчас заниматся
             string locationString;
@@ -150,29 +148,44 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
             return new EmbedBuilder()
                 // аватарка пользователя
                 .WithThumbnailUrl(socketUser.GetAvatarUrl())
+
                 // титул пользователя, игровое имя и имя аккаунта дискорда
                 .WithDescription(IzumiReplyMessage.ProfileTitle.Parse(
                     emotes.GetEmoteOrBlank(user.Title.Emote()), user.Title.Localize(),
                     user.Name, socketUser.Username))
+
                 // пол пользователя
                 .AddField(IzumiReplyMessage.ProfileGenderTitle.Parse(),
                     $"{emotes.GetEmoteOrBlank(user.Gender.Emote())} {user.Gender.Localize()}" +
                     $"\n{emotes.GetEmoteOrBlank("Blank")}", true)
+
                 // день рождения
                 .AddField(IzumiReplyMessage.UserProfileBirthdayFieldName.Parse(),
                     IzumiReplyMessage.UserProfileBirthdayFieldDescNull.Parse(
                         emotes.GetEmoteOrBlank("Blank")), true)
-                // рейтинг
-                .AddField(IzumiReplyMessage.UserProfileRatingFieldName.Parse(),
-                    IzumiReplyMessage.UserProfileRatingFieldDesc.Parse(
-                        _calc.RowNumberEmote(emotes, userWr.RowNumber), userWr.RowNumber,
-                        userWr.Points, _local.Localize("AdventurePoints", userWr.Points)))
+
                 // энергия пользователя
                 .AddField(IzumiReplyMessage.UserProfileEnergyFieldName.Parse(),
                     $"{await _calc.DisplayProgressBar(user.Energy)} {emotes.GetEmoteOrBlank("Energy")} {user.Energy} {_local.Localize("Energy", user.Energy)}")
+
                 // текущая локация
                 .AddField(IzumiReplyMessage.ProfileCurrentLocationTitle.Parse(),
                     locationString + $"\n{emotes.GetEmoteOrBlank("Blank")}")
+
+                // рейтинг приключений
+                .AddField(IzumiReplyMessage.UserProfileRatingFieldName.Parse(),
+                    IzumiReplyMessage.UserProfileRatingFieldDesc.Parse(
+                        _calc.RowNumberEmote(emotes, user.RowNumber), user.RowNumber,
+                        user.Points, _local.Localize("AdventurePoints", user.Points)))
+
+                // репутационный рейтинг
+                .AddField(IzumiReplyMessage.UserProfileRepRatingFieldName.Parse(),
+                    IzumiReplyMessage.UserProfileRepRatingFieldDesc.Parse(
+                        userReputationStatus.Localize(),
+                        emotes.GetEmoteOrBlank(ReputationStatusHelper.Emote(userAverageReputation)),
+                        userAverageReputation) +
+                    $"\n{emotes.GetEmoteOrBlank("Blank")}")
+
                 // семья
                 .AddField(IzumiReplyMessage.ProfileFamilyTitle.Parse(),
                     hasFamily
@@ -181,30 +194,21 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
                             emotes.GetEmoteOrBlank("Blank"), await DisplayUserFamily(user.Id))
                         // если пользователь не состоит в семье - выводим строку о том, что у него нет семьи
                         : IzumiReplyMessage.ProfileFamilyNull.Parse(emotes.GetEmoteOrBlank("Blank")))
+
                 // клан
                 .AddField(IzumiReplyMessage.ProfileClanTitle.Parse(),
                     IzumiReplyMessage.ProfileClanNull.Parse(emotes.GetEmoteOrBlank("Blank")) +
                     $"\n{emotes.GetEmoteOrBlank("Blank")}")
-                // репутационный рейтинг
-                .AddField(IzumiReplyMessage.UserProfileRepRatingFieldName.Parse(),
-                    IzumiReplyMessage.UserProfileRepRatingFieldDesc.Parse(
-                        emotes.GetEmoteOrBlank(ReputationStatusHelper.Emote(userAverageReputation)),
-                        userAverageReputation, userReputationStatus.Localize()))
-                // репутация пользователя
-                .AddField(IzumiReplyMessage.ProfileReputationFieldName.Parse(),
-                    Enum.GetValues(typeof(Reputation))
-                        .Cast<Reputation>()
-                        .Aggregate(string.Empty, (current, reputationType) =>
-                            current +
-                            $"{emotes.GetEmoteOrBlank(reputationType.Emote(userReputations.ContainsKey(reputationType) ? userReputations[reputationType].Amount : 0))} {(userReputations.ContainsKey(reputationType) ? $"{userReputations[reputationType].Amount}" : "0")} в **{reputationType.Location().Localize(true)}**\n") +
-                    $"{emotes.GetEmoteOrBlank("Blank")}")
+
                 // дата регистрации и количество дней в игровом мире
                 .AddField(IzumiReplyMessage.ProfileRegistrationDateTitle.Parse(),
                     IzumiReplyMessage.ProfileRegistrationDateDesc.Parse(
                         registrationDate, daysInGame))
+
                 // информация пользователя
                 .AddField(IzumiReplyMessage.ProfileAboutMeTitle.Parse(),
                     user.About ?? IzumiReplyMessage.ProfileAboutMeNull.Parse())
+
                 // активный баннер пользователя
                 .WithImageUrl(userBanner.Url);
         }

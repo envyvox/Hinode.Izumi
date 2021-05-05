@@ -300,7 +300,132 @@ namespace Hinode.Izumi.Data.Enums.PropertyEnums
         /// <summary>
         ///
         /// </summary>
-        BoxVillageCropMaxAmount = 62
+        BoxVillageCropMaxAmount = 62,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationCapitalBoxAmount = 63,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationGardenBoxAmount = 64,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationSeaportBoxAmount = 65,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationCastleBoxAmount = 66,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationVillageBoxAmount = 67,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationCapitalFoodId = 68,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationGardenFoodId = 69,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationSeaportFoodId = 70,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationCastleFoodId = 71,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationVillageFoodId = 72,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationCapitalPearlAmount = 73,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationGardenPearlAmount = 74,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationSeaportPearlAmount = 75,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationCastlePearlAmount = 76,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationVillagePearlAmount = 77,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationCapitalCardId = 78,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationGardenCardId = 79,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationSeaportCardId = 80,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationCastleCardId = 81,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationVillageCardId = 82,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationCapitalTitleNumber = 83,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationGardenTitleNumber = 84,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationSeaportTitleNumber = 85,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationCastleTitleNumber = 86,
+
+        /// <summary>
+        ///
+        /// </summary>
+        ReputationVillageTitleNumber = 87
     }
 
     public static class PropertyHelper
@@ -371,6 +496,31 @@ namespace Hinode.Izumi.Data.Enums.PropertyEnums
             Property.BoxVillageProductMaxAmount => PropertyCategory.Box,
             Property.BoxVillageCropMinAmount => PropertyCategory.Box,
             Property.BoxVillageCropMaxAmount => PropertyCategory.Box,
+            Property.ReputationCapitalBoxAmount => PropertyCategory.Reputation,
+            Property.ReputationGardenBoxAmount => PropertyCategory.Reputation,
+            Property.ReputationSeaportBoxAmount => PropertyCategory.Reputation,
+            Property.ReputationCastleBoxAmount => PropertyCategory.Reputation,
+            Property.ReputationVillageBoxAmount => PropertyCategory.Reputation,
+            Property.ReputationCapitalFoodId => PropertyCategory.Reputation,
+            Property.ReputationGardenFoodId => PropertyCategory.Reputation,
+            Property.ReputationSeaportFoodId => PropertyCategory.Reputation,
+            Property.ReputationCastleFoodId => PropertyCategory.Reputation,
+            Property.ReputationVillageFoodId => PropertyCategory.Reputation,
+            Property.ReputationCapitalPearlAmount => PropertyCategory.Reputation,
+            Property.ReputationGardenPearlAmount => PropertyCategory.Reputation,
+            Property.ReputationSeaportPearlAmount => PropertyCategory.Reputation,
+            Property.ReputationCastlePearlAmount => PropertyCategory.Reputation,
+            Property.ReputationVillagePearlAmount => PropertyCategory.Reputation,
+            Property.ReputationCapitalCardId => PropertyCategory.Reputation,
+            Property.ReputationGardenCardId => PropertyCategory.Reputation,
+            Property.ReputationSeaportCardId => PropertyCategory.Reputation,
+            Property.ReputationCastleCardId => PropertyCategory.Reputation,
+            Property.ReputationVillageCardId => PropertyCategory.Reputation,
+            Property.ReputationCapitalTitleNumber => PropertyCategory.Reputation,
+            Property.ReputationGardenTitleNumber => PropertyCategory.Reputation,
+            Property.ReputationSeaportTitleNumber => PropertyCategory.Reputation,
+            Property.ReputationCastleTitleNumber => PropertyCategory.Reputation,
+            Property.ReputationVillageTitleNumber => PropertyCategory.Reputation,
             _ => throw new ArgumentOutOfRangeException(nameof(property), property, null)
         };
     }
