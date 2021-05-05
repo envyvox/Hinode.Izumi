@@ -41,9 +41,10 @@ import { ContractModule } from './contract/contract.module';
 import { LocalizationModule } from './localization/localization.module';
 import { AlcoholPropertyModule } from './alcohol-property/alcohol-property.module';
 import { AlcoholIngredientModule } from './alcohol-ingredient/alcohol-ingredient.module';
+import {ToastModule} from "primeng/toast";
 
 @NgModule({
-    imports:[
+    imports: [
         HttpClientModule,
         BrowserModule,
         BrowserAnimationsModule,
@@ -78,7 +79,8 @@ import { AlcoholIngredientModule } from './alcohol-ingredient/alcohol-ingredient
         ContractModule,
         LocalizationModule,
         AlcoholPropertyModule,
-        AlcoholIngredientModule
+        AlcoholIngredientModule,
+        ToastModule
     ],
     providers:[
         MessageService,
