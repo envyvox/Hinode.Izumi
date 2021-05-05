@@ -156,8 +156,6 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         WorldInfoWeatherTomorrowFieldDesc,
         WorldInfoSeasonFieldName,
         WorldInfoSeasonFieldDesc,
-        WorldInfoStateFieldName,
-        WorldInfoStateFieldDesc,
         UpdateAboutMinLimit,
         TemporarilyUnavailable,
         TitleAdded,
@@ -968,12 +966,6 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.WorldInfoSeasonFieldDesc =>
                 "*Текущий сезон определяет ассортимент семян в магазине, ведь у каждого урожая есть свой сезон роста. Посаженные на ячейки семена умирают при смене сезона, поэтому будьте дальновидными. Так же влияет на виды рыб, которые можно поймать.*\nТекущий сезон - **{0}**.",
-
-            IzumiReplyMessage.WorldInfoStateFieldName =>
-                "{0} Состояние мира",
-
-            IzumiReplyMessage.WorldInfoStateFieldDesc =>
-                "Временно недоступно...",
 
             IzumiReplyMessage.UpdateAboutMinLimit =>
                 "Указанный вами текст слишком короткий, попробуйте описать себя более подробно ;)",

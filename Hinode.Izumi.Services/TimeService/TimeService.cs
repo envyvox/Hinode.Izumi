@@ -32,11 +32,11 @@ namespace Hinode.Izumi.Services.TimeService
 
         public TimesDay GetCurrentTimesDay()
         {
-            var timeNow = DateTimeOffset.Now;
-            var c = new Coordinate(55.915379, 37.824598, timeNow.DateTime);
+            var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, _timeZoneInfo);
+            var c = new Coordinate(55.915379, 37.824598, timeNow);
 
             return timeNow > c.CelestialInfo.SunRise &&
-                   timeNow < c.CelestialInfo.AdditionalSolarTimes.AstronomicalDusk
+                   timeNow < c.CelestialInfo.SunSet
                 ? TimesDay.Day
                 : TimesDay.Night;
         }

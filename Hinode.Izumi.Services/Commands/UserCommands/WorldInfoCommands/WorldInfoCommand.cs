@@ -70,19 +70,23 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
                 // текущее время дня и на что оно влияет
                 .AddField(IzumiReplyMessage.WorldInfoTimeFieldName.Parse(emotes.GetEmoteOrBlank("List")),
                     IzumiReplyMessage.WorldInfoTimeFieldDesc.Parse(
-                        timeNow.Hour, timeNow.Minute, timesDay.Localize()))
+                        timeNow.Hour, timeNow.Minute, timesDay.Localize()) +
+                    $"\n{emotes.GetEmoteOrBlank("Blank")}")
                 // погода сегодня и на что она влияет
                 .AddField(IzumiReplyMessage.WorldInfoWeatherTodayFieldName.Parse(emotes.GetEmoteOrBlank("List")),
                     IzumiReplyMessage.WorldInfoWeatherTodayFieldDesc.Parse(
-                        weatherToday.Localize()))
+                        weatherToday.Localize()) +
+                    $"\n{emotes.GetEmoteOrBlank("Blank")}")
                 // погода на завтра
                 .AddField(IzumiReplyMessage.WorldInfoWeatherTomorrowFieldName.Parse(emotes.GetEmoteOrBlank("List")),
                     IzumiReplyMessage.WorldInfoWeatherTomorrowFieldDesc.Parse(
-                        weatherTomorrow.Localize()))
+                        weatherTomorrow.Localize()) +
+                    $"\n{emotes.GetEmoteOrBlank("Blank")}")
                 // текущий сезон и на что он влияет
                 .AddField(IzumiReplyMessage.WorldInfoSeasonFieldName.Parse(emotes.GetEmoteOrBlank("List")),
                     IzumiReplyMessage.WorldInfoSeasonFieldDesc.Parse(
-                        season.Localize()))
+                        season.Localize()) +
+                    $"\n{emotes.GetEmoteOrBlank("Blank")}")
                 // состояние мира после вторждения босса (информация о дебаффе)
                 .AddField(IzumiReplyMessage.WorldInfoDebuffFieldName.Parse(emotes.GetEmoteOrBlank("List")),
                     IzumiReplyMessage.WorldInfoDebuffFieldDesc.Parse(
@@ -90,10 +94,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
                             ? bossDebuff.Localize()
                             : IzumiReplyMessage.BossDebuffActive.Parse(
                                   bossDebuff.Location().Localize(true)) +
-                              bossDebuff.Localize()))
-                // состояние мире (заделка на будущую система доната)
-                .AddField(IzumiReplyMessage.WorldInfoStateFieldName.Parse(emotes.GetEmoteOrBlank("List")),
-                    IzumiReplyMessage.WorldInfoStateFieldDesc.Parse());
+                              bossDebuff.Localize()));
 
             await _discordEmbedService.SendEmbed(Context.User, embed);
             // проверяем нужно ли продвинуть прогресс обучения пользователю
