@@ -40,7 +40,7 @@ namespace Hinode.Izumi.Services.Commands.Attributes
                 Location.ExploreCastle => IzumiPreconditionErrorMessage.RequireLocationButYouExploringCastle.Parse(),
                 Location.Fishing => IzumiPreconditionErrorMessage.RequireLocationButYouFishing.Parse(),
                 Location.FieldWatering => IzumiPreconditionErrorMessage.RequireLocationButYouFieldWatering.Parse(),
-                _ => IzumiPreconditionErrorMessage.RequireLocationButYouInAnother.Parse(userLocation.Localize())
+                _ => IzumiPreconditionErrorMessage.RequireLocationButYouInAnother.Parse(_location.Localize())
             };
 
             // возвращаем ошибку
