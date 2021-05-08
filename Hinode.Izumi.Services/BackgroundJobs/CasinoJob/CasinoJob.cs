@@ -6,7 +6,7 @@ using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Framework.Autofac;
-using Hinode.Izumi.Services.BackgroundJobs.MessageJob;
+using Hinode.Izumi.Services.BackgroundJobs.DiscordJob;
 using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService;
 using Hinode.Izumi.Services.DiscordServices.DiscordGuildService;
 using Hinode.Izumi.Services.RpgServices.ImageService;
@@ -56,8 +56,8 @@ namespace Hinode.Izumi.Services.BackgroundJobs.CasinoJob
                     false, _discordEmbedService.BuildEmbed(embed));
 
             // запускаем джобу с удалением сообщения
-            BackgroundJob.Schedule<IMessageJob>(x =>
-                    x.Delete(channelId, (long) message.Id),
+            BackgroundJob.Schedule<IDiscordJob>(x =>
+                    x.DeleteMessage(channelId, (long) message.Id),
                 TimeSpan.FromHours(12));
         }
 
@@ -84,8 +84,8 @@ namespace Hinode.Izumi.Services.BackgroundJobs.CasinoJob
                     _discordEmbedService.BuildEmbed(embed));
 
             // запускаем джобу с удалением сообщения
-            BackgroundJob.Schedule<IMessageJob>(x =>
-                    x.Delete(channelId, (long) message.Id),
+            BackgroundJob.Schedule<IDiscordJob>(x =>
+                    x.DeleteMessage(channelId, (long) message.Id),
                 TimeSpan.FromHours(12));
         }
     }

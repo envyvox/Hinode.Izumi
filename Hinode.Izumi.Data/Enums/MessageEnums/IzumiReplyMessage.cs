@@ -510,7 +510,10 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         ReferralListRewardsFieldDesc,
         UserReputationListDesc,
         UserReputationListFieldName,
-        UserReputationListFooter
+        UserReputationListFooter,
+        CommunityDescMessageDeleted,
+        CommunityDescAuthor,
+        CommunityDescAuthorGotRole
     }
 
     public static class IzumiReplyMessageHelper
@@ -2054,6 +2057,15 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.UserReputationListFooter =>
                 "Репутационный рейтинг это среднее количество всех репутаций.",
+
+            IzumiReplyMessage.CommunityDescMessageDeleted =>
+                "Ваша публикация собрала {0} 5 дизлайков и была автоматически удалена из <#{1}>.",
+
+            IzumiReplyMessage.CommunityDescAuthor =>
+                "Оповещение от доски сообщества",
+
+            IzumiReplyMessage.CommunityDescAuthorGotRole =>
+                "Ваши публикации в **доске сообщества** были {0} оценены, за что вы получаете роль **{1}** на 30 дней.",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };

@@ -10,14 +10,12 @@ using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Data.Enums.PropertyEnums;
 using Hinode.Izumi.Data.Enums.ReputationEnums;
 using Hinode.Izumi.Framework.Autofac;
-using Hinode.Izumi.Services.BackgroundJobs.MessageJob;
+using Hinode.Izumi.Services.BackgroundJobs.DiscordJob;
 using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService;
 using Hinode.Izumi.Services.DiscordServices.DiscordGuildService;
 using Hinode.Izumi.Services.EmoteService;
 using Hinode.Izumi.Services.EmoteService.Impl;
 using Hinode.Izumi.Services.RpgServices.AchievementService;
-using Hinode.Izumi.Services.RpgServices.FieldService;
-using Hinode.Izumi.Services.RpgServices.FishService;
 using Hinode.Izumi.Services.RpgServices.ImageService;
 using Hinode.Izumi.Services.RpgServices.InventoryService;
 using Hinode.Izumi.Services.RpgServices.LocalizationService;
@@ -376,8 +374,8 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
             // изменяем сообщение
             await _discordEmbedService.ModifyEmbed(message, embed);
             // запускаем джобу с удалением сообщения
-            BackgroundJob.Schedule<IMessageJob>(x =>
-                    x.Delete(channelId, messageId),
+            BackgroundJob.Schedule<IDiscordJob>(x =>
+                    x.DeleteMessage(channelId, messageId),
                 TimeSpan.FromHours(24));
         }
 

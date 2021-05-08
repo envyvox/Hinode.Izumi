@@ -86,7 +86,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.UserReput
                     break;
                 case Reputation.Garden:
 
-                    box = Box.Seaport;
+                    box = Box.Garden;
                     boxAmount = await _propertyService.GetPropertyValue(Property.ReputationGardenBoxAmount);
                     foodId = await _propertyService.GetPropertyValue(Property.ReputationGardenFoodId);
                     pearlAmount = await _propertyService.GetPropertyValue(Property.ReputationGardenPearlAmount);

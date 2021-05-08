@@ -293,10 +293,21 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Impl
             // получаем пользователя сервера
             var user = await GetSocketGuildUser(userId);
 
-            // если роль нужно добавить - добавляем
-            if (adding) await user.AddRoleAsync(socketRole);
-            // если нет - снимаем
-            else await user.RemoveRoleAsync(socketRole);
+            // переключем роль
+            await ToggleRole(user, socketRole, adding);
+        }
+
+        public async Task ToggleRoleInUser(long userId, long roleId, bool adding)
+        {
+            // получаем сервер дискорда
+            var guild = await GetSocketGuild();
+            // находим нужную роль на сервере
+            var socketRole = guild.GetRole((ulong) roleId);
+            // получаем пользователя сервера
+            var user = await GetSocketGuildUser(userId);
+
+            // переключем роль
+            await ToggleRole(user, socketRole, adding);
         }
 
         public async Task MoveUserInChannel(long userId, RestVoiceChannel channel) =>
@@ -304,6 +315,20 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Impl
             await (await GetSocketGuildUser(userId))
                 // изменяем его текущий канал на нужный
                 .ModifyAsync(x => { x.Channel = channel; });
+
+        /// <summary>
+        /// Добавляет или снимает роль у пользователя.
+        /// </summary>
+        /// <param name="user">Пользователь.</param>
+        /// <param name="role">Роль.</param>
+        /// <param name="adding">True если нужно добавить роль, false если снять.</param>
+        private static async Task ToggleRole(IGuildUser user, IRole role, bool adding)
+        {
+            // если роль нужно добавить - добавляем
+            if (adding) await user.AddRoleAsync(role);
+            // если нет - снимаем
+            else await user.RemoveRoleAsync(role);
+        }
 
         /// <summary>
         /// Возвращает сервер дискорда.

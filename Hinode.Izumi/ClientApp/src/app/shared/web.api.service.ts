@@ -6524,7 +6524,7 @@ export class EntityBaseModel implements IEntityBaseModel {
         data["id"] = this.id !== undefined ? this.id : <any>null;
         data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>null;
         data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : <any>null;
-        return data;
+        return data; 
     }
 }
 
@@ -6568,7 +6568,7 @@ export class AchievementWebModel extends EntityBaseModel implements IAchievement
         data["reward"] = this.reward !== undefined ? this.reward : <any>null;
         data["number"] = this.number !== undefined ? this.number : <any>null;
         super.toJSON(data);
-        return data;
+        return data; 
     }
 }
 
@@ -6716,7 +6716,7 @@ export class AlcoholWebModel extends EntityBaseModel implements IAlcoholWebModel
         data["npcPrice"] = this.npcPrice !== undefined ? this.npcPrice : <any>null;
         data["profit"] = this.profit !== undefined ? this.profit : <any>null;
         super.toJSON(data);
-        return data;
+        return data; 
     }
 }
 
@@ -6769,7 +6769,7 @@ export class AlcoholIngredientWebModel extends EntityBaseModel implements IAlcoh
         data["ingredientName"] = this.ingredientName !== undefined ? this.ingredientName : <any>null;
         data["amount"] = this.amount !== undefined ? this.amount : <any>null;
         super.toJSON(data);
-        return data;
+        return data; 
     }
 }
 
@@ -6842,7 +6842,7 @@ export class AlcoholPropertyWebModel extends EntityBaseModel implements IAlcohol
         data["mastery200"] = this.mastery200 !== undefined ? this.mastery200 : <any>null;
         data["mastery250"] = this.mastery250 !== undefined ? this.mastery250 : <any>null;
         super.toJSON(data);
-        return data;
+        return data; 
     }
 }
 
@@ -6905,7 +6905,7 @@ export class ContractWebModel extends EntityBaseModel implements IContractWebMod
         data["reputation"] = this.reputation !== undefined ? this.reputation : <any>null;
         data["energy"] = this.energy !== undefined ? this.energy : <any>null;
         super.toJSON(data);
-        return data;
+        return data; 
     }
 }
 
@@ -6983,7 +6983,7 @@ export class CraftingWebModel extends EntityBaseModel implements ICraftingWebMod
         data["npcPrice"] = this.npcPrice !== undefined ? this.npcPrice : <any>null;
         data["profit"] = this.profit !== undefined ? this.profit : <any>null;
         super.toJSON(data);
-        return data;
+        return data; 
     }
 }
 
@@ -7037,7 +7037,7 @@ export class CraftingIngredientWebModel extends EntityBaseModel implements ICraf
         data["ingredientName"] = this.ingredientName !== undefined ? this.ingredientName : <any>null;
         data["amount"] = this.amount !== undefined ? this.amount : <any>null;
         super.toJSON(data);
-        return data;
+        return data; 
     }
 }
 
@@ -7099,7 +7099,7 @@ export class CraftingPropertyWebModel extends EntityBaseModel implements ICrafti
         data["mastery200"] = this.mastery200 !== undefined ? this.mastery200 : <any>null;
         data["mastery250"] = this.mastery250 !== undefined ? this.mastery250 : <any>null;
         super.toJSON(data);
-        return data;
+        return data; 
     }
 }
 
@@ -7153,7 +7153,7 @@ export class CropWebModel extends EntityBaseModel implements ICropWebModel {
         data["seedId"] = this.seedId !== undefined ? this.seedId : <any>null;
         data["seed"] = this.seed ? this.seed.toJSON() : <any>null;
         super.toJSON(data);
-        return data;
+        return data; 
     }
 }
 
@@ -7210,7 +7210,7 @@ export class SeedWebModel extends EntityBaseModel implements ISeedWebModel {
         data["cropName"] = this.cropName !== undefined ? this.cropName : <any>null;
         data["cropPrice"] = this.cropPrice !== undefined ? this.cropPrice : <any>null;
         super.toJSON(data);
-        return data;
+        return data; 
     }
 }
 
@@ -7261,7 +7261,7 @@ export class DrinkWebModel extends EntityBaseModel implements IDrinkWebModel {
         data["name"] = this.name !== undefined ? this.name : <any>null;
         data["time"] = this.time !== undefined ? this.time : <any>null;
         super.toJSON(data);
-        return data;
+        return data; 
     }
 }
 
@@ -7310,7 +7310,7 @@ export class EmoteWebModel implements IEmoteWebModel {
         data["code"] = this.code !== undefined ? this.code : <any>null;
         data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>null;
         data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : <any>null;
-        return data;
+        return data; 
     }
 }
 
@@ -7370,7 +7370,7 @@ export class FishWebModel extends EntityBaseModel implements IFishWebModel {
         data["timesDay"] = this.timesDay !== undefined ? this.timesDay : <any>null;
         data["price"] = this.price !== undefined ? this.price : <any>null;
         super.toJSON(data);
-        return data;
+        return data; 
     }
 }
 
@@ -7473,7 +7473,7 @@ export class FoodWebModel extends EntityBaseModel implements IFoodWebModel {
                 data["seasons"].push(item);
         }
         super.toJSON(data);
-        return data;
+        return data; 
     }
 }
 
@@ -7533,7 +7533,7 @@ export class FoodIngredientWebModel extends EntityBaseModel implements IFoodIngr
         data["ingredientName"] = this.ingredientName !== undefined ? this.ingredientName : <any>null;
         data["amount"] = this.amount !== undefined ? this.amount : <any>null;
         super.toJSON(data);
-        return data;
+        return data; 
     }
 }
 
@@ -7577,7 +7577,7 @@ export class GatheringWebModel extends EntityBaseModel implements IGatheringWebM
         data["price"] = this.price !== undefined ? this.price : <any>null;
         data["location"] = this.location !== undefined ? this.location : <any>null;
         super.toJSON(data);
-        return data;
+        return data; 
     }
 }
 
@@ -7636,7 +7636,7 @@ export class GatheringPropertyWebModel extends EntityBaseModel implements IGathe
         data["mastery200"] = this.mastery200 !== undefined ? this.mastery200 : <any>null;
         data["mastery250"] = this.mastery250 !== undefined ? this.mastery250 : <any>null;
         super.toJSON(data);
-        return data;
+        return data; 
     }
 }
 
@@ -7686,7 +7686,7 @@ export class ImageWebModel extends EntityBaseModel implements IImageWebModel {
         data["type"] = this.type !== undefined ? this.type : <any>null;
         data["url"] = this.url !== undefined ? this.url : <any>null;
         super.toJSON(data);
-        return data;
+        return data; 
     }
 }
 
@@ -7784,7 +7784,7 @@ export class LocalizationWebModel extends EntityBaseModel implements ILocalizati
         data["double"] = this.double !== undefined ? this.double : <any>null;
         data["multiply"] = this.multiply !== undefined ? this.multiply : <any>null;
         super.toJSON(data);
-        return data;
+        return data; 
     }
 }
 
@@ -7858,7 +7858,7 @@ export class MasteryPropertyWebModel extends EntityBaseModel implements IMastery
         data["mastery200"] = this.mastery200 !== undefined ? this.mastery200 : <any>null;
         data["mastery250"] = this.mastery250 !== undefined ? this.mastery250 : <any>null;
         super.toJSON(data);
-        return data;
+        return data; 
     }
 }
 
@@ -7928,7 +7928,7 @@ export class ProductWebModel extends EntityBaseModel implements IProductWebModel
         data["name"] = this.name !== undefined ? this.name : <any>null;
         data["price"] = this.price !== undefined ? this.price : <any>null;
         super.toJSON(data);
-        return data;
+        return data; 
     }
 }
 
@@ -7971,7 +7971,7 @@ export class TransitWebModel extends EntityBaseModel implements ITransitWebModel
         data["time"] = this.time !== undefined ? this.time : <any>null;
         data["price"] = this.price !== undefined ? this.price : <any>null;
         super.toJSON(data);
-        return data;
+        return data; 
     }
 }
 
@@ -8034,7 +8034,7 @@ export class UserWebModel implements IUserWebModel {
         data["energy"] = this.energy !== undefined ? this.energy : <any>null;
         data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>null;
         data["updatedAt"] = this.updatedAt ? this.updatedAt.toISOString() : <any>null;
-        return data;
+        return data; 
     }
 }
 
@@ -8110,7 +8110,7 @@ export class WorldPropertyWebModel extends EntityBaseModel implements IWorldProp
         data["property"] = this.property !== undefined ? this.property : <any>null;
         data["value"] = this.value !== undefined ? this.value : <any>null;
         super.toJSON(data);
-        return data;
+        return data; 
     }
 }
 

@@ -68,6 +68,14 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordGuildService
         Task ToggleRoleInUser(long userId, DiscordRole role, bool adding);
 
         /// <summary>
+        /// Добавляет или снимает роль у пользователя.
+        /// </summary>
+        /// <param name="userId">Id пользователя.</param>
+        /// <param name="roleId">Id роли.</param>
+        /// <param name="adding">True если нужно добавить роль, false если снять.</param>
+        Task ToggleRoleInUser(long userId, long roleId, bool adding);
+
+        /// <summary>
         /// Двигает пользователя в указанный голосовой канал.
         /// </summary>
         /// <param name="userId">Id пользователя.</param>

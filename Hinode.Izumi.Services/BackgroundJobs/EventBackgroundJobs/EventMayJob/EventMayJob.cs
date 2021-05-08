@@ -12,7 +12,7 @@ using Hinode.Izumi.Data.Enums.PropertyEnums;
 using Hinode.Izumi.Data.Enums.RarityEnums;
 using Hinode.Izumi.Data.Enums.ReputationEnums;
 using Hinode.Izumi.Framework.Autofac;
-using Hinode.Izumi.Services.BackgroundJobs.MessageJob;
+using Hinode.Izumi.Services.BackgroundJobs.DiscordJob;
 using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService;
 using Hinode.Izumi.Services.DiscordServices.DiscordGuildService;
 using Hinode.Izumi.Services.EmoteService;
@@ -263,8 +263,8 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
             // изменяем сообщение
             await _discordEmbedService.ModifyEmbed(message, embed);
             // запускаем джобу с удалением сообщения
-            BackgroundJob.Schedule<IMessageJob>(x =>
-                    x.Delete(channelId, messageId),
+            BackgroundJob.Schedule<IDiscordJob>(x =>
+                    x.DeleteMessage(channelId, messageId),
                 TimeSpan.FromHours(24));
 
             var embedReward = new EmbedBuilder()
@@ -427,8 +427,8 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
             // изменяем сообщение
             await _discordEmbedService.ModifyEmbed(message, embed);
             // запускаем джобу с удалением сообщения
-            BackgroundJob.Schedule<IMessageJob>(x =>
-                    x.Delete(channelId, messageId),
+            BackgroundJob.Schedule<IDiscordJob>(x =>
+                    x.DeleteMessage(channelId, messageId),
                 TimeSpan.FromHours(24));
 
             // создаем строку с наградой

@@ -3,15 +3,17 @@ using System;
 using Hinode.Izumi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Hinode.Izumi.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210507104413_MessagesAndRolesModelsInit")]
+    partial class MessagesAndRolesModelsInit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -738,10 +740,6 @@ namespace Hinode.Izumi.Data.Migrations
                         .HasColumnName("id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<bool>("Active")
-                        .HasColumnType("boolean")
-                        .HasColumnName("active");
-
                     b.Property<DateTimeOffset>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -772,9 +770,9 @@ namespace Hinode.Izumi.Data.Migrations
                     b.HasIndex("MessageId")
                         .HasDatabaseName("ix_content_votes_message_id");
 
-                    b.HasIndex("UserId", "MessageId", "Vote")
+                    b.HasIndex("UserId", "MessageId")
                         .IsUnique()
-                        .HasDatabaseName("ix_content_votes_user_id_message_id_vote");
+                        .HasDatabaseName("ix_content_votes_user_id_message_id");
 
                     b.ToTable("content_votes");
                 });
