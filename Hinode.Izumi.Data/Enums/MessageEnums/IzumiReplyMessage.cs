@@ -513,7 +513,9 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         UserReputationListFooter,
         CommunityDescMessageDeleted,
         CommunityDescAuthor,
-        CommunityDescAuthorGotRole
+        CommunityDescAuthorGotRole,
+        ReputationRewardAuthor,
+        ReputationRewardDesc
     }
 
     public static class IzumiReplyMessageHelper
@@ -2066,6 +2068,12 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.CommunityDescAuthorGotRole =>
                 "Ваши публикации в **доске сообщества** были {0} оценены, за что вы получаете роль **{1}** на 30 дней.",
+
+            IzumiReplyMessage.ReputationRewardAuthor =>
+                "Награда за достижение репутации",
+
+            IzumiReplyMessage.ReputationRewardDesc =>
+                "Вы достигли {0} `{1}` репутации в **{2}** и получаете {3} {4} {5}.",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };

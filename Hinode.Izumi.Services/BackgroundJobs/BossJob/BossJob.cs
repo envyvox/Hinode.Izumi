@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Discord;
 using Hangfire;
 using Hinode.Izumi.Data.Enums;
-using Hinode.Izumi.Data.Enums.AchievementEnums;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Data.Enums.PropertyEnums;
@@ -15,7 +14,6 @@ using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService;
 using Hinode.Izumi.Services.DiscordServices.DiscordGuildService;
 using Hinode.Izumi.Services.EmoteService;
 using Hinode.Izumi.Services.EmoteService.Impl;
-using Hinode.Izumi.Services.RpgServices.AchievementService;
 using Hinode.Izumi.Services.RpgServices.ImageService;
 using Hinode.Izumi.Services.RpgServices.InventoryService;
 using Hinode.Izumi.Services.RpgServices.LocalizationService;
@@ -35,7 +33,6 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
         private readonly IEmoteService _emoteService;
         private readonly IPropertyService _propertyService;
         private readonly IStatisticService _statisticService;
-        private readonly IAchievementService _achievementService;
         private readonly IInventoryService _inventoryService;
         private readonly IReputationService _reputationService;
         private readonly IImageService _imageService;
@@ -50,15 +47,14 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
 
         public BossJob(IDiscordEmbedService discordEmbedService, IDiscordGuildService discordGuildService,
             IEmoteService emoteService, IPropertyService propertyService, IStatisticService statisticService,
-            IAchievementService achievementService, IInventoryService inventoryService,
-            IReputationService reputationService, IImageService imageService, ILocalizationService local)
+            IInventoryService inventoryService, IReputationService reputationService,
+            IImageService imageService, ILocalizationService local)
         {
             _discordEmbedService = discordEmbedService;
             _discordGuildService = discordGuildService;
             _emoteService = emoteService;
             _propertyService = propertyService;
             _statisticService = statisticService;
-            _achievementService = achievementService;
             _inventoryService = inventoryService;
             _reputationService = reputationService;
             _imageService = imageService;
@@ -277,78 +273,6 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                 await _reputationService.AddReputationToUser(usersId, reputation, reputationReward);
                 // добавляем пользователям статистику
                 await _statisticService.AddStatisticToUser(usersId, Statistic.BossKilled);
-
-                // проверяем достижения у пользователей
-                switch (reputation)
-                {
-                    case Reputation.Capital:
-
-                        await _achievementService.CheckAchievement(usersId.ToArray(),
-                            new[]
-                            {
-                                Achievement.Reach500ReputationCapital,
-                                Achievement.Reach1000ReputationCapital,
-                                Achievement.Reach2000ReputationCapital,
-                                Achievement.Reach5000ReputationCapital,
-                                Achievement.Reach10000ReputationCapital
-                            });
-
-                        break;
-                    case Reputation.Garden:
-
-                        await _achievementService.CheckAchievement(usersId.ToArray(),
-                            new[]
-                            {
-                                Achievement.Reach500ReputationGarden,
-                                Achievement.Reach1000ReputationGarden,
-                                Achievement.Reach2000ReputationGarden,
-                                Achievement.Reach5000ReputationGarden,
-                                Achievement.Reach10000ReputationGarden
-                            });
-
-                        break;
-                    case Reputation.Seaport:
-
-                        await _achievementService.CheckAchievement(usersId.ToArray(),
-                            new[]
-                            {
-                                Achievement.Reach500ReputationSeaport,
-                                Achievement.Reach1000ReputationSeaport,
-                                Achievement.Reach2000ReputationSeaport,
-                                Achievement.Reach5000ReputationSeaport,
-                                Achievement.Reach10000ReputationSeaport
-                            });
-
-                        break;
-                    case Reputation.Castle:
-
-                        await _achievementService.CheckAchievement(usersId.ToArray(),
-                            new[]
-                            {
-                                Achievement.Reach500ReputationCastle,
-                                Achievement.Reach1000ReputationCastle,
-                                Achievement.Reach2000ReputationCastle,
-                                Achievement.Reach5000ReputationCastle,
-                                Achievement.Reach10000ReputationCastle,
-                            });
-
-                        break;
-                    case Reputation.Village:
-
-                        await _achievementService.CheckAchievement(usersId.ToArray(),
-                            new[]
-                            {
-                                Achievement.Reach500ReputationVillage,
-                                Achievement.Reach1000ReputationVillage,
-                                Achievement.Reach2000ReputationVillage,
-                                Achievement.Reach5000ReputationVillage,
-                                Achievement.Reach10000ReputationVillage
-                            });
-
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
 
                 // подтверждаем убийтство босса
                 embed.WithDescription(IzumiEventMessage.BossKilled.Parse());

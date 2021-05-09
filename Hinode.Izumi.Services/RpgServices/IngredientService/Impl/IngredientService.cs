@@ -13,14 +13,12 @@ using Hinode.Izumi.Services.RpgServices.AlcoholService;
 using Hinode.Izumi.Services.RpgServices.CraftingService;
 using Hinode.Izumi.Services.RpgServices.CropService;
 using Hinode.Izumi.Services.RpgServices.DrinkService;
-using Hinode.Izumi.Services.RpgServices.FishService;
 using Hinode.Izumi.Services.RpgServices.FoodService;
 using Hinode.Izumi.Services.RpgServices.GatheringService;
 using Hinode.Izumi.Services.RpgServices.IngredientService.Models;
 using Hinode.Izumi.Services.RpgServices.InventoryService;
 using Hinode.Izumi.Services.RpgServices.LocalizationService;
 using Hinode.Izumi.Services.RpgServices.ProductService;
-using Hinode.Izumi.Services.RpgServices.SeedService;
 
 namespace Hinode.Izumi.Services.RpgServices.IngredientService.Impl
 {

@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Hangfire;
 using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.EffectEnums;
 using Hinode.Izumi.Data.Enums.PropertyEnums;

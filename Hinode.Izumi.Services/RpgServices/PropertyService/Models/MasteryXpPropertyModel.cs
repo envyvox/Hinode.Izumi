@@ -1,5 +1,4 @@
-﻿using Hinode.Izumi.Data.Enums;
-using Hinode.Izumi.Data.Enums.PropertyEnums;
+﻿using Hinode.Izumi.Data.Enums.PropertyEnums;
 using Hinode.Izumi.Services.Database;
 
 namespace Hinode.Izumi.Services.RpgServices.PropertyService.Models

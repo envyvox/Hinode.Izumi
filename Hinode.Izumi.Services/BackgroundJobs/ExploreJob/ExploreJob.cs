@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Discord;
-using Hangfire;
 using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.AchievementEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;

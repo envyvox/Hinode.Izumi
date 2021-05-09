@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.PropertyEnums;
 using Hinode.Izumi.Services.RpgServices.PropertyService.Models;
 
