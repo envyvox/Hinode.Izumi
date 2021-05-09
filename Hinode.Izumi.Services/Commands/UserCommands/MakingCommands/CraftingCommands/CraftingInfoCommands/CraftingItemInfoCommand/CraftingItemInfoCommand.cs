@@ -67,7 +67,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
                     $"\n{emotes.GetEmoteOrBlank("Blank")}")
                 // локация
                 .AddField(IzumiReplyMessage.LocationFieldName.Parse(),
-                    Location.Village.Localize())
+                    crafting.Location.Localize())
                 // необходимые ингредиенты
                 .AddField(IzumiReplyMessage.IngredientsFieldName.Parse(), ingredients)
                 // стоимость изготовления
