@@ -69,8 +69,10 @@ namespace Hinode.Izumi.Services.RpgServices.UserService.Impl
             return user;
         }
 
-        public async Task<UserWithRowNumber> GetUserWithRowNumber(long userId) =>
-            await _con.GetConnection()
+        public async Task<UserWithRowNumber> GetUserWithRowNumber(long userId)
+        {
+            // получаем пользователя из базы
+            var user = await _con.GetConnection()
                 .QueryFirstOrDefaultAsync<UserWithRowNumber>(@"
                     select * from (
                         select *,
@@ -79,8 +81,18 @@ namespace Hinode.Izumi.Services.RpgServices.UserService.Impl
                     where tmp.id = @userId",
                     new {userId});
 
-        public async Task<UserWithRowNumber> GetUserWithRowNumber(string namePattern) =>
-            await _con.GetConnection()
+            // если пользователя нет - выводим ошибку
+            if (user == null)
+                await Task.FromException(new Exception(IzumiNullableMessage.UserWithId.Parse()));
+
+            // возвращаем пользователя
+            return user;
+        }
+
+        public async Task<UserWithRowNumber> GetUserWithRowNumber(string namePattern)
+        {
+            // получаем пользователя из базы
+            var user = await _con.GetConnection()
                 .QueryFirstOrDefaultAsync<UserWithRowNumber>(@"
                     select * from (
                         select *,
@@ -88,6 +100,14 @@ namespace Hinode.Izumi.Services.RpgServices.UserService.Impl
                         from users) tmp
                     where tmp.name ilike '%'||@namePattern||'%'",
                     new {namePattern});
+
+            // если пользователя нет - выводим ошибку
+            if (user == null)
+                await Task.FromException(new Exception(IzumiNullableMessage.UserWithName.Parse()));
+
+            // возвращаем пользователя
+            return user;
+        }
 
         public async Task<Dictionary<Title, UserTitleModel>> GetUserTitle(long userId) =>
             (await _con.GetConnection()

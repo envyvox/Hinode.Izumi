@@ -65,21 +65,19 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
         }
 
         [Command("профиль"), Alias("profile")]
-        public async Task UserProfileTask([Remainder] string name = null!)
-        {
-            var embed = await GetProfileEmbed(name != null
+        public async Task UserProfileTask([Remainder] string name = null) =>
+            await SendProfileEmbed(name != null
                 // если пользователь указал игровое имя в команде, нужно вывести профиль желаемого пользователя
                 ? await _userService.GetUserWithRowNumber(name)
                 // если нет - его собственный профиль
                 : await _userService.GetUserWithRowNumber((long) Context.User.Id));
 
-            await _discordEmbedService.SendEmbed(Context.User, embed);
-            // проверяем нужно ли двинуть прогресс обучения пользователя
-            await _trainingService.CheckStep((long) Context.User.Id, TrainingStep.CheckProfile);
-            await Task.CompletedTask;
-        }
+        [Command("профиль"), Alias("profile")]
+        public async Task UserProfileTask(long userId) =>
+            await SendProfileEmbed(
+                await _userService.GetUserWithRowNumber(userId));
 
-        private async Task<EmbedBuilder> GetProfileEmbed(UserWithRowNumber user)
+        private async Task SendProfileEmbed(UserWithRowNumber user)
         {
             // получаем все иконки из базы
             var emotes = await _emoteService.GetEmotes();
@@ -145,7 +143,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
                     break;
             }
 
-            return new EmbedBuilder()
+            var embed = new EmbedBuilder()
                 // аватарка пользователя
                 .WithThumbnailUrl(socketUser.GetAvatarUrl())
 
@@ -211,6 +209,11 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
 
                 // активный баннер пользователя
                 .WithImageUrl(userBanner.Url);
+
+            await _discordEmbedService.SendEmbed(Context.User, embed);
+            // проверяем нужно ли двинуть прогресс обучения пользователя
+            await _trainingService.CheckStep((long) Context.User.Id, TrainingStep.CheckProfile);
+            await Task.CompletedTask;
         }
 
         /// <summary>
