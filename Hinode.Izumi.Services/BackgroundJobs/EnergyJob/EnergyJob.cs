@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Dapper;
-using Hangfire;
 using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Framework.Database;
 

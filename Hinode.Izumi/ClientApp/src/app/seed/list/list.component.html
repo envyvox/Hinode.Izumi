@@ -1,6 +1,6 @@
 <p-contextMenu #cm [model]="menuItems"></p-contextMenu>
 <p-table #d [value]="data" [(contextMenuSelection)]="selectedItem" [contextMenu]="cm"
-         styleClass="p-datatable-sm" autoLayout="autoLayout">
+         styleClass="p-datatable-sm" autoLayout="autoLayout" stateStorage="session" stateKey="seed-list-session">
     <ng-template pTemplate="caption">
         <div class="p-d-flex">
             <button pButton pRipple type="button" label="Add" class="p-button-raised p-button-text p-button-plain"

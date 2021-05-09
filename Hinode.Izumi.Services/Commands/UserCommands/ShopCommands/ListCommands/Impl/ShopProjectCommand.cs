@@ -7,6 +7,7 @@ using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService;
 using Hinode.Izumi.Services.EmoteService;
 using Hinode.Izumi.Services.EmoteService.Impl;
+using Hinode.Izumi.Services.RpgServices.BuildingService;
 using Hinode.Izumi.Services.RpgServices.ImageService;
 using Hinode.Izumi.Services.RpgServices.LocalizationService;
 using Hinode.Izumi.Services.RpgServices.ProjectService;
@@ -22,15 +23,18 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ShopCommands.ListCommands.
         private readonly IProjectService _projectService;
         private readonly ILocalizationService _local;
         private readonly IImageService _imageService;
+        private readonly IBuildingService _buildingService;
 
         public ShopProjectCommand(IDiscordEmbedService discordEmbedService, IEmoteService emoteService,
-            IProjectService projectService, ILocalizationService local, IImageService imageService)
+            IProjectService projectService, ILocalizationService local, IImageService imageService,
+            IBuildingService buildingService)
         {
             _discordEmbedService = discordEmbedService;
             _emoteService = emoteService;
             _projectService = projectService;
             _local = local;
             _imageService = imageService;
+            _buildingService = buildingService;
         }
 
         public async Task Execute(SocketCommandContext context)
@@ -51,7 +55,13 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ShopCommands.ListCommands.
             // для каждого чертежа создаем embed field
             foreach (var project in projects)
             {
-                embed.AddField($"{emotes.GetEmoteOrBlank("List")} `{project.Id}` {emotes.GetEmoteOrBlank("Project")} {project.Name}",
+                // проверяем наличие чертежа у пользователя
+                var hasProject = await _projectService.CheckUserHasProject((long) context.User.Id, project.Id);
+                // если у пользователя уже есть этот чертеж - игнорируем
+                if (hasProject) return;
+
+                embed.AddField(
+                    $"{emotes.GetEmoteOrBlank("List")} `{project.Id}` {emotes.GetEmoteOrBlank("Project")} {project.Name}",
                     $"Стоимость: {emotes.GetEmoteOrBlank(Currency.Ien.ToString())} {project.Price} {_local.Localize(Currency.Ien.ToString(), project.Price)}");
             }
 

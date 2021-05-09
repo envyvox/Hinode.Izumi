@@ -688,6 +688,97 @@ namespace Hinode.Izumi.Data.Migrations
                     b.ToTable("crops");
                 });
 
+            modelBuilder.Entity("Hinode.Izumi.Data.Models.DiscordModels.ContentMessage", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<long>("ChannelId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("channel_id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<long>("MessageId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("message_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_content_messages");
+
+                    b.HasIndex("UserId", "ChannelId", "MessageId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_content_messages_user_id_channel_id_message_id");
+
+                    b.ToTable("content_messages");
+                });
+
+            modelBuilder.Entity("Hinode.Izumi.Data.Models.DiscordModels.ContentVote", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("boolean")
+                        .HasColumnName("active");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<long>("MessageId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("message_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("Vote")
+                        .HasColumnType("integer")
+                        .HasColumnName("vote");
+
+                    b.HasKey("Id")
+                        .HasName("pk_content_votes");
+
+                    b.HasIndex("MessageId")
+                        .HasDatabaseName("ix_content_votes_message_id");
+
+                    b.HasIndex("UserId", "MessageId", "Vote")
+                        .IsUnique()
+                        .HasDatabaseName("ix_content_votes_user_id_message_id_vote");
+
+                    b.ToTable("content_votes");
+                });
+
             modelBuilder.Entity("Hinode.Izumi.Data.Models.DiscordModels.DiscordChannel", b =>
                 {
                     b.Property<long>("Id")
@@ -750,6 +841,48 @@ namespace Hinode.Izumi.Data.Migrations
                         .HasDatabaseName("ix_discord_roles_role");
 
                     b.ToTable("discord_roles");
+                });
+
+            modelBuilder.Entity("Hinode.Izumi.Data.Models.DiscordModels.UserRole", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<DateTimeOffset>("Expiration")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expiration");
+
+                    b.Property<long>("RoleId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("role_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_user_roles");
+
+                    b.HasIndex("UserId", "RoleId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_user_roles_user_id_role_id");
+
+                    b.ToTable("user_roles");
                 });
 
             modelBuilder.Entity("Hinode.Izumi.Data.Models.Drink", b =>
@@ -3146,6 +3279,48 @@ namespace Hinode.Izumi.Data.Migrations
                     b.ToTable("user_reputations");
                 });
 
+            modelBuilder.Entity("Hinode.Izumi.Data.Models.UserModels.UserReputationReward", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<long>("Amount")
+                        .HasColumnType("bigint")
+                        .HasColumnName("amount");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<int>("Reputation")
+                        .HasColumnType("integer")
+                        .HasColumnName("reputation");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_user_reputation_rewards");
+
+                    b.HasIndex("UserId", "Reputation", "Amount")
+                        .IsUnique()
+                        .HasDatabaseName("ix_user_reputation_rewards_user_id_reputation_amount");
+
+                    b.ToTable("user_reputation_rewards");
+                });
+
             modelBuilder.Entity("Hinode.Izumi.Data.Models.UserModels.UserSeed", b =>
                 {
                     b.Property<long>("Id")
@@ -3419,6 +3594,18 @@ namespace Hinode.Izumi.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Seed");
+                });
+
+            modelBuilder.Entity("Hinode.Izumi.Data.Models.DiscordModels.ContentVote", b =>
+                {
+                    b.HasOne("Hinode.Izumi.Data.Models.DiscordModels.ContentMessage", "Message")
+                        .WithMany()
+                        .HasForeignKey("MessageId")
+                        .HasConstraintName("fk_content_votes_content_messages_message_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Message");
                 });
 
             modelBuilder.Entity("Hinode.Izumi.Data.Models.DrinkIngredient", b =>
@@ -4065,6 +4252,18 @@ namespace Hinode.Izumi.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .HasConstraintName("fk_user_reputations_users_user_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Hinode.Izumi.Data.Models.UserModels.UserReputationReward", b =>
+                {
+                    b.HasOne("Hinode.Izumi.Data.Models.UserModels.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .HasConstraintName("fk_user_reputation_rewards_users_user_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

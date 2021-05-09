@@ -7,7 +7,6 @@ using Discord;
 using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.AchievementEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
-using Hinode.Izumi.Data.Enums.ReputationEnums;
 using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Framework.Database;
 using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService;
@@ -26,8 +25,6 @@ using Hinode.Izumi.Services.RpgServices.FoodService;
 using Hinode.Izumi.Services.RpgServices.GatheringService;
 using Hinode.Izumi.Services.RpgServices.InventoryService;
 using Hinode.Izumi.Services.RpgServices.LocalizationService;
-using Hinode.Izumi.Services.RpgServices.ReputationService;
-using Hinode.Izumi.Services.RpgServices.ReputationService.Models;
 using Hinode.Izumi.Services.RpgServices.StatisticService;
 using Hinode.Izumi.Services.RpgServices.StatisticService.Models;
 using Hinode.Izumi.Services.RpgServices.UserService;
@@ -49,7 +46,6 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
         private readonly ILocalizationService _local;
         private readonly IUserService _userService;
         private readonly IStatisticService _statisticService;
-        private readonly IReputationService _reputationService;
         private readonly ICollectionService _collectionService;
         private readonly ICropService _cropService;
         private readonly IFishService _fishService;
@@ -66,9 +62,9 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
         public AchievementService(IConnectionManager con, IMemoryCache cache, IDiscordEmbedService discordEmbedService,
             IDiscordGuildService discordGuildService, IEmoteService emoteService, IInventoryService inventoryService,
             ILocalizationService local, IUserService userService, IStatisticService statisticService,
-            IReputationService reputationService, ICollectionService collectionService, ICropService cropService,
-            IFishService fishService, IFoodService foodService, IAlcoholService alcoholService,
-            IDrinkService drinkService, IGatheringService gatheringService, ICraftingService craftingService)
+            ICollectionService collectionService, ICropService cropService, IFishService fishService,
+            IFoodService foodService, IAlcoholService alcoholService, IDrinkService drinkService,
+            IGatheringService gatheringService, ICraftingService craftingService)
         {
             _con = con;
             _cache = cache;
@@ -79,7 +75,6 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
             _local = local;
             _userService = userService;
             _statisticService = statisticService;
-            _reputationService = reputationService;
             _collectionService = collectionService;
             _cropService = cropService;
             _fishService = fishService;
@@ -149,7 +144,6 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
             // если есть - пропускаем
             if (hasAchievement) return;
 
-            UserReputationModel userReputation;
             UserStatisticModel userStatistic;
             UserCollectionModel[] userCollection;
             int collectionLength;
@@ -364,208 +358,6 @@ namespace Hinode.Izumi.Services.RpgServices.AchievementService.Impl
                     userStatistic = await _statisticService.GetUserStatistic(userId, Statistic.MarketBuy);
 
                     if (userStatistic?.Amount >= 333)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-
-                // достижения которые связаны с репутацией
-                case Achievement.Reach500ReputationCapital:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Capital);
-
-                    if (userReputation?.Amount >= 500)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach500ReputationSeaport:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Seaport);
-
-                    if (userReputation?.Amount >= 500)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach500ReputationGarden:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Garden);
-
-                    if (userReputation?.Amount >= 500)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach500ReputationCastle:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Castle);
-
-                    if (userReputation?.Amount >= 500)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach500ReputationVillage:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Village);
-
-                    if (userReputation?.Amount >= 500)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach1000ReputationCapital:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Capital);
-
-                    if (userReputation?.Amount >= 1000)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach1000ReputationSeaport:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Seaport);
-
-                    if (userReputation?.Amount >= 1000)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach1000ReputationGarden:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Garden);
-
-                    if (userReputation?.Amount >= 1000)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach1000ReputationCastle:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Castle);
-
-                    if (userReputation?.Amount >= 1000)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach1000ReputationVillage:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Village);
-
-                    if (userReputation?.Amount >= 1000)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach2000ReputationCapital:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Capital);
-
-                    if (userReputation?.Amount >= 2000)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach2000ReputationSeaport:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Seaport);
-
-                    if (userReputation?.Amount >= 2000)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach2000ReputationGarden:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Garden);
-
-                    if (userReputation?.Amount >= 2000)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach2000ReputationCastle:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Castle);
-
-                    if (userReputation?.Amount >= 2000)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach2000ReputationVillage:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Village);
-
-                    if (userReputation?.Amount >= 2000)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach5000ReputationCapital:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Capital);
-
-                    if (userReputation?.Amount >= 5000)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach5000ReputationSeaport:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Seaport);
-
-                    if (userReputation?.Amount >= 5000)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach5000ReputationGarden:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Garden);
-
-                    if (userReputation?.Amount >= 5000)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach5000ReputationCastle:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Castle);
-
-                    if (userReputation?.Amount >= 5000)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach5000ReputationVillage:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Village);
-
-                    if (userReputation?.Amount >= 5000)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach10000ReputationCapital:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Capital);
-
-                    if (userReputation?.Amount >= 10000)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach10000ReputationSeaport:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Seaport);
-
-                    if (userReputation?.Amount >= 10000)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach10000ReputationGarden:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Garden);
-
-                    if (userReputation?.Amount >= 10000)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach10000ReputationCastle:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Castle);
-
-                    if (userReputation?.Amount >= 10000)
-                        await AddAchievementToUser(userId, achievement.Type);
-
-                    break;
-                case Achievement.Reach10000ReputationVillage:
-
-                    userReputation = await _reputationService.GetUserReputation(userId, Reputation.Village);
-
-                    if (userReputation?.Amount >= 10000)
                         await AddAchievementToUser(userId, achievement.Type);
 
                     break;

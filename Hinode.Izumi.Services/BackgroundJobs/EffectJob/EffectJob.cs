@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Hangfire;
 using Hinode.Izumi.Data.Enums.EffectEnums;
 using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Services.RpgServices.EffectService;

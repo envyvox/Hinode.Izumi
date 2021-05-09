@@ -48,8 +48,9 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ReferralCommands
             {
                 // получаем реферерра пользователя
                 var referrer = await _referralService.GetUserReferrer((long) Context.User.Id);
-                referrerString =
-                    $"{emotes.GetEmoteOrBlank(referrer.Title.Emote())} {referrer.Title.Localize()} **{referrer.Name}**";
+                referrerString = IzumiReplyMessage.ReferralListReferrerFieldDesc.Parse(
+                    emotes.GetEmoteOrBlank(referrer.Title.Emote()), referrer.Title.Localize(), referrer.Name,
+                    emotes.GetEmoteOrBlank(Box.Capital.Emote()), _local.Localize(Box.Capital.ToString()));
             }
             // если нет - предлагаем указать
             else
@@ -70,6 +71,20 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ReferralCommands
                 .AddField(IzumiReplyMessage.ReferralListReferrerFieldName.Parse(),
                     referrerString +
                     $"\n{emotes.GetEmoteOrBlank("Blank")}")
+                // награды реферальной системы
+                .AddField(IzumiReplyMessage.ReferralListRewardsFieldName.Parse(),
+                    IzumiReplyMessage.ReferralListRewardsFieldDesc.Parse(
+                        emotes.GetEmoteOrBlank(Box.Capital.Emote()), _local.Localize(Box.Capital.ToString()),
+                        2, _local.Localize(Box.Capital.ToString(), 2), 3,
+                        emotes.GetEmoteOrBlank(Currency.Pearl.ToString()), 10,
+                        _local.Localize(Currency.Pearl.ToString(), 10),
+                        emotes.GetEmoteOrBlank(Title.Yatagarasu.Emote()), Title.Yatagarasu.Localize(), 15,
+                        emotes.GetEmoteOrBlank(userReferrals.Length >= 2 ? "Checkmark" : "List"),
+                        emotes.GetEmoteOrBlank(userReferrals.Length >= 4 ? "Checkmark" : "List"),
+                        emotes.GetEmoteOrBlank(userReferrals.Length >= 5 ? "Checkmark" : "List"),
+                        emotes.GetEmoteOrBlank(userReferrals.Length >= 9 ? "Checkmark" : "List"),
+                        emotes.GetEmoteOrBlank(userReferrals.Length >= 10 ? "Checkmark" : "List"),
+                        emotes.GetEmoteOrBlank("List")))
                 // приглашенные пользователи
                 .AddField(IzumiReplyMessage.ReferralListReferralsFieldName.Parse(),
                     referralString.Length > 0

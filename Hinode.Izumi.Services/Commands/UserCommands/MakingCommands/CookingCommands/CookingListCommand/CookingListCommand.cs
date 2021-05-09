@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -18,7 +17,6 @@ using Hinode.Izumi.Services.RpgServices.ImageService;
 using Hinode.Izumi.Services.RpgServices.IngredientService;
 using Hinode.Izumi.Services.RpgServices.LocalizationService;
 using Hinode.Izumi.Services.RpgServices.TrainingService;
-using Humanizer;
 using Image = Hinode.Izumi.Data.Enums.Image;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CookingCommands.CookingListCommand

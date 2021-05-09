@@ -156,8 +156,6 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         WorldInfoWeatherTomorrowFieldDesc,
         WorldInfoSeasonFieldName,
         WorldInfoSeasonFieldDesc,
-        WorldInfoStateFieldName,
-        WorldInfoStateFieldDesc,
         UpdateAboutMinLimit,
         TemporarilyUnavailable,
         TitleAdded,
@@ -506,7 +504,18 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         RecipeInfoCookingPriceFieldName,
         RecipeInfoCookingTimeFieldName,
         RecipeInfoFooter,
-        ShopRecipeMasteryWrongAmount
+        ShopRecipeMasteryWrongAmount,
+        ReferralListReferrerFieldDesc,
+        ReferralListRewardsFieldName,
+        ReferralListRewardsFieldDesc,
+        UserReputationListDesc,
+        UserReputationListFieldName,
+        UserReputationListFooter,
+        CommunityDescMessageDeleted,
+        CommunityDescAuthor,
+        CommunityDescAuthorGotRole,
+        ReputationRewardAuthor,
+        ReputationRewardDesc
     }
 
     public static class IzumiReplyMessageHelper
@@ -564,7 +573,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Реферальная система",
 
             IzumiReplyMessage.RegistrationSuccessReferralDesc =>
-                "Если вас пригласил пользователь - вам определенно стоит написать\n`!пригласил [игровое имя]`, чтобы получить {0} бонусы.",
+                "Если вас пригласил пользователь - вам определенно стоит написать\n`!пригласил [игровое имя]`, чтобы получить {0} бонусы.\nВы можете посмотреть подробную информацию о реферальной системе заглянув в `!приглашения`.",
 
             IzumiReplyMessage.ProfileTitle =>
                 "{0} {1} **{2}** `@{3}`",
@@ -591,7 +600,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Отлично, {0} {1} **{2}** теперь ваш реферер.",
 
             IzumiReplyMessage.ReferralSetNotifyPm =>
-                "{0} {1} **{2}** указал вас своим реферером.",
+                "{0} {1} **{2}** указал вас своим реферером.\nЗагляните в `!приглашения` чтобы посмотреть обновленную информацию вашего участия в реферальной системе.",
 
             IzumiReplyMessage.RegistrationSuccessButCantRename =>
                 "@everyone, Я не смогла изменить имя на сервере пользователю {0}, однако его игровое имя теперь `{1}`.",
@@ -958,19 +967,13 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "{0} Предсказательница",
 
             IzumiReplyMessage.WorldInfoWeatherTomorrowFieldDesc =>
-                "*C вами предсказетельница, ваш источник прогнозов погоды номер один. А сейчас - прогноз погоды на завтра...*\nПогода обещает быть **{0}**.",
+                "*C вами предсказательница, ваш источник прогнозов погоды номер один. А сейчас - прогноз погоды на завтра...*\nПогода обещает быть **{0}**.",
 
             IzumiReplyMessage.WorldInfoSeasonFieldName =>
                 "{0} Сезон",
 
             IzumiReplyMessage.WorldInfoSeasonFieldDesc =>
                 "*Текущий сезон определяет ассортимент семян в магазине, ведь у каждого урожая есть свой сезон роста. Посаженные на ячейки семена умирают при смене сезона, поэтому будьте дальновидными. Так же влияет на виды рыб, которые можно поймать.*\nТекущий сезон - **{0}**.",
-
-            IzumiReplyMessage.WorldInfoStateFieldName =>
-                "{0} Состояние мира",
-
-            IzumiReplyMessage.WorldInfoStateFieldDesc =>
-                "Временно недоступно...",
 
             IzumiReplyMessage.UpdateAboutMinLimit =>
                 "Указанный вами текст слишком короткий, попробуйте описать себя более подробно ;)",
@@ -1552,7 +1555,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Репутационный рейтинг",
 
             IzumiReplyMessage.UserProfileRepRatingFieldDesc =>
-                "У вас {0} {1} рейтинга\nСтатус в обществе: **{2}**",
+                "Статус в обществе: **{0}**\nУ вас {1} {2} репутационного рейтинга",
 
             IzumiReplyMessage.UserProfileBirthdayFieldName =>
                 "День рождения",
@@ -1984,7 +1987,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Очки приключений сбрасываются первого числа каждого месяца.",
 
             IzumiReplyMessage.UserProfileRatingFieldName =>
-                "Рейтинг",
+                "Рейтинг приключений",
 
             IzumiReplyMessage.UserProfileRatingFieldDesc =>
                 "Позиция: {0} `{1}`\nВ этом месяце получено {2} {3}",
@@ -2033,6 +2036,44 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.ShopRecipeMasteryWrongAmount =>
                 "У вас недостаточно мастерства {0} «{1}» для того чтобы разобраться с этим {2} рецептом.",
+
+            IzumiReplyMessage.ReferralListReferrerFieldDesc =>
+                "Вы указали {0} {1} **{2}** как пригласившего вас пользователя и получили {3} {4}.",
+
+            IzumiReplyMessage.ReferralListRewardsFieldName =>
+                "Награды реферальной системы",
+
+            IzumiReplyMessage.ReferralListRewardsFieldDesc =>
+                "{11} За `1`, `2` приглашенных вы получите {0} {1}.\n" +
+                "{12} За `3`, `4` приглашенных вы получите {0} {2} {3}.\n" +
+                "{13} За `5` приглашенных вы получите {0} {4} {3}.\n" +
+                "{14} За `6`, `7`, `8`, `9` пользователей вы получите {5} {6} {7}.\n" +
+                "{15} За `10` приглашенных вы получите {5} {6} {7} и титул {8} {9}.\n" +
+                "{16} За каждого последующего вы будете получать {5} {10} {7}.",
+
+            IzumiReplyMessage.UserReputationListDesc =>
+                "Статус в обществе: **{0}**.\nУ вас {1} {2} репутационного рейтинга.\n\nНапишите `!репутация [номер]` чтобы посмотреть подробную информацию о репутации конкретной локации.",
+
+            IzumiReplyMessage.UserReputationListFieldName =>
+                "Репутация в городах",
+
+            IzumiReplyMessage.UserReputationListFooter =>
+                "Репутационный рейтинг это среднее количество всех репутаций.",
+
+            IzumiReplyMessage.CommunityDescMessageDeleted =>
+                "Ваша публикация собрала {0} 5 дизлайков и была автоматически удалена из <#{1}>.",
+
+            IzumiReplyMessage.CommunityDescAuthor =>
+                "Оповещение от доски сообщества",
+
+            IzumiReplyMessage.CommunityDescAuthorGotRole =>
+                "Ваши публикации в **доске сообщества** были {0} оценены, за что вы получаете роль **{1}** на 30 дней.",
+
+            IzumiReplyMessage.ReputationRewardAuthor =>
+                "Награда за достижение репутации",
+
+            IzumiReplyMessage.ReputationRewardDesc =>
+                "Вы достигли {0} `{1}` репутации в **{2}** и получаете {3} {4} {5}.",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };

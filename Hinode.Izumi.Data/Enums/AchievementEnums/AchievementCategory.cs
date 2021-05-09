@@ -18,8 +18,7 @@ namespace Hinode.Izumi.Data.Enums.AchievementEnums
         Trading = 7,
         Alchemy = 8,
         Casino = 9,
-        Reputation = 10,
-        Collection = 11
+        Collection = 10
     }
 
     public static class AchievementCategoryHelper
@@ -40,7 +39,6 @@ namespace Hinode.Izumi.Data.Enums.AchievementEnums
             AchievementCategory.Trading => "Торговля",
             AchievementCategory.Alchemy => "Алхимия",
             AchievementCategory.Casino => "Казино",
-            AchievementCategory.Reputation => "Репутация",
             AchievementCategory.Collection => "Коллекция",
             _ => throw new ArgumentOutOfRangeException(nameof(category), category, null)
         };

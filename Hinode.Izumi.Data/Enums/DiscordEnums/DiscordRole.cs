@@ -13,6 +13,8 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
         Moderator = 4,
         Nitro = 5, // роль nitro-boost создается дискордом по-умолчанию, нам нужно только получить ее
         Mute = 6,
+        ContentProvider = 7,
+        InVoice = 8,
 
         LocationInTransit = 50,
         LocationCapital = 51,
@@ -36,7 +38,7 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
         LostArk = 205,
         Dota = 206,
         Osu = 207,
-        AmongUs = 208,
+        AmongUs = 208
     }
 
     public static class DiscordRoleHelper
@@ -75,6 +77,8 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
             DiscordRole.Osu => "Osu!",
             DiscordRole.AmongUs => "Among Us",
             DiscordRole.Mute => "Блокировка чата",
+            DiscordRole.ContentProvider => "❤️ Поставщик контента",
+            DiscordRole.InVoice => "🎙️",
             _ => throw new ArgumentOutOfRangeException(nameof(role), role, null)
         };
 
@@ -89,6 +93,7 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
             DiscordRole.EventManager => "e99edb",
             DiscordRole.Moderator => "c072b2",
             DiscordRole.Nitro => "f47fff",
+            DiscordRole.ContentProvider => "6fffc4",
             // для всех остальных используем значение по-умолчанию (прозрачный цвет дискорда)
             _ => "000000"
         };

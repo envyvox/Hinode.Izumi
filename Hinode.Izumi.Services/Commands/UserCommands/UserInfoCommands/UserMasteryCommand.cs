@@ -46,11 +46,16 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
             var userMasteries = await _masteryService.GetUserMastery((long) Context.User.Id);
             // получаем репутации пользователя
             var userReputations = await _reputationService.GetUserReputation((long) Context.User.Id);
+            // получаем массив доступных репутаций
+            var reputations = Enum.GetValues(typeof(Reputation)).Cast<Reputation>().ToArray();
+            // получаем среднее значение репутаций пользователя
+            var userAverageReputation =
+                reputations.Sum(reputation =>
+                    userReputations.ContainsKey(reputation) ? userReputations[reputation].Amount : 0) /
+                reputations.Length;
             // считаем максимальное мастерство пользователя
             var userMaxMastery = ReputationStatusHelper
-                .GetReputationStatus(userReputations.Count > 0
-                    ? userReputations.Values.Average(x => x.Amount)
-                    : 0)
+                .GetReputationStatus(userAverageReputation)
                 .MaxMastery();
 
             var embed = new EmbedBuilder()

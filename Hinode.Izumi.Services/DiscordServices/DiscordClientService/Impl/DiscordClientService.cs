@@ -11,6 +11,7 @@ using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Services.BackgroundJobs.BossJob;
 using Hinode.Izumi.Services.BackgroundJobs.CasinoJob;
 using Hinode.Izumi.Services.BackgroundJobs.CurrencyJob;
+using Hinode.Izumi.Services.BackgroundJobs.DiscordJob;
 using Hinode.Izumi.Services.BackgroundJobs.EmoteJob;
 using Hinode.Izumi.Services.BackgroundJobs.EnergyJob;
 using Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob;
@@ -19,11 +20,13 @@ using Hinode.Izumi.Services.BackgroundJobs.NewDayJob;
 using Hinode.Izumi.Services.BackgroundJobs.PointsJob;
 using Hinode.Izumi.Services.BackgroundJobs.SeasonJob;
 using Hinode.Izumi.Services.BackgroundJobs.ShopJob;
-using Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnServices.GuildMemberUpdatedService;
-using Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnServices.MessageReceivedService;
-using Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnServices.ReactionService;
-using Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnServices.UserJoinedService;
-using Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnServices.UserLeftService;
+using Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnServices.GuildMemberUpdated;
+using Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnServices.MessageDeleted;
+using Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnServices.MessageReceived;
+using Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnServices.ReactionAdded;
+using Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnServices.ReactionRemoved;
+using Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnServices.UserJoined;
+using Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnServices.UserLeft;
 using Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnServices.UserVoiceStateUpdated;
 using Hinode.Izumi.Services.DiscordServices.DiscordClientService.Options;
 using Hinode.Izumi.Services.RpgServices.ImageService;
@@ -84,11 +87,13 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.Impl
             _socketClient.Log += Log;
             _socketClient.Ready += SocketClientOnReady;
             _socketClient.MessageReceived += SocketClientOnMessageReceived;
+            _socketClient.MessageDeleted += SocketClientOnMessageDeleted;
             _socketClient.UserLeft += SocketClientOnUserLeft;
             _socketClient.UserJoined += SocketClientOnUserJoined;
             _socketClient.GuildMemberUpdated += SocketClientOnGuildMemberUpdated;
             _socketClient.UserVoiceStateUpdated += SocketClientOnUserVoiceStateUpdated;
-            _socketClient.ReactionAdded += SocketClientOnReactionToggle;
+            _socketClient.ReactionAdded += SocketClientOnReactionAdded;
+            _socketClient.ReactionRemoved += SocketClientOnReactionRemoved;
         }
 
         private async Task CommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context,
@@ -196,6 +201,9 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.Impl
                 RecurringJob.AddOrUpdate<ICurrencyJob>(
                     x => x.DailyIncome(),
                     Cron.Daily, _timeZoneInfo);
+                RecurringJob.AddOrUpdate<IDiscordJob>(
+                    x => x.RemoveExpiredRoleFromUsers(),
+                    Cron.Daily, _timeZoneInfo);
 
                 // ежемесячные джобы
                 RecurringJob.AddOrUpdate<IPointsJob>(
@@ -203,6 +211,7 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.Impl
                     Cron.Monthly, _timeZoneInfo);
 
                 _logger.LogInformation("Bot started");
+                RecurringJob.Trigger("IEmoteJob.UploadEmotes");
             }
             catch (Exception e)
             {
@@ -217,7 +226,8 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.Impl
             if (socketMessage is not SocketUserMessage message) return;
 
             // отправляем сообщение в сервис сообщений для дополнительных проверок
-            await _serviceProvider.GetService<IMessageReceivedService>().Execute(_socketClient, socketMessage);
+            await _serviceProvider.GetService<IMessageReceived>()
+                .Execute(_socketClient, socketMessage);
 
             // если сообщение не содержит префикса (не является командой) - игнорируем
             var argPos = 0;
@@ -241,25 +251,37 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.Impl
             }
         }
 
+        private async Task SocketClientOnMessageDeleted(Cacheable<IMessage, ulong> message,
+            ISocketMessageChannel channel) =>
+            await _serviceProvider.GetService<IMessageDeleted>()
+                .Execute(message, channel);
+
         private async Task SocketClientOnUserLeft(SocketGuildUser socketGuildUser) =>
-            await _serviceProvider.GetService<IUserLeftService>().Execute(socketGuildUser);
+            await _serviceProvider.GetService<IUserLeft>()
+                .Execute(socketGuildUser);
 
         private async Task SocketClientOnUserJoined(SocketGuildUser socketGuildUser) =>
-            await _serviceProvider.GetService<IUserJoinedService>().Execute(socketGuildUser);
+            await _serviceProvider.GetService<IUserJoined>()
+                .Execute(socketGuildUser);
 
         private async Task SocketClientOnGuildMemberUpdated(SocketGuildUser oldSocketGuildUser,
             SocketGuildUser newSocketGuildUser) =>
-            await _serviceProvider.GetService<IGuildMemberUpdatedService>()
+            await _serviceProvider.GetService<IGuildMemberUpdated>()
                 .Execute(_socketClient, oldSocketGuildUser, newSocketGuildUser);
 
         private async Task SocketClientOnUserVoiceStateUpdated(SocketUser socketUser,
             SocketVoiceState oldSocketVoiceState, SocketVoiceState newSocketVoiceState) =>
-            await _serviceProvider.GetService<IUserVoiceStateUpdatedService>()
+            await _serviceProvider.GetService<IUserVoiceStateUpdated>()
                 .Execute(socketUser, oldSocketVoiceState, newSocketVoiceState);
 
-        private async Task SocketClientOnReactionToggle(Cacheable<IUserMessage, ulong> message,
+        private async Task SocketClientOnReactionAdded(Cacheable<IUserMessage, ulong> message,
             ISocketMessageChannel socketMessageChannel, SocketReaction socketReaction) =>
-            await _serviceProvider.GetService<IReactionService>()
+            await _serviceProvider.GetService<IReactionAdded>()
+                .Execute(message, socketMessageChannel, socketReaction);
+
+        private async Task SocketClientOnReactionRemoved(Cacheable<IUserMessage, ulong> message,
+            ISocketMessageChannel socketMessageChannel, SocketReaction socketReaction) =>
+            await _serviceProvider.GetService<IReactionRemoved>()
                 .Execute(message, socketMessageChannel, socketReaction);
 
         public async Task<DiscordSocketClient> GetSocketClient() => await Task.FromResult(_socketClient);

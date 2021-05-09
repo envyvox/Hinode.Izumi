@@ -31,6 +31,22 @@ namespace Hinode.Izumi.Services.RpgServices.UserService
         Task<UserModel> GetUser(string namePattern);
 
         /// <summary>
+        /// Возвращает пользователя с позицией в рейтинге приключений.
+        /// </summary>
+        /// <param name="userId">Id пользователя.</param>
+        /// <returns>Пользователь с позицией в рейтинге приключений.</returns>
+        /// <exception cref="IzumiNullableMessage.UserWithId"></exception>
+        Task<UserWithRowNumber> GetUserWithRowNumber(long userId);
+
+        /// <summary>
+        /// Возвращает пользователя с позицией в рейтинге приключений.
+        /// </summary>
+        /// <param name="namePattern">Паттерн игрового имени пользователя.</param>
+        /// <returns>Пользователь с позицией в рейтинге приключений.</returns>
+        /// <exception cref="IzumiNullableMessage.UserWithName"></exception>
+        Task<UserWithRowNumber> GetUserWithRowNumber(string namePattern);
+
+        /// <summary>
         /// Возвращает библиотеку титулов пользователя.
         /// </summary>
         /// <param name="userId">Id пользователя.</param>
@@ -50,8 +66,6 @@ namespace Hinode.Izumi.Services.RpgServices.UserService
         /// <param name="name">Игровое имя.</param>
         /// <returns>True есть есть, false если нет.</returns>
         Task<bool> CheckUser(string name);
-
-        Task<UserWithRowNumber> GetUserWithRowNumber(long userId);
 
         /// <summary>
         /// Добавляет пользователя в базу и кэш.

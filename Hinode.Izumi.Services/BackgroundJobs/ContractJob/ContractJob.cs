@@ -1,7 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord;
-using Hangfire;
 using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.AchievementEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
@@ -77,78 +75,6 @@ namespace Hinode.Izumi.Services.BackgroundJobs.ContractJob
             await _statisticService.AddStatisticToUser(userId, Statistic.Contracts);
             // проверяем выполнил ли пользователь достижение
             await _achievementService.CheckAchievement(userId, Achievement.FirstContract);
-
-            // проверяем выполнил ли пользователь достижения на получение репутации
-            switch (reputationType)
-            {
-                case Reputation.Capital:
-
-                    await _achievementService.CheckAchievement(userId,
-                        new[]
-                        {
-                            Achievement.Reach500ReputationCapital,
-                            Achievement.Reach1000ReputationCapital,
-                            Achievement.Reach2000ReputationCapital,
-                            Achievement.Reach5000ReputationCapital,
-                            Achievement.Reach10000ReputationCapital
-                        });
-
-                    break;
-                case Reputation.Garden:
-
-                    await _achievementService.CheckAchievement(userId,
-                        new[]
-                        {
-                            Achievement.Reach500ReputationGarden,
-                            Achievement.Reach1000ReputationGarden,
-                            Achievement.Reach2000ReputationGarden,
-                            Achievement.Reach5000ReputationGarden,
-                            Achievement.Reach10000ReputationGarden
-                        });
-
-                    break;
-                case Reputation.Seaport:
-
-                    await _achievementService.CheckAchievement(userId,
-                        new[]
-                        {
-                            Achievement.Reach500ReputationSeaport,
-                            Achievement.Reach1000ReputationSeaport,
-                            Achievement.Reach2000ReputationSeaport,
-                            Achievement.Reach5000ReputationSeaport,
-                            Achievement.Reach10000ReputationSeaport
-                        });
-
-                    break;
-                case Reputation.Castle:
-
-                    await _achievementService.CheckAchievement(userId,
-                        new[]
-                        {
-                            Achievement.Reach500ReputationCastle,
-                            Achievement.Reach1000ReputationCastle,
-                            Achievement.Reach2000ReputationCastle,
-                            Achievement.Reach5000ReputationCastle,
-                            Achievement.Reach10000ReputationCastle,
-                        });
-
-                    break;
-                case Reputation.Village:
-
-                    await _achievementService.CheckAchievement(userId,
-                        new[]
-                        {
-                            Achievement.Reach500ReputationVillage,
-                            Achievement.Reach1000ReputationVillage,
-                            Achievement.Reach2000ReputationVillage,
-                            Achievement.Reach5000ReputationVillage,
-                            Achievement.Reach10000ReputationVillage
-                        });
-
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
 
             var embed = new EmbedBuilder()
                 // название контракта

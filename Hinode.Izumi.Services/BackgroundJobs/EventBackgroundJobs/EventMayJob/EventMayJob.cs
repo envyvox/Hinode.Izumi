@@ -5,19 +5,17 @@ using System.Threading.Tasks;
 using Discord;
 using Hangfire;
 using Hinode.Izumi.Data.Enums;
-using Hinode.Izumi.Data.Enums.AchievementEnums;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Data.Enums.PropertyEnums;
 using Hinode.Izumi.Data.Enums.RarityEnums;
 using Hinode.Izumi.Data.Enums.ReputationEnums;
 using Hinode.Izumi.Framework.Autofac;
-using Hinode.Izumi.Services.BackgroundJobs.MessageJob;
+using Hinode.Izumi.Services.BackgroundJobs.DiscordJob;
 using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService;
 using Hinode.Izumi.Services.DiscordServices.DiscordGuildService;
 using Hinode.Izumi.Services.EmoteService;
 using Hinode.Izumi.Services.EmoteService.Impl;
-using Hinode.Izumi.Services.RpgServices.AchievementService;
 using Hinode.Izumi.Services.RpgServices.BannerService;
 using Hinode.Izumi.Services.RpgServices.FoodService;
 using Hinode.Izumi.Services.RpgServices.ImageService;
@@ -47,7 +45,6 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
         private readonly TimeZoneInfo _timeZoneInfo;
         private readonly IReputationService _reputationService;
         private readonly IStatisticService _statisticService;
-        private readonly IAchievementService _achievementService;
         private readonly IBannerService _bannerService;
 
         private const string PicnicEmote = "🔥";
@@ -57,7 +54,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
             IPropertyService propertyService, IDiscordGuildService discordGuildService, IImageService imageService,
             IUserService userService, IInventoryService inventoryService, IFoodService foodService,
             ILocalizationService local, TimeZoneInfo timeZoneInfo, IReputationService reputationService,
-            IStatisticService statisticService, IAchievementService achievementService, IBannerService bannerService)
+            IStatisticService statisticService, IBannerService bannerService)
         {
             _discordEmbedService = discordEmbedService;
             _emoteService = emoteService;
@@ -71,7 +68,6 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
             _timeZoneInfo = timeZoneInfo;
             _reputationService = reputationService;
             _statisticService = statisticService;
-            _achievementService = achievementService;
             _bannerService = bannerService;
         }
 
@@ -172,6 +168,8 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
         {
             // получаем иконки из базы
             var emotes = await _emoteService.GetEmotes();
+            // получаем роли сервера
+            var roles = await _discordGuildService.GetRoles();
             // получаем каналы сервера
             var channels = await _discordGuildService.GetChannels();
             // получаем канал события
@@ -205,7 +203,9 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
 
             // отправляем сообщение
             var message = await eventChannel.SendMessageAsync(
-                null, false, _discordEmbedService.BuildEmbed(embed));
+                // упоминаем роли события
+                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>",
+                false, _discordEmbedService.BuildEmbed(embed));
             // добавляем реакцию для участия в пикнике
             await message.AddReactionAsync(new Emoji(PicnicEmote));
 
@@ -263,8 +263,8 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
             // изменяем сообщение
             await _discordEmbedService.ModifyEmbed(message, embed);
             // запускаем джобу с удалением сообщения
-            BackgroundJob.Schedule<IMessageJob>(x =>
-                    x.Delete(channelId, messageId),
+            BackgroundJob.Schedule<IDiscordJob>(x =>
+                    x.DeleteMessage(channelId, messageId),
                 TimeSpan.FromHours(24));
 
             var embedReward = new EmbedBuilder()
@@ -310,6 +310,8 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
         {
             // получаем иконки из базы
             var emotes = await _emoteService.GetEmotes();
+            // получаем роли сервера
+            var roles = await _discordGuildService.GetRoles();
             // получаем каналы сервера
             var channels = await _discordGuildService.GetChannels();
             // получаем количество получаемой репутации за убийство босса
@@ -351,7 +353,9 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
 
             // отправляем сообщение
             var message = await eventChannel.SendMessageAsync(
-                null, false, _discordEmbedService.BuildEmbed(embed));
+                // упоминаем роли события
+                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>",
+                false, _discordEmbedService.BuildEmbed(embed));
             // добавляем реакцию для атаки
             await message.AddReactionAsync(new Emoji(AttackEmote));
 
@@ -399,16 +403,6 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
             await _reputationService.AddReputationToUser(usersId, Reputation.Village, reputationReward);
             // добавляем пользователям статистику
             await _statisticService.AddStatisticToUser(usersId, Statistic.BossKilled);
-            // проверяем достижения у пользователей
-            await _achievementService.CheckAchievement(usersId.ToArray(),
-                new[]
-                {
-                    Achievement.Reach500ReputationVillage,
-                    Achievement.Reach1000ReputationVillage,
-                    Achievement.Reach2000ReputationVillage,
-                    Achievement.Reach5000ReputationVillage,
-                    Achievement.Reach10000ReputationVillage
-                });
             // добавляем баннер пользователям
             await _bannerService.AddBannerToUser(usersId, banner.Id);
             // добавляем титул пользователям
@@ -427,8 +421,8 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
             // изменяем сообщение
             await _discordEmbedService.ModifyEmbed(message, embed);
             // запускаем джобу с удалением сообщения
-            BackgroundJob.Schedule<IMessageJob>(x =>
-                    x.Delete(channelId, messageId),
+            BackgroundJob.Schedule<IDiscordJob>(x =>
+                    x.DeleteMessage(channelId, messageId),
                 TimeSpan.FromHours(24));
 
             // создаем строку с наградой
