@@ -111,7 +111,7 @@ namespace Hinode.Izumi.Services.RpgServices.EffectService.Impl
                     where effect = @lotteryEffect",
                     new {lotteryEffect = Effect.Lottery});
             // получаем количество пользователей которое необходимое для проведения лотереи
-            var lotteryRequireUsers = 1; //await _propertyService.GetPropertyValue(Property.LotteryRequireUsers);
+            var lotteryRequireUsers = await _propertyService.GetPropertyValue(Property.LotteryRequireUsers);
 
             // если количество пользователей достаточное - начинаем лотерею
             if (lotteryUsers >= lotteryRequireUsers) await StartLottery();
