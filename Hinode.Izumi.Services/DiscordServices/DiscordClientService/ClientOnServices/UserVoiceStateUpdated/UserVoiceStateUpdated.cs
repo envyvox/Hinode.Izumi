@@ -36,6 +36,16 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
             // получаем новый канал в котором находился пользователь
             var newChannel = userNewState.VoiceChannel;
 
+            // когда пользователь заходит в голосовой канал
+            if (oldChannel == null)
+                // добавляем ему роль
+                await _discordGuildService.ToggleRoleInUser((long) user.Id, roles[DiscordRole.InVoice].Id, true);
+
+            // когда пользователь выходит из голосового канала
+            if (newChannel == null)
+                // забираем роль
+                await _discordGuildService.ToggleRoleInUser((long) user.Id, roles[DiscordRole.InVoice].Id, false);
+
             // если новый канал это комната для создания каналов
             if (newChannel?.Id == createRoom)
             {

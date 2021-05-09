@@ -14,6 +14,7 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
         Nitro = 5, // роль nitro-boost создается дискордом по-умолчанию, нам нужно только получить ее
         Mute = 6,
         ContentProvider = 7,
+        InVoice = 8,
 
         LocationInTransit = 50,
         LocationCapital = 51,
@@ -77,6 +78,7 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
             DiscordRole.AmongUs => "Among Us",
             DiscordRole.Mute => "Блокировка чата",
             DiscordRole.ContentProvider => "❤️ Поставщик контента",
+            DiscordRole.InVoice => "🎙️",
             _ => throw new ArgumentOutOfRangeException(nameof(role), role, null)
         };
 
