@@ -78,6 +78,8 @@ namespace Hinode.Izumi.Services.Commands.UserCommands
                     {
                         // добавляем пользователя в базу
                         await _userService.AddUser((long) Context.User.Id, name);
+                        // добавляем пользователю титул
+                        await _userService.AddTitleToUser((long) Context.User.Id, Title.Newbie);
                         // выдаем пользователю роль столицы в дискорде
                         await _discordGuildService.ToggleRoleInUser(
                             (long) Context.User.Id, DiscordRole.LocationCapital, true);
