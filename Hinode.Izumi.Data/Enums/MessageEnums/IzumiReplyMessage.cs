@@ -165,11 +165,9 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         LotteryBuyAlready,
         LotteryBuyNoCurrency,
         LotteryBuySuccess,
-        LotteryInfoDesc,
         LotteryInfoRulesFieldName,
         LotteryInfoRulesFieldDesc,
         LotteryInfoCurrentMembersFieldName,
-        LotteryInfoCurrentMembersFieldDesc,
         LotteryGiftAlreadyHave,
         LotteryGiftNoCurrency,
         LotteryGiftSuccess,
@@ -515,7 +513,10 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         CommunityDescAuthor,
         CommunityDescAuthorGotRole,
         ReputationRewardAuthor,
-        ReputationRewardDesc
+        ReputationRewardDesc,
+        LotteryGiftInfoFieldName,
+        LotteryGiftInfoFieldDesc,
+        LotteryInfoCurrentMembersNull
     }
 
     public static class IzumiReplyMessageHelper
@@ -1019,20 +1020,14 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
             IzumiReplyMessage.LotteryBuySuccess =>
                 "Вы успешно приобрели {0} лотерейный билет за {1} {2} {3}, теперь осталось дождаться розыгрыша.",
 
-            IzumiReplyMessage.LotteryInfoDesc =>
-                "Приобретите {0} лотерейный билет через команду `!лотерея купить` за {1} {2} {3}, чтобы получить возможность выиграть {1} {4} {3}!\n\nВы так же можете `!лотерея подарить [игровое имя]` отправить {0} лотерейный билет в {5} подарок другому игроку, заплатив еще {1} {6} {3} за услуги курьера, который доставит подарок в любую точку мира.",
-
             IzumiReplyMessage.LotteryInfoRulesFieldName =>
                 "Правила участия",
 
             IzumiReplyMessage.LotteryInfoRulesFieldDesc =>
-                "Покупаете {0} лотерейный билет и ожидаете, когда наберется 10 участников. Затем случайным образом выбирается победитель, который получит {1} приз. Повторяете пока не станете местным миллионером ;)",
+                "Напишите `!лотерея купить` чтобы приобрести {0} лотерейный билет за {1} {2} {3} и ожидайте, когда наберется **{4} участников**.\n\nЗатем будет выбран **один победитель** который получит {1} {5} {6}.\n> Победитель выбирается случайным образом из всех участников.",
 
             IzumiReplyMessage.LotteryInfoCurrentMembersFieldName =>
                 "Текущие участники",
-
-            IzumiReplyMessage.LotteryInfoCurrentMembersFieldDesc =>
-                "На данный момент {0} участников уже приобрели {1} лотерейный билет, до розыграша осталось еще {2}!\n\n{3}",
 
             IzumiReplyMessage.LotteryGiftAlreadyHave =>
                 "У {0} {1} **{2}** уже есть {3} лотерейный билет, лучше подарить его кому-либо еще.",
@@ -2076,6 +2071,15 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.ReputationRewardDesc =>
                 "Вы достигли {0} `{1}` репутации в **{2}** и получаете {3} {4} {5}.",
+
+            IzumiReplyMessage.LotteryGiftInfoFieldName =>
+                "Курьерская служба",
+
+            IzumiReplyMessage.LotteryGiftInfoFieldDesc =>
+                "Напишите `!лотерея подарить [игровое имя]` чтобы отправить {0} лотерейный билет в **подарок** другому игроку. Курьер доставит его в любую точку мира!\n> При оплате доставки, необходимо будет доплатить {1} {2} {3} за услуги курьерской службы.",
+
+            IzumiReplyMessage.LotteryInfoCurrentMembersNull =>
+                "На данный момент нет пользователей с {0} лотерейным билетом.",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };
