@@ -168,6 +168,8 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
         {
             // получаем иконки из базы
             var emotes = await _emoteService.GetEmotes();
+            // получаем роли сервера
+            var roles = await _discordGuildService.GetRoles();
             // получаем каналы сервера
             var channels = await _discordGuildService.GetChannels();
             // получаем канал события
@@ -201,7 +203,9 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
 
             // отправляем сообщение
             var message = await eventChannel.SendMessageAsync(
-                null, false, _discordEmbedService.BuildEmbed(embed));
+                // упоминаем роли события
+                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>",
+                false, _discordEmbedService.BuildEmbed(embed));
             // добавляем реакцию для участия в пикнике
             await message.AddReactionAsync(new Emoji(PicnicEmote));
 
@@ -306,6 +310,8 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
         {
             // получаем иконки из базы
             var emotes = await _emoteService.GetEmotes();
+            // получаем роли сервера
+            var roles = await _discordGuildService.GetRoles();
             // получаем каналы сервера
             var channels = await _discordGuildService.GetChannels();
             // получаем количество получаемой репутации за убийство босса
@@ -347,7 +353,9 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
 
             // отправляем сообщение
             var message = await eventChannel.SendMessageAsync(
-                null, false, _discordEmbedService.BuildEmbed(embed));
+                // упоминаем роли события
+                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>",
+                false, _discordEmbedService.BuildEmbed(embed));
             // добавляем реакцию для атаки
             await message.AddReactionAsync(new Emoji(AttackEmote));
 
