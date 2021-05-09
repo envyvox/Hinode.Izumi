@@ -62,7 +62,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands
                 await Task.FromException(new Exception(IzumiReplyMessage.GamblingBetCooldown.Parse(
                     userCooldown.Expiration
                         .Subtract(timeNow).TotalMinutes.Minutes()
-                        .Humanize(2, new CultureInfo("ru-RU")))));
+                        .Humanize(1, new CultureInfo("ru-RU")))));
             }
             else
             {
