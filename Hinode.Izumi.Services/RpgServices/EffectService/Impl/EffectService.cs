@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Dapper;
 using Discord;
 using Hinode.Izumi.Data.Enums;
+using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.EffectEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Data.Enums.PropertyEnums;
@@ -110,7 +111,7 @@ namespace Hinode.Izumi.Services.RpgServices.EffectService.Impl
                     where effect = @lotteryEffect",
                     new {lotteryEffect = Effect.Lottery});
             // получаем количество пользователей которое необходимое для проведения лотереи
-            var lotteryRequireUsers = await _propertyService.GetPropertyValue(Property.LotteryRequireUsers);
+            var lotteryRequireUsers = 1; //await _propertyService.GetPropertyValue(Property.LotteryRequireUsers);
 
             // если количество пользователей достаточное - начинаем лотерею
             if (lotteryUsers >= lotteryRequireUsers) await StartLottery();
@@ -127,7 +128,7 @@ namespace Hinode.Izumi.Services.RpgServices.EffectService.Impl
                     @"
                     select * from users
                     where id = (
-                        select id from user_effects
+                        select user_id from user_effects
                         where effect = @lotteryEffect
                         order by random()
                         limit 1
@@ -157,7 +158,18 @@ namespace Hinode.Izumi.Services.RpgServices.EffectService.Impl
             await _discordEmbedService.SendEmbed(
                 await _discordGuildService.GetSocketUser(winner.Id), embedPm);
 
-            // TODO global message
+            // получаем каналы сервера
+            var channels = await _discordGuildService.GetChannels();
+            var embedNotify = new EmbedBuilder()
+                .WithAuthor(IzumiEventMessage.DiaryAuthorField.Parse())
+                // оповещаем о победе в лотерее
+                .WithDescription(IzumiEventMessage.LotteryWinner.Parse(
+                    emotes.GetEmoteOrBlank(winner.Title.Emote()), winner.Title.Localize(), winner.Name,
+                    emotes.GetEmoteOrBlank("LotteryTicket"), emotes.GetEmoteOrBlank(Currency.Ien.ToString()),
+                    lotteryAward, _local.Localize(Currency.Ien.ToString(), lotteryAward)));
+
+            await _discordEmbedService.SendEmbed(
+                await _discordGuildService.GetSocketTextChannel(channels[DiscordChannel.Diary].Id), embedNotify);
         }
     }
 }
