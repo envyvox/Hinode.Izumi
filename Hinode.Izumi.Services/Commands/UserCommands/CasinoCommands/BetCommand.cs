@@ -15,6 +15,7 @@ using Hinode.Izumi.Services.EmoteService.Impl;
 using Hinode.Izumi.Services.RpgServices.AchievementService;
 using Hinode.Izumi.Services.RpgServices.CooldownService;
 using Hinode.Izumi.Services.RpgServices.InventoryService;
+using Hinode.Izumi.Services.RpgServices.LocalizationService;
 using Hinode.Izumi.Services.RpgServices.PropertyService;
 using Hinode.Izumi.Services.RpgServices.StatisticService;
 using Humanizer;
@@ -32,10 +33,11 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands
         private readonly IStatisticService _statisticService;
         private readonly IAchievementService _achievementService;
         private readonly IPropertyService _propertyService;
+        private readonly ILocalizationService _local;
 
         public BetCommand(IDiscordEmbedService discordEmbedService, IEmoteService emoteService,
             ICooldownService cooldownService, IInventoryService inventoryService, IStatisticService statisticService,
-            IAchievementService achievementService, IPropertyService propertyService)
+            IAchievementService achievementService, IPropertyService propertyService, ILocalizationService local)
         {
             _discordEmbedService = discordEmbedService;
             _emoteService = emoteService;
@@ -44,6 +46,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands
             _statisticService = statisticService;
             _achievementService = achievementService;
             _propertyService = propertyService;
+            _local = local;
         }
 
         [Command("ставка"), Alias("bet")]
@@ -115,7 +118,8 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands
                             case >= 55 and < 90:
 
                                 cubeDropString += IzumiReplyMessage.GamblingBetWon.Parse(
-                                    emotes.GetEmoteOrBlank(Currency.Ien.ToString()), amount * 2);
+                                    emotes.GetEmoteOrBlank(Currency.Ien.ToString()), amount * 2,
+                                    _local.Localize(Currency.Ien.ToString(), amount * 2));
 
                                 // добавляем пользователю валюту за победу
                                 await _inventoryService.AddItemToUser(
@@ -127,7 +131,8 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands
                             case >= 90 and < 100:
 
                                 cubeDropString += IzumiReplyMessage.GamblingBetWon.Parse(
-                                    emotes.GetEmoteOrBlank(Currency.Ien.ToString()), amount * 4);
+                                    emotes.GetEmoteOrBlank(Currency.Ien.ToString()), amount * 4,
+                                    _local.Localize(Currency.Ien.ToString(), amount * 4));
 
                                 // добавляем пользователю валюту за победу
                                 await _inventoryService.AddItemToUser(
@@ -139,7 +144,8 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands
                             case 100:
 
                                 cubeDropString += IzumiReplyMessage.GamblingBetWon.Parse(
-                                    emotes.GetEmoteOrBlank(Currency.Ien.ToString()), amount * 10);
+                                    emotes.GetEmoteOrBlank(Currency.Ien.ToString()), amount * 10,
+                                    _local.Localize(Currency.Ien.ToString(), amount * 10));
 
                                 // добавляем пользователю валюту за победу
                                 await _inventoryService.AddItemToUser(
@@ -157,7 +163,8 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands
                             default:
 
                                 cubeDropString += IzumiReplyMessage.GamblingBetLose.Parse(
-                                    emotes.GetEmoteOrBlank(Currency.Ien.ToString()), amount);
+                                    emotes.GetEmoteOrBlank(Currency.Ien.ToString()), amount,
+                                    _local.Localize(Currency.Ien.ToString(), amount));
 
                                 // отнимаем у пользователя валюту за поражение
                                 await _inventoryService.RemoveItemFromUser(
