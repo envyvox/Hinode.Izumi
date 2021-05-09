@@ -35,6 +35,7 @@ namespace Hinode.Izumi.Services.RpgServices.UserService
         /// </summary>
         /// <param name="userId">Id пользователя.</param>
         /// <returns>Пользователь с позицией в рейтинге приключений.</returns>
+        /// <exception cref="IzumiNullableMessage.UserWithId"></exception>
         Task<UserWithRowNumber> GetUserWithRowNumber(long userId);
 
         /// <summary>
@@ -42,6 +43,7 @@ namespace Hinode.Izumi.Services.RpgServices.UserService
         /// </summary>
         /// <param name="namePattern">Паттерн игрового имени пользователя.</param>
         /// <returns>Пользователь с позицией в рейтинге приключений.</returns>
+        /// <exception cref="IzumiNullableMessage.UserWithName"></exception>
         Task<UserWithRowNumber> GetUserWithRowNumber(string namePattern);
 
         /// <summary>
