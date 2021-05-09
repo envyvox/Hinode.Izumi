@@ -62,7 +62,8 @@ namespace Hinode.Izumi.Services.RpgServices.ReputationService.Impl
                     select * from user_reputations
                     where user_id = @userId
                       and reputation = @reputation",
-                    new {userId, reputation});
+                    new {userId, reputation}) ??
+            new UserReputationModel {UserId = userId, Reputation = reputation, Amount = 0};
 
         public async Task<Dictionary<Reputation, UserReputationModel>> GetUserReputation(long userId) =>
             (await _con.GetConnection()
