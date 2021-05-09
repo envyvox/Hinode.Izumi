@@ -967,7 +967,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "{0} Предсказательница",
 
             IzumiReplyMessage.WorldInfoWeatherTomorrowFieldDesc =>
-                "*C вами предсказетельница, ваш источник прогнозов погоды номер один. А сейчас - прогноз погоды на завтра...*\nПогода обещает быть **{0}**.",
+                "*C вами предсказательница, ваш источник прогнозов погоды номер один. А сейчас - прогноз погоды на завтра...*\nПогода обещает быть **{0}**.",
 
             IzumiReplyMessage.WorldInfoSeasonFieldName =>
                 "{0} Сезон",
