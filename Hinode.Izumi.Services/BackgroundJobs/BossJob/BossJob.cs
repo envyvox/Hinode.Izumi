@@ -282,9 +282,11 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                 // получаем канал дневник
                 var diaryChan = await _discordGuildService.GetSocketTextChannel(channels[DiscordChannel.Diary].Id);
                 // создаем строку с наградой
-                var rewardString = IzumiEventMessage.ReputationAdded.Parse(
-                    emotes.GetEmoteOrBlank(reputation.Emote(long.MaxValue)), reputationReward,
-                    reputation.Location().Localize(true));
+                var rewardString =
+                    IzumiEventMessage.ReputationAdded.Parse(
+                        emotes.GetEmoteOrBlank(reputation.Emote(long.MaxValue)), reputationReward,
+                        reputation.Location().Localize(true)) +
+                    $", {emotes.GetEmoteOrBlank(box.Emote())} {_local.Localize(box.ToString())}";
 
                 var embedReward = new EmbedBuilder()
                     .WithAuthor(IzumiEventMessage.DiaryAuthorField.Parse())
