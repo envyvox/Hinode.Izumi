@@ -14,6 +14,7 @@ using Hinode.Izumi.Services.RpgServices.ReferralService;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.ReferralCommands
 {
+    [CommandCategory(CommandCategory.Referral)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class ReferralListCommand : ModuleBase<SocketCommandContext>
     {
@@ -32,6 +33,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ReferralCommands
         }
 
         [Command("приглашения"), Alias("referrals")]
+        [Summary("Посмотреть информацию об участии в реферальной системе")]
         public async Task ReferralListTask()
         {
             // получаем иконки из базы

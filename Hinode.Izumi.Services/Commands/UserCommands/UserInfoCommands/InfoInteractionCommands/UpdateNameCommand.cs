@@ -16,6 +16,7 @@ using Hinode.Izumi.Services.RpgServices.UserService;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.InfoInteractionCommands
 {
+    [CommandCategory(CommandCategory.UserInfo, CommandCategory.UserInfoInteraction)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class UpdateNameCommand : ModuleBase<SocketCommandContext>
     {
@@ -37,7 +38,10 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.InfoInter
         }
 
         [Command("переименоваться"), Alias("rename")]
-        public async Task UpdateNameTask([Remainder] string name)
+        [Summary("Изменить игровое имя на новое")]
+        [CommandUsage("!переименоваться Вино из бананов")]
+        public async Task UpdateNameTask(
+            [Summary("Новое игровое имя")] [Remainder] string name)
         {
             // получаем все иконки из базы
             var emotes = await _emoteService.GetEmotes();

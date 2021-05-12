@@ -12,9 +12,9 @@ using Hinode.Izumi.Services.BackgroundJobs.MakingJob;
 using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService;
 using Hinode.Izumi.Services.EmoteService;
 using Hinode.Izumi.Services.EmoteService.Impl;
+using Hinode.Izumi.Services.RpgServices.AlcoholService;
 using Hinode.Izumi.Services.RpgServices.BuildingService;
 using Hinode.Izumi.Services.RpgServices.CalculationService;
-using Hinode.Izumi.Services.RpgServices.CraftingService;
 using Hinode.Izumi.Services.RpgServices.FamilyService;
 using Hinode.Izumi.Services.RpgServices.ImageService;
 using Hinode.Izumi.Services.RpgServices.IngredientService;
@@ -26,15 +26,14 @@ using Hinode.Izumi.Services.RpgServices.UserService;
 using Humanizer;
 using Image = Hinode.Izumi.Data.Enums.Image;
 
-namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCommands.CraftingStartCommands.
-    CraftingItemCommand
+namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCommands.CraftingAlcoholCommand
 {
     [InjectableService]
-    public class CraftingItemCommand : ICraftingItemCommand
+    public class CraftingAlcoholCommand : ICraftingAlcoholCommand
     {
         private readonly IDiscordEmbedService _discordEmbedService;
         private readonly IEmoteService _emoteService;
-        private readonly ICraftingService _craftingService;
+        private readonly IAlcoholService _alcoholService;
         private readonly IIngredientService _ingredientService;
         private readonly IInventoryService _inventoryService;
         private readonly ILocalizationService _local;
@@ -46,15 +45,15 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
         private readonly ICalculationService _calc;
         private readonly IImageService _imageService;
 
-        public CraftingItemCommand(IDiscordEmbedService discordEmbedService, IEmoteService emoteService,
-            ICraftingService craftingService, IIngredientService ingredientService, IInventoryService inventoryService,
+        public CraftingAlcoholCommand(IDiscordEmbedService discordEmbedService, IEmoteService emoteService,
+            IAlcoholService alcoholService, IIngredientService ingredientService, IInventoryService inventoryService,
             ILocalizationService local, ILocationService locationService, IBuildingService buildingService,
             IPropertyService propertyService, IUserService userService, IFamilyService familyService,
             ICalculationService calc, IImageService imageService)
         {
             _discordEmbedService = discordEmbedService;
             _emoteService = emoteService;
-            _craftingService = craftingService;
+            _alcoholService = alcoholService;
             _ingredientService = ingredientService;
             _inventoryService = inventoryService;
             _local = local;
@@ -67,19 +66,19 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
             _imageService = imageService;
         }
 
-        public async Task Execute(SocketCommandContext context, long craftingId, long amount)
+        public async Task Execute(SocketCommandContext context, long amount, long alcoholId)
         {
             // получаем иконки из базы
             var emotes = await _emoteService.GetEmotes();
-            // получаем изготавливаемый предмет
-            var crafting = await _craftingService.GetCrafting(craftingId);
+            // получаем изготавливаемый алкоголь
+            var alcohol = await _alcoholService.GetAlcohol(alcoholId);
             // получаем текущую локацию пользователя
             var userLocation = await _locationService.GetUserLocation((long) context.User.Id);
 
             // проверяем что пользователь находится в нужной для изготовления локации
-            await CheckCraftingLocation((long) context.User.Id, userLocation, crafting.Location);
+            await CheckAlcoholLocation((long) context.User.Id, userLocation, Location.Village);
             // проверяем что у пользователя есть все необходимые для изготовления ингредиенты
-            await _ingredientService.CheckCraftingIngredients((long) context.User.Id, crafting.Id);
+            await _ingredientService.CheckAlcoholIngredients((long) context.User.Id, alcohol.Id);
 
             // получаем валюту пользователя
             var userCurrency = await _inventoryService.GetUserCurrency((long) context.User.Id, Currency.Ien);
@@ -89,7 +88,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
             var craftingPrice = freeCrafting
                 ? 0
                 : await _calc.CraftingPrice(
-                    await _ingredientService.GetCraftingCostPrice(crafting.Id));
+                    await _ingredientService.GetAlcoholCostPrice(alcohol.Id));
 
             // проверяем есть ли у пользователя деньги на оплату стоимости изготовления
             if (userCurrency.Amount < craftingPrice)
@@ -103,15 +102,15 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
                 var timeNow = DateTimeOffset.Now;
                 // определяем длительность изготовления
                 var craftingTime = await CalculateCraftingTime(
-                    (long) context.User.Id, userLocation, crafting.Time, amount);
+                    (long) context.User.Id, userLocation, alcohol.Time, amount);
 
                 // отнимаем у пользователя ингредиенты для изготовления
-                await _ingredientService.RemoveCraftingIngredients((long) context.User.Id, crafting.Id);
+                await _ingredientService.RemoveAlcoholIngredients((long) context.User.Id, alcohol.Id);
                 // обновляем пользователю текущую локацию
-                await _locationService.UpdateUserLocation((long) context.User.Id, Location.MakingCrafting);
+                await _locationService.UpdateUserLocation((long) context.User.Id, Location.MakingAlcohol);
                 // добавляем информацию о перемещении
                 await _locationService.AddUserMovement(
-                    (long) context.User.Id, Location.MakingCrafting, userLocation,
+                    (long) context.User.Id, Location.MakingAlcohol, userLocation,
                     timeNow.AddSeconds(craftingTime));
                 // отнимаем энергию у пользователя
                 await _userService.RemoveEnergyFromUser((long) context.User.Id,
@@ -121,9 +120,9 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
                 await _inventoryService.RemoveItemFromUser(
                     (long) context.User.Id, InventoryCategory.Currency, Currency.Ien.GetHashCode(), craftingPrice);
 
-                // запускаем джобу завершения изготовления предмета
+                // запускаем джобу завершения изготовления алкоголя
                 BackgroundJob.Schedule<IMakingJob>(x =>
-                        x.CompleteCrafting((long) context.User.Id, crafting.Id, amount, userLocation),
+                        x.CompleteAlcohol((long) context.User.Id, alcohol.Id, amount, userLocation),
                     TimeSpan.FromSeconds(craftingTime));
 
                 var buildingWorkshop = await _buildingService.GetBuilding(Building.Workshop);
@@ -133,36 +132,46 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
                     .WithAuthor(Location.MakingCrafting.Localize())
                     // подверждаем что изготовление начато
                     .WithDescription(
-                        IzumiReplyMessage.CraftingResourceDesc.Parse(
-                            emotes.GetEmoteOrBlank(crafting.Name), _local.Localize(crafting.Name, 5)) +
+                        IzumiReplyMessage.CraftingAlcoholDesc.Parse(
+                            emotes.GetEmoteOrBlank(alcohol.Name), _local.Localize(alcohol.Name, 5)) +
                         (craftingPrice == 0
-                            ? IzumiReplyMessage.CraftingResourceInFamilyHouse.Parse(
+                            ? IzumiReplyMessage.CraftingAlcoholInFamilyHouse.Parse(
                                 emotes.GetEmoteOrBlank(buildingWorkshop.Name),
                                 buildingWorkshop.Name)
                             : "") +
                         $"\n{emotes.GetEmoteOrBlank("Blank")}")
                     // потраченные ингредиенты
                     .AddField(IzumiReplyMessage.IngredientsSpent.Parse(),
-                        await _ingredientService.DisplayCraftingIngredients(crafting.Id, amount) +
+                        await _ingredientService.DisplayAlcoholIngredients(alcohol.Id, amount) +
                         (craftingPrice == 0
                             ? ""
                             : $"{emotes.GetEmoteOrBlank(Currency.Ien.ToString())} {craftingPrice} {_local.Localize(Currency.Ien.ToString(), craftingPrice)}"
                         ), true)
                     // длительность
                     .AddField(IzumiReplyMessage.TimeFieldName.Parse(),
-                        crafting.Time.Seconds().Humanize(2, new CultureInfo("ru-RU")), true)
-                    // ожидаемые предметы
-                    .AddField(IzumiReplyMessage.CraftingResourceExpectedFieldName.Parse(),
-                        $"{emotes.GetEmoteOrBlank(crafting.Name)} {amount} {_local.Localize(crafting.Name, amount)}");
+                        alcohol.Time.Seconds().Humanize(2, new CultureInfo("ru-RU")), true)
+                    // ожидаемый алкоголь
+                    .AddField(IzumiReplyMessage.CraftingAlcoholExpectedFieldName.Parse(),
+                        $"{emotes.GetEmoteOrBlank(alcohol.Name)} {amount} {_local.Localize(alcohol.Name, amount)}");
+
 
                 await _discordEmbedService.SendEmbed(context.User, embed);
                 await Task.CompletedTask;
             }
         }
 
-        private async Task CheckCraftingLocation(long userId, Location userLocation, Location craftingLocation)
+        public async Task Execute(SocketCommandContext context, long amount, string alcoholNamePattern)
         {
-            // если пользователь находится в локации где изготавливается предмет - все ок
+            // получаем локализацию алкоголя
+            var alcoholLocalization = await _local.GetLocalizationByLocalizedWord(
+                LocalizationCategory.Alcohol, alcoholNamePattern);
+            // используем основной метод уже зная id алкоголя
+            await Execute(context, amount, alcoholLocalization.ItemId);
+        }
+
+        private async Task CheckAlcoholLocation(long userId, Location userLocation, Location craftingLocation)
+        {
+            // если пользователь находится в локации где изготавливается алкоголь - все ок
             if (userLocation == craftingLocation) return;
 
             // если пользователь находится в деревне, нужно проверить есть ли у него семья и есть ли у семьи мастерская
@@ -182,18 +191,18 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
                     // если есть - все ок
                     if (familyHasBuilding) return;
 
-                    // если нет - он не может изготовить предмет в деревне
+                    // если нет - он не может изготовить алкоголь в деревне
                     await Task.FromException(new Exception(IzumiReplyMessage.ResourceCraftWrongLocation.Parse(
                         craftingLocation.Localize(true))));
                 }
-                // если пользователь не состоит в семье - он не может изготовить предмет в деревне
+                // если пользователь не состоит в семье - он не может изготовить алкоголь в деревне
                 else
                 {
                     await Task.FromException(new Exception(IzumiReplyMessage.ResourceCraftWrongLocation.Parse(
                         craftingLocation.Localize(true))));
                 }
             }
-            // если пользователь находится в другой локации - он не может изготовить предмет
+            // если пользователь находится в другой локации - он не может изготовить алкоголь
             else
             {
                 await Task.FromException(new Exception(IzumiReplyMessage.ResourceCraftWrongLocation.Parse(
@@ -215,11 +224,11 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
             var familyHasBuilding = await _buildingService.CheckBuildingInFamily(
                 userFamily.FamilyId, Building.Workshop);
 
-            // если у семьи пользователя есть мастерская и он находится в деревне - он может изготовить предмет бесплатно
+            // если у семьи пользователя есть мастерская и он находится в деревне - он может изготовить алкоголь бесплатно
             return familyHasBuilding && userLocation == Location.Village;
         }
 
-        private async Task<long> CalculateCraftingTime(long userId, Location userLocation, long craftingTime,
+        private async Task<long> CalculateCraftingTime(long userId, Location userLocation, long alcoholTime,
             long amount)
         {
             // получаем пользователя
@@ -228,7 +237,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
             var hasFamily = await _familyService.CheckUserHasFamily(user.Id);
 
             // если не состоит - возвращаем длительность изготовления без учета постройки
-            if (!hasFamily) return _calc.ActionTime(craftingTime * amount, user.Energy);
+            if (!hasFamily) return _calc.ActionTime(alcoholTime * amount, user.Energy);
 
             // получаем семью пользователя
             var userFamily = await _familyService.GetUserFamily(user.Id);
@@ -239,10 +248,10 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
             // если у семьи нет мастерской или пользователь не находится в деревне
             if (!familyHasBuilding || userLocation != Location.Village)
                 // возвращаем длительность изготовления без учета постройки
-                return _calc.ActionTime(craftingTime * amount, user.Energy);
+                return _calc.ActionTime(alcoholTime * amount, user.Energy);
 
             // считаем стандартное время изготовления с учетом постройки
-            var defaultTime = craftingTime * amount - craftingTime * amount /
+            var defaultTime = alcoholTime * amount - alcoholTime * amount /
                 await _propertyService.GetPropertyValue(Property.ActionTimeReduceWorkshop) * 100;
             // возвращаем длительность изготовления
             return _calc.ActionTime(defaultTime, user.Energy);

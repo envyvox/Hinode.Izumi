@@ -13,6 +13,7 @@ using Hinode.Izumi.Services.RpgServices.ProjectService;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
 {
+    [CommandCategory(CommandCategory.UserInfo)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class UserProjectsCommand : ModuleBase<SocketCommandContext>
     {
@@ -31,6 +32,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
         }
 
         [Command("чертежи"), Alias("projects")]
+        [Summary("Посмотреть приобретенные чертежи")]
         public async Task UserProjectTask()
         {
             // получаем все иконки из базы

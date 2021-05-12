@@ -12,6 +12,7 @@ using Hinode.Izumi.Services.Commands.UserCommands.FieldCommands.FieldWaterComman
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.FieldCommands
 {
+    [CommandCategory(CommandCategory.Field)]
     [Group("участок"), Alias("field")]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     [IzumiRequireLocation(Location.Village), IzumiRequireNoDebuff(BossDebuff.VillageStop)]
@@ -36,28 +37,43 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.FieldCommands
             _fieldDigCommand = fieldDigCommand;
         }
 
-        [Command]
+        [Command("")]
+        [Summary("Посмотреть информацию о своем участке")]
         public async Task FieldInfoTask() =>
             await _fieldInfoCommand.Execute(Context);
 
         [Command("купить"), Alias("buy")]
+        [Summary("Приобрести участок")]
         public async Task FieldBuyTask() =>
             await _fieldBuyCommand.Execute(Context);
 
         [Command("посадить"), Alias("plant")]
-        public async Task FieldPlantTask(long fieldId, [Remainder] string seedNamePattern) =>
+        [Summary("Посадить семена на указанную клетку земли")]
+        [CommandUsage("!посадить 1 семя картофеля", "!посадить 3 рассада хмеля")]
+        public async Task FieldPlantTask(
+            [Summary("Номер клетки")] long fieldId,
+            [Summary("Название семян")] [Remainder] string seedNamePattern) =>
             await _fieldPlantCommand.Execute(Context, fieldId, seedNamePattern);
 
         [Command("полить"), Alias("water")]
-        public async Task FieldWaterTask([Remainder] string namePattern = null) =>
+        [Summary("Полить свой участок или участок указанного члена семьи")]
+        [CommandUsage("!полить", "!полить Холли")]
+        public async Task FieldWaterTask(
+            [Summary("Игровое имя")] [Remainder] string namePattern = null) =>
             await _fieldWaterCommand.Execute(Context, namePattern);
 
         [Command("собрать"), Alias("collect")]
-        public async Task FieldCollectTask(long fieldId) =>
+        [Summary("Собрать урожай с указанной клетки земли")]
+        [CommandUsage("!собрать 1", "!собрать 3")]
+        public async Task FieldCollectTask(
+            [Summary("Номер клетки")] long fieldId) =>
             await _fieldCollectCommand.Execute(Context, fieldId);
 
         [Command("выкопать"), Alias("dig")]
-        public async Task FieldDigTask(long fieldId) =>
+        [Summary("Выкопать семена из указанной клетки земли")]
+        [CommandUsage("!выкопать 1", "!выкопать 3")]
+        public async Task FieldDigTask(
+            [Summary("Номер клетки")] long fieldId) =>
             await _fieldDigCommand.Execute(Context, fieldId);
     }
 }

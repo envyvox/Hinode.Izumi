@@ -28,6 +28,7 @@ using Humanizer;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
 {
+    [CommandCategory(CommandCategory.UserInfo)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class UserProfileCommand : ModuleBase<SocketCommandContext>
     {
@@ -65,7 +66,9 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
         }
 
         [Command("профиль"), Alias("profile")]
-        public async Task UserProfileTask([Remainder] string name = null) =>
+        [Summary("Посмотреть свой профиль или профиль пользователя с указанным именем")]
+        public async Task UserProfileTask(
+            [Summary("Игровое имя")] [Remainder] string name = null) =>
             await SendProfileEmbed(name != null
                 // если пользователь указал игровое имя в команде, нужно вывести профиль желаемого пользователя
                 ? await _userService.GetUserWithRowNumber(name)
@@ -73,7 +76,9 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
                 : await _userService.GetUserWithRowNumber((long) Context.User.Id));
 
         [Command("профиль"), Alias("profile")]
-        public async Task UserProfileTask(long userId) =>
+        [Summary("Посмотреть профиль пользователя с указанным ID")]
+        public async Task UserProfileTask(
+            [Summary("ID пользователя")] long userId) =>
             await SendProfileEmbed(
                 await _userService.GetUserWithRowNumber(userId));
 

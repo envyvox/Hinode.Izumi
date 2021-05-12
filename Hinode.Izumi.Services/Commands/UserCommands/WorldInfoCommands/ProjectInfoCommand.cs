@@ -19,6 +19,7 @@ using Humanizer;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
 {
+    [CommandCategory(CommandCategory.Building, CommandCategory.WorldInfo)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class ProjectInfoCommand : ModuleBase<SocketCommandContext>
     {
@@ -44,7 +45,10 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
         }
 
         [Command("чертеж"), Alias("project")]
-        public async Task ProjectInfoTask(long projectId)
+        [Summary("Посмотреть информацию об указанном чертеже")]
+        [CommandUsage("!чертеж 1", "!чертеж 5")]
+        public async Task ProjectInfoTask(
+            [Summary("Номер чертежа")] long projectId)
         {
             // получаем чертеж
             var project = await _projectService.GetProject(projectId);

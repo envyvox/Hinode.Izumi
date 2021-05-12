@@ -16,8 +16,7 @@ using Hinode.Izumi.Services.RpgServices.LocalizationService;
 using Humanizer;
 using Image = Hinode.Izumi.Data.Enums.Image;
 
-namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCommands.CraftingInfoCommands.
-    CraftingAlcoholInfoCommand
+namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCommands.CraftingAlcoholInfoCommand
 {
     [InjectableService]
     public class CraftingAlcoholInfoCommand : ICraftingAlcoholInfoCommand
@@ -78,6 +77,15 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
 
             await _discordEmbedService.SendEmbed(context.User, embed);
             await Task.CompletedTask;
+        }
+
+        public async Task Execute(SocketCommandContext context, string alcoholNamePattern)
+        {
+            // получаем локализацию алкоголя
+            var alcoholLocalization = await _local.GetLocalizationByLocalizedWord(
+                LocalizationCategory.Alcohol, alcoholNamePattern);
+            // и используем основной метод уже зная id алкоголя
+            await Execute(context, alcoholLocalization.ItemId);
         }
     }
 }

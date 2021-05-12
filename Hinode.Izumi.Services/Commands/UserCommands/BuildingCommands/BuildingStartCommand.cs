@@ -28,6 +28,7 @@ using Humanizer;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.BuildingCommands
 {
+    [CommandCategory(CommandCategory.Building)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class BuildingStartCommand : ModuleBase<SocketCommandContext>
     {
@@ -60,7 +61,10 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.BuildingCommands
         }
 
         [Command("построить"), Alias("build")]
-        public async Task BuildingStartTask(long projectId)
+        [Summary("Начать строительство по указанному чертежу")]
+        [CommandUsage("!построить 1", "!построить 3")]
+        public async Task BuildingStartTask(
+            [Summary("Номер чертежа")] long projectId)
         {
             // получаем иконки из базы
             _emotes = await _emoteService.GetEmotes();

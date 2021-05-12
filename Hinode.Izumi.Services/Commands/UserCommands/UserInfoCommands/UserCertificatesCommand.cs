@@ -12,6 +12,7 @@ using Hinode.Izumi.Services.RpgServices.CertificateService;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
 {
+    [CommandCategory(CommandCategory.UserInfo)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class UserCertificatesCommand : ModuleBase<SocketCommandContext>
     {
@@ -28,6 +29,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
         }
 
         [Command("сертификаты"), Alias("certificates")]
+        [Summary("Посмотреть приобретенные сертификаты")]
         public async Task UserCertificateTask()
         {
             // получаем все иконки из базы

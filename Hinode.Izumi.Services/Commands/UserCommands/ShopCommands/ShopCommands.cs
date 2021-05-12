@@ -8,6 +8,7 @@ using Hinode.Izumi.Services.Commands.UserCommands.ShopCommands.ListCommands;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.ShopCommands
 {
+    [CommandCategory(CommandCategory.Shop)]
     [Group("магазин"), Alias("shop")]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class ShopCommands : ModuleBase<SocketCommandContext>
@@ -32,31 +33,37 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ShopCommands
         }
 
         [Command("семян"), Alias("seeds")]
+        [Summary("Посмотреть ассортимент магазина семян")]
         [IzumiRequireLocation(Location.CapitalShop), IzumiRequireNoDebuff(BossDebuff.CapitalStop)]
         public async Task ShopSeedTask() =>
             await _shopSeedCommand.Execute(Context);
 
         [Command("сертификатов"), Alias("certificates")]
+        [Summary("Посмотреть ассортимент магазина сертификатов")]
         [IzumiRequireLocation(Location.CapitalShop), IzumiRequireNoDebuff(BossDebuff.CapitalStop)]
         public async Task ShopCertificateTask() =>
             await _shopCertificateCommand.Execute(Context);
 
         [Command("баннеров"), Alias("banners")]
+        [Summary("Посмотреть ассортимент магазина баннеров")]
         [IzumiRequireLocation(Location.CapitalShop), IzumiRequireNoDebuff(BossDebuff.CapitalStop)]
         public async Task ShopBannerTask() =>
             await _shopBannerCommand.Execute(Context);
 
         [Command("рецептов"), Alias("recipes")]
+        [Summary("Посмотреть ассортимент магазина рецептов")]
         [IzumiRequireLocation(Location.Garden), IzumiRequireNoDebuff(BossDebuff.GardenStop)]
         public async Task ShopRecipeTask() =>
             await _shopRecipeCommand.Execute(Context);
 
         [Command("продуктов"), Alias("products")]
+        [Summary("Посмотреть ассортимент магазина продуктов")]
         [IzumiRequireLocation(Location.Village), IzumiRequireNoDebuff(BossDebuff.VillageStop)]
         public async Task ShopProductTask() =>
             await _shopProductCommand.Execute(Context);
 
         [Command("чертежей"), Alias("projects")]
+        [Summary("Посмотреть ассортимент магазина чертежей")]
         [IzumiRequireLocation(Location.Seaport), IzumiRequireNoDebuff(BossDebuff.SeaportStop)]
         public async Task ShopProjectsTask() =>
             await _shopProjectCommand.Execute(Context);
@@ -85,27 +92,47 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ShopCommands
             }
 
             [Command("семена"), Alias("seed")]
-            public async Task ShopBuySeedTask(long seedId, long amount = 1) =>
+            [Summary("Приобрести указанные семена")]
+            [CommandUsage("!магазин купить семена 21 5", "!магазин купить семена 2")]
+            public async Task ShopBuySeedTask(
+                [Summary("Номер семян")] long seedId,
+                [Summary("Количество")] long amount = 1) =>
                 await _shopBuySeedCommand.Execute(Context, seedId, amount);
 
             [Command("сертификат"), Alias("certificate")]
-            public async Task ShopBuyCertTask(long certificateId) =>
+            [Summary("Приобрести указанный сертификат")]
+            [CommandUsage("!магазин купить сертификат 1", "!магазин купить сертификат 3")]
+            public async Task ShopBuyCertTask(
+                [Summary("Номер сертификата")] long certificateId) =>
                 await _shopBuyCertificateCommand.Execute(Context, certificateId);
 
             [Command("баннер"), Alias("banner")]
-            public async Task ShopBuyBannerTask(long bannerId) =>
+            [Summary("Приобрести указанный баннер")]
+            [CommandUsage("!магазин купить баннер 1", "!магазин купить баннер 5")]
+            public async Task ShopBuyBannerTask(
+                [Summary("Номер баннера")] long bannerId) =>
                 await _shopBuyBannerCommand.Execute(Context, bannerId);
 
             [Command("рецепт"), Alias("recipe")]
-            public async Task ShopBuyRecipeTask(long foodId) =>
+            [Summary("Приобрести указанный рецепт")]
+            [CommandUsage("!магазин купить рецепт 1", "!магазин купить рецепт 5")]
+            public async Task ShopBuyRecipeTask(
+                [Summary("Номер рецепта")] long foodId) =>
                 await _shopBuyRecipeCommand.Execute(Context, foodId);
 
             [Command("продукт"), Alias("product")]
-            public async Task ShopBuyProductTask(long productId, long amount = 1) =>
+            [Summary("Приобрести указанные продукты")]
+            [CommandUsage("!магазин купить продукт 1 5", "!магазин купить продукт 2")]
+            public async Task ShopBuyProductTask(
+                [Summary("Номер продукта")] long productId,
+                [Summary("Количество")] long amount = 1) =>
                 await _shopBuyProductCommand.Execute(Context, productId, amount);
 
             [Command("чертеж"), Alias("project")]
-            public async Task ShopBuyProjectTask(long projectId) =>
+            [Summary("Приобрести указанный чертеж")]
+            [CommandUsage("!магазин купить чертеж 1", "!магазин купить чертеж 5")]
+            public async Task ShopBuyProjectTask(
+                [Summary("Номер чертежа")] long projectId) =>
                 await _shopBuyProjectCommand.Execute(Context, projectId);
         }
     }

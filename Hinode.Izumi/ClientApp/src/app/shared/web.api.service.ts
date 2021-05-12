@@ -1171,6 +1171,75 @@ export class AlcoholPropertyService extends ServiceBase {
 @Injectable({
     providedIn: 'root'
 })
+export class CommandService extends ServiceBase {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(Injector) configuration: Injector, @Inject(HttpClient) http: HttpClient, @Optional() @Inject(SPA_BASE_URL) baseUrl?: string) {
+        super(configuration);
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : this.getBaseUrl("spa");
+    }
+
+    list(): Observable<CommandInfo[]> {
+        let url_ = this.baseUrl + "/api/command/list";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("get", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.processList(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processList(<any>response_);
+                } catch (e) {
+                    return <Observable<CommandInfo[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CommandInfo[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processList(response: HttpResponseBase): Observable<CommandInfo[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(CommandInfo.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CommandInfo[]>(<any>null);
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
 export class ContractService extends ServiceBase {
     private http: HttpClient;
     private baseUrl: string;
@@ -6834,6 +6903,62 @@ export interface IAlcoholPropertyWebModel extends IEntityBaseModel {
 
 export enum AlcoholProperty {
     CraftingDoubleChance = 1,
+}
+
+export class CommandInfo implements ICommandInfo {
+    categories?: string[] | null;
+    command?: string | null;
+    summary?: string | null;
+    examples?: string | null;
+
+    constructor(data?: ICommandInfo) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["categories"])) {
+                this.categories = [] as any;
+                for (let item of _data["categories"])
+                    this.categories!.push(item);
+            }
+            this.command = _data["command"] !== undefined ? _data["command"] : <any>null;
+            this.summary = _data["summary"] !== undefined ? _data["summary"] : <any>null;
+            this.examples = _data["examples"] !== undefined ? _data["examples"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): CommandInfo {
+        data = typeof data === 'object' ? data : {};
+        let result = new CommandInfo();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.categories)) {
+            data["categories"] = [];
+            for (let item of this.categories)
+                data["categories"].push(item);
+        }
+        data["command"] = this.command !== undefined ? this.command : <any>null;
+        data["summary"] = this.summary !== undefined ? this.summary : <any>null;
+        data["examples"] = this.examples !== undefined ? this.examples : <any>null;
+        return data; 
+    }
+}
+
+export interface ICommandInfo {
+    categories?: string[] | null;
+    command?: string | null;
+    summary?: string | null;
+    examples?: string | null;
 }
 
 export class ContractWebModel extends EntityBaseModel implements IContractWebModel {

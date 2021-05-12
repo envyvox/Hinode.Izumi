@@ -15,6 +15,7 @@ using Hinode.Izumi.Services.RpgServices.TrainingService;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
 {
+    [CommandCategory(CommandCategory.UserInfo)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class UserCardsCommands : ModuleBase<SocketCommandContext>
     {
@@ -33,6 +34,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
         }
 
         [Command("карточки"), Alias("cards")]
+        [Summary("Посмотреть свою коллекцию карточек")]
         public async Task UserCardsTask()
         {
             // получаем иконки из базы

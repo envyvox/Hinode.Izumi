@@ -18,6 +18,7 @@ using Image = Hinode.Izumi.Data.Enums.Image;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
 {
+    [CommandCategory(CommandCategory.WorldInfo)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class WorldInfoCommand : ModuleBase<SocketCommandContext>
     {
@@ -43,6 +44,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
         }
 
         [Command("мир"), Alias("world")]
+        [Summary("Посмотреть текущее состояние мира")]
         public async Task WorldInfoTask()
         {
             // получаем все иконки из базы

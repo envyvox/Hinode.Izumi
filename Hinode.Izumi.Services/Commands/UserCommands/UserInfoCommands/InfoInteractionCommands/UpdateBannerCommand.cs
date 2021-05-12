@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Data.Enums.RarityEnums;
@@ -11,6 +12,7 @@ using Hinode.Izumi.Services.RpgServices.BannerService;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.InfoInteractionCommands
 {
+    [CommandCategory(CommandCategory.UserInfo, CommandCategory.UserInfoInteraction)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class UpdateBannerCommand : ModuleBase<SocketCommandContext>
     {
@@ -24,7 +26,10 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.InfoInter
         }
 
         [Command("баннер"), Alias("banner")]
-        public async Task UpdateBannerTask(long bannerId)
+        [Summary("Изменить текущий баннер на указанный")]
+        [CommandUsage("!баннер 1", "!баннер 5")]
+        public async Task UpdateBannerTask(
+            [Summary("Номер баннера")] long bannerId)
         {
             // получаем активный баннер пользователя
             var currentBanner = await _bannerService.GetUserActiveBanner((long) Context.User.Id);

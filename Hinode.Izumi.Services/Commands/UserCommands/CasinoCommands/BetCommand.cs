@@ -22,6 +22,7 @@ using Humanizer;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands
 {
+    [CommandCategory(CommandCategory.Casino)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     [IzumiRequireLocation(Location.CapitalCasino), IzumiRequireNoDebuff(BossDebuff.CapitalStop)]
     public class BetCommand : ModuleBase<SocketCommandContext>
@@ -50,7 +51,10 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands
         }
 
         [Command("ставка"), Alias("bet")]
-        public async Task BetTask(long amount = 0)
+        [Summary("Сделать ставку в казино")]
+        [CommandUsage("!ставка 200", "!ставка 1000")]
+        public async Task BetTask(
+            [Summary("Сумма ставки")] long amount = 0)
         {
             // получаем текущее время
             var timeNow = DateTimeOffset.Now;

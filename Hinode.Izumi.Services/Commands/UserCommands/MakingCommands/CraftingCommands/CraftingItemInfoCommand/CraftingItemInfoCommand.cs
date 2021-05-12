@@ -16,8 +16,7 @@ using Hinode.Izumi.Services.RpgServices.LocalizationService;
 using Humanizer;
 using Image = Hinode.Izumi.Data.Enums.Image;
 
-namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCommands.CraftingInfoCommands.
-    CraftingItemInfoCommand
+namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCommands.CraftingItemInfoCommand
 {
     [InjectableService]
     public class CraftingItemInfoCommand : ICraftingItemInfoCommand
@@ -80,6 +79,15 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
 
             await _discordEmbedService.SendEmbed(context.User, embed);
             await Task.CompletedTask;
+        }
+
+        public async Task Execute(SocketCommandContext context, string itemNamePattern)
+        {
+            // получаем локализацию предмета
+            var itemLocalization = await _local.GetLocalizationByLocalizedWord(
+                LocalizationCategory.Crafting, itemNamePattern);
+            // и используем основной метод уже зная id предмета
+            await Execute(context, itemLocalization.ItemId);
         }
     }
 }

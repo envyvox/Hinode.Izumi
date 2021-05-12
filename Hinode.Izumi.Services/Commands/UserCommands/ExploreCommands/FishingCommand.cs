@@ -25,6 +25,7 @@ using Image = Hinode.Izumi.Data.Enums.Image;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.ExploreCommands
 {
+    [CommandCategory(CommandCategory.Explore)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     [IzumiRequireLocation(Location.Seaport), IzumiRequireNoDebuff(BossDebuff.SeaportStop)]
     public class FishingCommand : ModuleBase<SocketCommandContext>
@@ -56,6 +57,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ExploreCommands
         }
 
         [Command("рыбачить"), Alias("fishing")]
+        [Summary("Отправиться на рыбалку")]
         public async Task FishingTask()
         {
             // получаем иконки из базы

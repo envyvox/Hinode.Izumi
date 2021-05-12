@@ -14,6 +14,7 @@ using Hinode.Izumi.Services.RpgServices.UserService;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.InfoInteractionCommands
 {
+    [CommandCategory(CommandCategory.UserInfo, CommandCategory.UserInfoInteraction)]
     [Group("подтвердить")]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class UpdateGenderCommand : ModuleBase<SocketCommandContext>
@@ -33,6 +34,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.InfoInter
         }
 
         [Command("пол")]
+        [Summary("Отправить запрос на подтверждение пола")]
         public async Task UpdateGenderTask()
         {
             // получаем иконки из базы

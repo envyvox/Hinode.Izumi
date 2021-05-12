@@ -17,6 +17,7 @@ using Humanizer;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
 {
+    [CommandCategory(CommandCategory.Cooking, CommandCategory.WorldInfo)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class RecipeInfoCommand : ModuleBase<SocketCommandContext>
     {
@@ -40,12 +41,18 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
         }
 
         [Command("рецепт"), Alias("recipe")]
-        public async Task RecipeInfoCommandTask(long foodId) =>
+        [Summary("Посмотреть рецепт блюда с указанным номером")]
+        [CommandUsage("!рецепт 1", "!рецепт 4")]
+        public async Task RecipeInfoCommandTask(
+            [Summary("Номер блюда")] long foodId) =>
             // выводим рецепт
             await RecipeInfoTask(foodId);
 
         [Command("рецепт"), Alias("recipe")]
-        public async Task RecipeInfoCommandTask([Remainder] string foodName)
+        [Summary("Посмотреть рецепт блюда с указанным названием")]
+        [CommandUsage("!рецепт тортильи", "!рецепт яичницы")]
+        public async Task RecipeInfoCommandTask(
+            [Summary("Название блюда")] [Remainder] string foodName)
         {
             // получаем локализацию блюда
             var foodLocal = await _local.GetLocalizationByLocalizedWord(LocalizationCategory.Food, foodName);

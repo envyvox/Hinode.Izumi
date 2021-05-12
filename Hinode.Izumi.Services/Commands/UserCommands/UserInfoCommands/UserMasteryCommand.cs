@@ -18,6 +18,7 @@ using Image = Hinode.Izumi.Data.Enums.Image;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
 {
+    [CommandCategory(CommandCategory.UserInfo)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class UserMasteryCommand : ModuleBase<SocketCommandContext>
     {
@@ -38,6 +39,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
         }
 
         [Command("мастерство"), Alias("mastery")]
+        [Summary("Посмотреть информацию о своем мастерстве")]
         public async Task UserMasteryTask()
         {
             // получаем иконки из базы

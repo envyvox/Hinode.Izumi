@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
+using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Services.Commands.Attributes;
 using Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.UserInventoryCommands.UserInventoryCommand;
@@ -10,6 +11,7 @@ using Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.UserInventory
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.UserInventoryCommands
 {
+    [CommandCategory(CommandCategory.UserInfo, CommandCategory.Inventory)]
     [Group("инвентарь"), Alias("inventory")]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class UserInventoryCommands : ModuleBase<SocketCommandContext>
@@ -31,23 +33,28 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.UserInven
             _userInventoryFoodCommand = userInventoryFoodCommand;
         }
 
-        [Command]
+        [Command("")]
+        [Summary("Посмотреть свой инвентарь")]
         public async Task UserInventoryTask() =>
             await _userInventoryCommand.Execute(Context);
 
         [Command("семена"), Alias("seed")]
+        [Summary("Посмотреть имеющиеся семена")]
         public async Task UserInventorySeedTask() =>
             await _userInventorySeedCommand.Execute(Context);
 
         [Command("урожай"), Alias("crop")]
+        [Summary("Посмотреть имеющийся урожай")]
         public async Task UserInventoryCropTask() =>
             await _userInventoryCropCommand.Execute(Context);
 
         [Command("рыба"), Alias("fish")]
+        [Summary("Посмотреть имеющуюся рыбу")]
         public async Task UserInventoryFishTask() =>
             await _userInventoryFishCommand.Execute(Context);
 
         [Command("блюда"), Alias("food")]
+        [Summary("Посмотреть имеющиеся блюда")]
         public async Task UserInventoryFoodTask() =>
             await _userInventoryFoodCommand.Execute(Context);
     }

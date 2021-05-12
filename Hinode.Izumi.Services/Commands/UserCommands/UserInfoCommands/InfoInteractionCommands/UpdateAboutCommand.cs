@@ -17,6 +17,7 @@ using Humanizer;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.InfoInteractionCommands
 {
+    [CommandCategory(CommandCategory.UserInfo, CommandCategory.UserInfoInteraction)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class UpdateAboutCommand : ModuleBase<SocketCommandContext>
     {
@@ -35,7 +36,10 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.InfoInter
         }
 
         [Command("информация"), Alias("about")]
-        public async Task UpdateAboutTask([Remainder] string about = null)
+        [Summary("Обновить информацию в профиле")]
+        [CommandUsage("!информация Люблю мороженое и приключения")]
+        public async Task UpdateAboutTask(
+            [Summary("Новая информация")] [Remainder] string about = null)
         {
             // получаем кулдаун на смену информации пользователя
             var cooldown = await _cooldownService.GetUserCooldown((long) Context.User.Id, Cooldown.UpdateAbout);

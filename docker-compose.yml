@@ -1,7 +1,7 @@
 ﻿version: '3.5'
 services:
   bot:
-    image: registry.kkxo.ru/izumi
+    image: registry.kkxo.ru/test-izumi
     build:
       context: .
       dockerfile: ./Hinode.Izumi/Dockerfile

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
+using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.FamilyEnums;
 using Hinode.Izumi.Services.Commands.Attributes;
@@ -21,6 +22,7 @@ using Hinode.Izumi.Services.Commands.UserCommands.FamilyCommands.ManageCommands.
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.FamilyCommands
 {
+    [CommandCategory(CommandCategory.Family)]
     [Group("семья"), Alias("family")]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class FamilyCommands : ModuleBase<SocketCommandContext>
@@ -52,41 +54,62 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.FamilyCommands
             _familyCheckInfoCommand = familyCheckInfoCommand;
         }
 
-        [Command]
+        [Command("")]
+        [Summary("Посмотреть информацию о своей семье")]
         public async Task FamilyInfoTask() =>
             await _familyInfoCommand.Execute(Context);
 
         [Command("информация"), Alias("info")]
-        public async Task FamilyCheckInfoTask([Remainder] string familyName = null) =>
+        [Summary("Посмотреть информацию о семье с указанным названием")]
+        [CommandUsage("!семья информация Кукушки")]
+        public async Task FamilyCheckInfoTask(
+            [Summary("Название семьи")] [Remainder] string familyName = null) =>
             await _familyCheckInfoCommand.Execute(Context, familyName);
 
         [Command("регистрация"), Alias("registry")]
-        public async Task FamilyRegisterTask([Remainder] string familyName) =>
+        [Summary("Начать регистрацию семьи с указанным названием")]
+        [CommandUsage("!семья регистрация Кукушки")]
+        public async Task FamilyRegisterTask(
+            [Summary("Название семьи")] [Remainder] string familyName) =>
             await _familyRegisterCommand.Execute(Context, familyName);
 
         [Command("приглашения"), Alias("invites")]
+        [Summary("Посмотреть список приглашений в семью")]
         public async Task FamilyInviteListTask() =>
             await _familyInviteListCommand.Execute(Context);
 
         [Command("назначить"), Alias("set")]
-        public async Task
-            FamilyUpdateUserStatusTask(UserInFamilyStatus userFamilyStatus, [Remainder] string username) =>
+        [Summary("Назначить новый статус в семье указанному пользователю")]
+        [CommandUsage("!семья назначить 1 Холли", "!семья назначить 0 Рыбка")]
+        public async Task FamilyUpdateUserStatusTask(
+            [Summary("Номер статуса")] UserInFamilyStatus userFamilyStatus,
+            [Summary("Игровое имя")] [Remainder] string username) =>
             await _familyUpdateUserStatusCommand.Execute(Context, userFamilyStatus, username);
 
         [Command("выгнать"), Alias("kick")]
-        public async Task FamilyKickUserTask([Remainder] string username) =>
+        [Summary("Выгнать указанного пользователя из семьи")]
+        [CommandUsage("!семья выгнать Холли")]
+        public async Task FamilyKickUserTask(
+            [Summary("Игровое имя")] [Remainder] string username) =>
             await _familyKickUserCommand.Execute(Context, username);
 
         [Command("описание"), Alias("description")]
-        public async Task FamilyUpdateDescriptionTask([Remainder] string newDescription) =>
+        [Summary("Сменить описание семьи на новое")]
+        [CommandUsage("!семья описание Самые крутые кукушки в деревне")]
+        public async Task FamilyUpdateDescriptionTask(
+            [Summary("Новое описание")] [Remainder] string newDescription) =>
             await _familyUpdateDescriptionCommand.Execute(Context, newDescription);
 
         [Command("расформировать"), Alias("delete")]
+        [Summary("Расформировать (удалить) семью")]
         public async Task FamilyDeleteTask() =>
             await _familyDeleteCommand.Execute(Context);
 
         [Command("переименовать"), Alias("rename")]
-        public async Task FamilyRenameTask([Remainder] string newFamilyName) =>
+        [CommandUsage("Сменить название семьи на новое")]
+        [Summary("!семья переименовать Золотые кукушки")]
+        public async Task FamilyRenameTask(
+            [Summary("Новое название семьи")] [Remainder] string newFamilyName) =>
             await _familyRenameCommand.Execute(Context, newFamilyName);
 
         [Group("приглашение"), Alias("invite")]
@@ -109,19 +132,31 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.FamilyCommands
             }
 
             [Command("отправить"), Alias("send")]
-            public async Task FamilyInviteSendTask([Remainder] string username) =>
+            [Summary("Отправить приглашение в семью указанному пользователя")]
+            [CommandUsage("!семья приглашение отправить Холли")]
+            public async Task FamilyInviteSendTask(
+                [Summary("Игровое имя")] [Remainder] string username) =>
                 await _familyInviteSendCommand.Execute(Context, username);
 
             [Command("отменить"), Alias("cancel")]
-            public async Task FamilyInviteCancelTask(long inviteId) =>
+            [Summary("Отменить отправленное приглашение в семью")]
+            [CommandUsage("!семья приглашение отменить 323")]
+            public async Task FamilyInviteCancelTask(
+                [Summary("Номер приглашения")] long inviteId) =>
                 await _familyInviteCancelCommand.Execute(Context, inviteId);
 
             [Command("принять"), Alias("accept")]
-            public async Task FamilyInviteAcceptTask(long inviteId) =>
+            [Summary("Принять указанное приглашение в семью")]
+            [CommandUsage("!семья приглашение принять 323")]
+            public async Task FamilyInviteAcceptTask(
+                [Summary("Номер приглашения")] long inviteId) =>
                 await _familyInviteAcceptCommand.Execute(Context, inviteId);
 
             [Command("отказаться"), Alias("decline")]
-            public async Task FamilyInviteDeclineTask(long inviteId) =>
+            [Summary("Отказаться от указанного приглашения в семью")]
+            [CommandUsage("!семья приглашения отказаться 323")]
+            public async Task FamilyInviteDeclineTask(
+                [Summary("Номер приглашения")] long inviteId) =>
                 await _familyInviteDeclineCommand.Execute(Context, inviteId);
         }
 
@@ -139,11 +174,19 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.FamilyCommands
             }
 
             [Command("добавить"), Alias("add")]
-            public async Task FamilyCurrencyAddTask(long amount, [Remainder] string currencyNamePattern) =>
+            [Summary("Добавить валюту в казну семьи")]
+            [CommandUsage("!семья казна добавить 500 иен")]
+            public async Task FamilyCurrencyAddTask(
+                [Summary("Количество")] long amount,
+                [Summary("Название валюты")] [Remainder] string currencyNamePattern) =>
                 await _familyCurrencyAddCommand.Execute(Context, amount, currencyNamePattern);
 
             [Command("взять"), Alias("take")]
-            public async Task FamilyCurrencyTakeTask(long amount, [Remainder] string currencyNamePattern) =>
+            [Summary("Взять валюту из казны семьи")]
+            [CommandUsage("!семья казна взять 500 иен")]
+            public async Task FamilyCurrencyTakeTask(
+                [Summary("Количество")] long amount,
+                [Summary("Название валюты")] [Remainder] string currencyNamePattern) =>
                 await _familyCurrencyTakeCommand.Execute(Context, amount, currencyNamePattern);
         }
     }

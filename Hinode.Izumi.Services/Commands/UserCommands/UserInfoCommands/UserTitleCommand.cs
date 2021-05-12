@@ -14,6 +14,7 @@ using Hinode.Izumi.Services.RpgServices.UserService;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
 {
+    [CommandCategory(CommandCategory.UserInfo)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class UserTitleCommand : ModuleBase<SocketCommandContext>
     {
@@ -30,6 +31,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
         }
 
         [Command("титулы"), Alias("titles")]
+        [Summary("Посмотреть свою коллекцию титулов")]
         public async Task UserTitleTask()
         {
             // получаем иконки из базы

@@ -19,6 +19,7 @@ using Hinode.Izumi.Services.RpgServices.UserService;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands
 {
+    [CommandCategory(CommandCategory.Registration)]
     [IzumiRequireContext(DiscordContext.DirectMessage)]
     public class RegistrationCommand : ModuleBase<SocketCommandContext>
     {
@@ -44,7 +45,10 @@ namespace Hinode.Izumi.Services.Commands.UserCommands
         }
 
         [Command("регистрация"), Alias("registration")]
-        public async Task RegistrationTask([Remainder] string name = null)
+        [Summary("Зарегистрироваться в игровом мире")]
+        [CommandUsage("!регистрация Вино из бананов")]
+        public async Task RegistrationTask(
+            [Summary("Игровое имя")] [Remainder] string name = null)
         {
             // игровое имя не должно быть пустым
             if (name == null)

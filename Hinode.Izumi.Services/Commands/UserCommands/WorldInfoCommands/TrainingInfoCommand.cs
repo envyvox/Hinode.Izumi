@@ -11,6 +11,7 @@ using Image = Hinode.Izumi.Data.Enums.Image;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
 {
+    [CommandCategory(CommandCategory.Training)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class TrainingInfoCommand : ModuleBase<SocketCommandContext>
     {
@@ -27,6 +28,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
         }
 
         [Command("обучение"), Alias("training")]
+        [Summary("Начать обучение, или если оно уже начато - посмотреть информацию о текущем шаге обучения")]
         public async Task TrainingInfoTask()
         {
             // получаем текущий шаг обучения пользователя

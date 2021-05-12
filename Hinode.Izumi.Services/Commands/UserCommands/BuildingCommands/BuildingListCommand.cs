@@ -16,6 +16,7 @@ using Hinode.Izumi.Services.RpgServices.FamilyService;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.BuildingCommands
 {
+    [CommandCategory(CommandCategory.Building)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class BuildingListCommand : ModuleBase<SocketCommandContext>
     {
@@ -36,6 +37,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.BuildingCommands
         }
 
         [Command("постройки"), Alias("buildings")]
+        [Summary("Посмотреть возведенные вами или семьей постройки")]
         public async Task BuildingListTask()
         {
             // получаем иконки из базы
