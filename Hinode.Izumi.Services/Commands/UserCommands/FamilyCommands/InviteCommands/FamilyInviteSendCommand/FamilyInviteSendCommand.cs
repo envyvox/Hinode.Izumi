@@ -49,10 +49,10 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.FamilyCommands.InviteComma
                 // получаем пользователя цель
                 var tUser = await _userService.GetUser(username);
                 // получаем информацию о том, в какой семье состоит цель
-                var tUserFamily = await _familyService.GetUserFamily(tUser.Id);
+                var tUserHasFamily = await _familyService.CheckUserHasFamily(tUser.Id);
 
                 // проверяем что цель не состоит в семье
-                if (tUserFamily != null)
+                if (tUserHasFamily)
                 {
                     await Task.FromException(new Exception(IzumiReplyMessage.UserFamilyNotNull.Parse()));
                 }

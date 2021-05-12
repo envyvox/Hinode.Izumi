@@ -56,9 +56,9 @@ namespace Hinode.Izumi.Services.RpgServices.FamilyService
         /// <summary>
         /// Проверяет есть ли семья с таким названием.
         /// </summary>
-        /// <param name="familyName">Название семьи.</param>
+        /// <param name="name">Название семьи.</param>
         /// <returns>True если есть, false если нет.</returns>
-        Task<bool> CheckFamily(string familyName);
+        Task<bool> CheckFamily(string name);
 
         /// <summary>
         /// Возвращает приглашение в семью.
@@ -108,8 +108,8 @@ namespace Hinode.Izumi.Services.RpgServices.FamilyService
         /// <summary>
         /// Добавляет семью.
         /// </summary>
-        /// <param name="familyName">Название семьи.</param>
-        Task AddFamily(string familyName);
+        /// <param name="name">Название семьи.</param>
+        Task AddFamily(string name);
 
         /// <summary>
         /// Добавляет пользователя в семью.

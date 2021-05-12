@@ -116,12 +116,12 @@ namespace Hinode.Izumi.Services.RpgServices.FamilyService.Impl
                     where user_id = @userId",
                     new {userId});
 
-        public async Task<bool> CheckFamily(string familyName) =>
+        public async Task<bool> CheckFamily(string name) =>
             await _con.GetConnection()
                 .QueryFirstOrDefaultAsync<bool>(@"
                     select 1 from families
                     where name = @name",
-                    new {familyName});
+                    new {name});
 
         public async Task<FamilyInviteModel> GetFamilyInvite(long familyId, long userId) =>
             await _con.GetConnection()
@@ -180,13 +180,13 @@ namespace Hinode.Izumi.Services.RpgServices.FamilyService.Impl
                     new {familyId}))
             .ToDictionary(x => x.Currency);
 
-        public async Task AddFamily(string familyName) =>
+        public async Task AddFamily(string name) =>
             await _con.GetConnection()
                 .ExecuteAsync(@"
                     insert into families(status, name, description)
                     values (@status, @name, null)
                     on conflict (name) do nothing",
-                    new {familyName, status = FamilyStatus.Registration});
+                    new {name, status = FamilyStatus.Registration});
 
         public async Task AddUserToFamily(long userId, long familyId)
         {
@@ -201,13 +201,18 @@ namespace Hinode.Izumi.Services.RpgServices.FamilyService.Impl
             await CheckFamilyRegistrationComplete(familyId);
         }
 
-        public async Task AddUserToFamily(long userId, string familyName) =>
+        public async Task AddUserToFamily(long userId, string familyName)
+        {
+            // получаем семью
+            var family = await GetFamily(familyName);
+            // добавляем пользователя в нее
             await _con.GetConnection()
                 .ExecuteAsync(@"
                     insert into user_families(user_id, family_id, status)
                     values (@userId, @familyId, @status)
                     on conflict (user_id) do nothing",
-                    new {userId, familyName, status = UserInFamilyStatus.Head});
+                    new {userId, familyId = family.Id, status = UserInFamilyStatus.Head});
+        }
 
         public async Task AddFamilyInvite(long familyId, long userId) =>
             await _con.GetConnection()
