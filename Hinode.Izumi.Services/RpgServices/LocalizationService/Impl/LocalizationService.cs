@@ -103,6 +103,20 @@ namespace Hinode.Izumi.Services.RpgServices.LocalizationService.Impl
             return Localize(localization, amount);
         }
 
+        public string Localize(MarketCategory requestCategory, long itemId, long amount = 1)
+        {
+            var localization = GetLocalizationByItemId(requestCategory switch
+            {
+                MarketCategory.Gathering => LocalizationCategory.Gathering,
+                MarketCategory.Crafting => LocalizationCategory.Crafting,
+                MarketCategory.Alcohol => LocalizationCategory.Alcohol,
+                MarketCategory.Drink => LocalizationCategory.Drink,
+                MarketCategory.Food => LocalizationCategory.Food,
+                _ => throw new ArgumentOutOfRangeException(nameof(requestCategory), requestCategory, null)
+            }, itemId).Result;
+            return Localize(localization, amount);
+        }
+
         /// <summary>
         /// Возвращает локализацию по ключевому названию.
         /// </summary>

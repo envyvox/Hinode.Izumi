@@ -6906,10 +6906,10 @@ export enum AlcoholProperty {
 }
 
 export class CommandInfo implements ICommandInfo {
-    categories?: string[] | null;
+    categories?: CommandCategory[] | null;
     command?: string | null;
     summary?: string | null;
-    examples?: string | null;
+    usages?: string[] | null;
 
     constructor(data?: ICommandInfo) {
         if (data) {
@@ -6929,7 +6929,11 @@ export class CommandInfo implements ICommandInfo {
             }
             this.command = _data["command"] !== undefined ? _data["command"] : <any>null;
             this.summary = _data["summary"] !== undefined ? _data["summary"] : <any>null;
-            this.examples = _data["examples"] !== undefined ? _data["examples"] : <any>null;
+            if (Array.isArray(_data["usages"])) {
+                this.usages = [] as any;
+                for (let item of _data["usages"])
+                    this.usages!.push(item);
+            }
         }
     }
 
@@ -6949,16 +6953,46 @@ export class CommandInfo implements ICommandInfo {
         }
         data["command"] = this.command !== undefined ? this.command : <any>null;
         data["summary"] = this.summary !== undefined ? this.summary : <any>null;
-        data["examples"] = this.examples !== undefined ? this.examples : <any>null;
+        if (Array.isArray(this.usages)) {
+            data["usages"] = [];
+            for (let item of this.usages)
+                data["usages"].push(item);
+        }
         return data; 
     }
 }
 
 export interface ICommandInfo {
-    categories?: string[] | null;
+    categories?: CommandCategory[] | null;
     command?: string | null;
     summary?: string | null;
-    examples?: string | null;
+    usages?: string[] | null;
+}
+
+export enum CommandCategory {
+    Registration = 1,
+    Training = 2,
+    Referral = 3,
+    UserInfo = 4,
+    UserInfoInteraction = 5,
+    WorldInfo = 6,
+    Transit = 7,
+    Shop = 8,
+    Explore = 9,
+    Box = 10,
+    Market = 11,
+    Achievements = 12,
+    Collection = 13,
+    Cards = 14,
+    Inventory = 15,
+    Building = 16,
+    Cooking = 17,
+    Crafting = 18,
+    Field = 19,
+    Contract = 20,
+    Family = 21,
+    Casino = 22,
+    Rating = 23,
 }
 
 export class ContractWebModel extends EntityBaseModel implements IContractWebModel {

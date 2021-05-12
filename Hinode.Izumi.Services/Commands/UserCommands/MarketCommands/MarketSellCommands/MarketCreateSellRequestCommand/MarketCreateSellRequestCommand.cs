@@ -61,7 +61,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MarketCommands.MarketSellC
             var itemName = localization.Name;
 
             // получаем количество товара у пользователя
-            long userAmount = 0;
+            long userAmount;
             switch (category)
             {
                 case MarketCategory.Gathering:
@@ -107,13 +107,13 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MarketCommands.MarketSellC
             if (request != null)
             {
                 await Task.FromException(new Exception(IzumiReplyMessage.MarketRequestAlready.Parse(
-                    request.Id, emotes.GetEmoteOrBlank(itemName), _local.Localize(itemName))));
+                    request.Id, emotes.GetEmoteOrBlank(itemName), _local.Localize(category, itemId))));
             }
             // проверяем есть ли у пользователя количество товара которое он хочет выставить
             else if (userAmount < amount)
             {
                 await Task.FromException(new Exception(IzumiReplyMessage.MarketSellRequestNoCurrency.Parse(
-                    emotes.GetEmoteOrBlank(itemName), _local.Localize(itemName))));
+                    emotes.GetEmoteOrBlank(itemName), _local.Localize(category, itemId))));
             }
             else
             {
@@ -188,7 +188,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MarketCommands.MarketSellC
                             .WithImageUrl(await _imageService.GetImageUrl(Image.LocationCapitalMarket))
                             // подтверждаем успешное создание заявки
                             .WithDescription(IzumiReplyMessage.MarketSellRequestSuccess.Parse(
-                                emotes.GetEmoteOrBlank(itemName), amount, _local.Localize(itemName, amount),
+                                emotes.GetEmoteOrBlank(itemName), amount, _local.Localize(category, itemId, amount),
                                 emotes.GetEmoteOrBlank(Currency.Ien.ToString()), price,
                                 _local.Localize(Currency.Ien.ToString(), price)));
 

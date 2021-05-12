@@ -120,7 +120,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MarketCommands.MarketReque
                     // подверждаем успешное удаление заявки
                     embed.WithDescription(IzumiReplyMessage.MarketRequestSellCancel.Parse(
                         emotes.GetEmoteOrBlank(itemName), request.Amount,
-                        _local.Localize(itemName, request.Amount)));
+                        _local.Localize(request.Category, request.ItemId, request.Amount)));
                 }
                 // если эта заявка была на покупку
                 else
@@ -133,6 +133,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MarketCommands.MarketReque
                     // подверждаем успешное удаление заявки
                     embed.WithDescription(IzumiReplyMessage.MarketRequestBuyCancel.Parse(
                         emotes.GetEmoteOrBlank(itemName), request.Amount,
+                        _local.Localize(request.Category, request.ItemId, request.Amount),
                         emotes.GetEmoteOrBlank(Currency.Ien.ToString()), request.Price * request.Amount,
                         _local.Localize(Currency.Ien.ToString(),
                             request.Price * request.Amount)));
