@@ -67,6 +67,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
 
         [Command("профиль"), Alias("profile")]
         [Summary("Посмотреть свой профиль или профиль пользователя с указанным именем")]
+        [CommandUsage("!профиль", "!профиль Холли")]
         public async Task UserProfileTask(
             [Summary("Игровое имя")] [Remainder] string name = null) =>
             await SendProfileEmbed(name != null
@@ -77,6 +78,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
 
         [Command("профиль"), Alias("profile")]
         [Summary("Посмотреть профиль пользователя с указанным ID")]
+        [CommandUsage("!профиль 550493599629049858")]
         public async Task UserProfileTask(
             [Summary("ID пользователя")] long userId) =>
             await SendProfileEmbed(
