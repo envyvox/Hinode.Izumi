@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.PropertyEnums;
 using Hinode.Izumi.Framework.Autofac;
-using Hinode.Izumi.Framework.Database;
 using Hinode.Izumi.Services.RpgServices.FieldService;
 using Hinode.Izumi.Services.RpgServices.PropertyService;
 
@@ -14,13 +13,11 @@ namespace Hinode.Izumi.Services.BackgroundJobs.NewDayJob
     {
         private readonly IPropertyService _propertyService;
         private readonly IFieldService _fieldService;
-        private readonly IConnectionManager _con;
 
-        public NewDayJob(IPropertyService propertyService, IFieldService fieldService, IConnectionManager con)
+        public NewDayJob(IPropertyService propertyService, IFieldService fieldService)
         {
             _propertyService = propertyService;
             _fieldService = fieldService;
-            _con = con;
         }
 
         public async Task StartNewDay()
