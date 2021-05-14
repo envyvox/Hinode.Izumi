@@ -13,6 +13,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands.LotteryComm
     [Group("лотерея"), Alias("lottery")]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     [IzumiRequireLocation(Location.CapitalCasino), IzumiRequireNoDebuff(BossDebuff.CapitalStop)]
+    [IzumiRequireCasinoOpen]
     public class LotteryCommands : ModuleBase<SocketCommandContext>
     {
         private readonly ILotteryInfoCommand _lotteryInfoCommand;

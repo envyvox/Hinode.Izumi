@@ -25,6 +25,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands
     [CommandCategory(CommandCategory.Casino)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     [IzumiRequireLocation(Location.CapitalCasino), IzumiRequireNoDebuff(BossDebuff.CapitalStop)]
+    [IzumiRequireCasinoOpen]
     public class BetCommand : ModuleBase<SocketCommandContext>
     {
         private readonly IDiscordEmbedService _discordEmbedService;

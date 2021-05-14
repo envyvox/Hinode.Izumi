@@ -425,7 +425,12 @@ namespace Hinode.Izumi.Data.Enums.PropertyEnums
         /// <summary>
         ///
         /// </summary>
-        ReputationVillageTitleNumber = 87
+        ReputationVillageTitleNumber = 87,
+
+        /// <summary>
+        ///
+        /// </summary>
+        CasinoState = 88
     }
 
     public static class PropertyHelper
@@ -521,6 +526,7 @@ namespace Hinode.Izumi.Data.Enums.PropertyEnums
             Property.ReputationSeaportTitleNumber => PropertyCategory.Reputation,
             Property.ReputationCastleTitleNumber => PropertyCategory.Reputation,
             Property.ReputationVillageTitleNumber => PropertyCategory.Reputation,
+            Property.CasinoState => PropertyCategory.WorldState,
             _ => throw new ArgumentOutOfRangeException(nameof(property), property, null)
         };
     }

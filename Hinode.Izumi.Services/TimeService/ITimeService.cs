@@ -13,14 +13,6 @@ namespace Hinode.Izumi.Services.TimeService
         public string TimeLeft(DateTimeOffset dateTime);
 
         /// <summary>
-        /// Проверяет находится ли текущее время между указанными двумя.
-        /// </summary>
-        /// <param name="begin">Время начала.</param>
-        /// <param name="end">Время конца.</param>
-        /// <returns>True если да, false если нет.</returns>
-        public bool TimeBetween(TimeSpan begin, TimeSpan end);
-
-        /// <summary>
         /// Возвращает текущее время суток.
         /// </summary>
         /// <returns>Время суток.</returns>

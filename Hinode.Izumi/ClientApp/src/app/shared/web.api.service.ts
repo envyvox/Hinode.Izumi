@@ -8353,6 +8353,7 @@ export enum Property {
     ReputationSeaportTitleNumber = 85,
     ReputationCastleTitleNumber = 86,
     ReputationVillageTitleNumber = 87,
+    CasinoState = 88,
 }
 
 export class SwaggerException extends Error {

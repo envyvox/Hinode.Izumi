@@ -516,7 +516,8 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         ReputationRewardDesc,
         LotteryGiftInfoFieldName,
         LotteryGiftInfoFieldDesc,
-        LotteryInfoCurrentMembersNull
+        LotteryInfoCurrentMembersNull,
+        CasinoClosed
     }
 
     public static class IzumiReplyMessageHelper
