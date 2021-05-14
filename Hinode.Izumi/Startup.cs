@@ -45,10 +45,7 @@ namespace Hinode.Izumi
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/dist"; });
             services.AddControllers(x => x.Conventions.Add(new ApiRouteConvention()))
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-                .AddJsonOptions(x =>
-                {
-                    x.JsonSerializerOptions.Converters.Add(new TimeSpanSerializer());
-                });
+                .AddJsonOptions(x => { x.JsonSerializerOptions.Converters.Add(new TimeSpanSerializer()); });
             services.AddOpenApiDocument(x => x.DocumentName = "api");
             services
                 .AddHealthChecks()
@@ -73,16 +70,15 @@ namespace Hinode.Izumi
                     s => { s.MigrationsAssembly(typeof(AppDbContext).Assembly.GetName().Name); });
             });
             // add hangfire
-            services.AddHangfire((provider, configuration) =>
+            services.AddHangfire(config =>
             {
                 // отключаем повторный запуск джобы по-умолчанию если произошла ошибка
                 GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute {Attempts = 0});
                 // добавляем соединение с базой
-                configuration.UsePostgreSqlStorage(_config.GetConnectionString("main"));
+                config.UsePostgreSqlStorage(_config.GetConnectionString("main"));
             });
             // add swagger
             services.AddSwaggerDocument();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -127,7 +123,7 @@ namespace Hinode.Izumi
             app.UseHangfireServer();
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
-                Authorization = new []{new AllowAllAuthorizationFilter()}
+                Authorization = new[] {new AllowAllAuthorizationFilter()}
             });
             if (env.IsDevelopment())
             {
@@ -143,7 +139,6 @@ namespace Hinode.Izumi
                 endpoints.MapHealthChecks("/healthz");
             });
             app.UseSpaStaticFiles();
-
             app.UseSpa(spa =>
             {
                 // To learn more about options for serving an Angular SPA from ASP.NET Core,

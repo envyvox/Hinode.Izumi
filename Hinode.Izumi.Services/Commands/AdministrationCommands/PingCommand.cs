@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
 
-namespace Hinode.Izumi.Commands.Administration
+namespace Hinode.Izumi.Services.Commands.AdministrationCommands
 {
     public class PingCommand : ModuleBase<SocketCommandContext>
     {
