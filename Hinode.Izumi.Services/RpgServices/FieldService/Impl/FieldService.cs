@@ -83,7 +83,9 @@ namespace Hinode.Izumi.Services.RpgServices.FieldService.Impl
                     set state = @state,
                         progress = 0,
                         re_growth = true,
-                        updated_at = now()",
+                        updated_at = now()
+                    where user_id = @userId
+                      and field_id = @fieldId",
                     new
                     {
                         userId, fieldId,
@@ -124,7 +126,6 @@ namespace Hinode.Izumi.Services.RpgServices.FieldService.Impl
                         updated_at = now()
                     where state = @watered",
                     new {watered = FieldState.Watered});
-
             // проверяем вырос ли урожай на каких-то клетках
             await CheckFieldComplete();
         }
@@ -158,7 +159,7 @@ namespace Hinode.Izumi.Services.RpgServices.FieldService.Impl
         private async Task CheckFieldComplete()
         {
             // получаем клетки земли на которых посажены семена
-            var fieldsWithSeed = await _con.GetConnection()
+            var fields = await _con.GetConnection()
                 .QueryAsync<UserFieldModel>(@"
                     select * from user_fields
                     where state != @empty
@@ -168,15 +169,13 @@ namespace Hinode.Izumi.Services.RpgServices.FieldService.Impl
             var completedFields = new List<long>();
 
             // проверяем каждую клетку земли на готовность к сбору
-            foreach (var field in fieldsWithSeed)
+            foreach (var field in fields)
             {
                 // получаем семя которое посажено на этой клетке
                 var seed = await _seedService.GetSeed(field.SeedId);
-
                 // добавляем в список клетки земли которые готовы к сбору
-                // ReSharper disable once ConvertIfStatementToSwitchStatement это не читабельно
-                if (!field.ReGrowth && field.Progress >= seed.Growth) completedFields.Add(field.Id);
-                if (field.ReGrowth && field.Progress >= seed.ReGrowth) completedFields.Add(field.Id);
+                if (field.ReGrowth is false && field.Progress >= seed.Growth) completedFields.Add(field.Id);
+                if (field.ReGrowth is true && field.Progress >= seed.ReGrowth) completedFields.Add(field.Id);
             }
 
             // обновляем состояние клетки земли
