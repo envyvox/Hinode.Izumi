@@ -100,8 +100,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                 // рассказываем про конец события
                 .WithFooter(IzumiEventMessage.EventMayStartFooter.Parse());
 
-            await _discordEmbedService.SendEmbed(
-                await _discordGuildService.GetSocketTextChannel(channels[DiscordChannel.Diary].Id), embed,
+            await _discordEmbedService.SendEmbed(DiscordChannel.Diary, embed,
                 // упоминаем роли события
                 $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.YearlyEvents].Id}>");
 
@@ -120,9 +119,6 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
 
         public async Task End()
         {
-            // получаем каналы сервера
-            var channels = await _discordGuildService.GetChannels();
-
             // обновляем текущее событие в базе
             await _propertyService.UpdateProperty(Property.CurrentEvent, (long) Event.None);
 
@@ -131,20 +127,15 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                 // подтверждаем конец события
                 .WithDescription(IzumiEventMessage.EventMayEndDesc.Parse());
 
-            await _discordEmbedService.SendEmbed(
-                await _discordGuildService.GetSocketTextChannel(channels[DiscordChannel.Diary].Id), embed);
+            await _discordEmbedService.SendEmbed(DiscordChannel.Diary, embed);
         }
 
         public async Task PicnicAnons()
         {
             // получаем иконки из базы
             var emotes = await _emoteService.GetEmotes();
-            // получаем каналы сервера
-            var channels = await _discordGuildService.GetChannels();
             // получаем роли сервера
             var roles = await _discordGuildService.GetRoles();
-            // получаем id канала дневник
-            var diaryId = channels[DiscordChannel.Diary].Id;
 
             var embed = new EmbedBuilder()
                 .WithAuthor(IzumiEventMessage.DiaryAuthorField.Parse())
@@ -153,8 +144,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                     Location.Village.Localize(true), 30.Minutes().Humanize(1, new CultureInfo("ru-RU")),
                     emotes.GetEmoteOrBlank("Energy")));
 
-            await _discordEmbedService.SendEmbed(
-                await _discordGuildService.GetSocketTextChannel(diaryId), embed,
+            await _discordEmbedService.SendEmbed(DiscordChannel.Diary, embed,
                 // упоминаем роли события
                 $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>");
 
@@ -170,11 +160,6 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
             var emotes = await _emoteService.GetEmotes();
             // получаем роли сервера
             var roles = await _discordGuildService.GetRoles();
-            // получаем каналы сервера
-            var channels = await _discordGuildService.GetChannels();
-            // получаем канал события
-            var eventChannel = await _discordGuildService.GetSocketTextChannel(
-                channels[DiscordChannel.VillageEvents].Id);
             // получаем блюдо которое нужно выдать за участие в пикнике
             var food = await _foodService.GetFood(
                 // получаем id необходимого нам блюда
@@ -202,10 +187,9 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                     10.Minutes().Humanize(1, new CultureInfo("ru-RU"))));
 
             // отправляем сообщение
-            var message = await eventChannel.SendMessageAsync(
+            var message = await _discordEmbedService.SendEmbed(DiscordChannel.VillageEvents, embed,
                 // упоминаем роли события
-                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>",
-                false, _discordEmbedService.BuildEmbed(embed));
+                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>");
             // добавляем реакцию для участия в пикнике
             await message.AddReactionAsync(new Emoji(PicnicEmote));
 
@@ -219,8 +203,6 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
         {
             // получаем иконки из базы
             var emotes = await _emoteService.GetEmotes();
-            // получаем каналы сервера
-            var channels = await _discordGuildService.GetChannels();
             // получаем сообщение
             var message = await _discordGuildService.GetIUserMessage(channelId, messageId);
             // получаем пользователей нажавших на реакцию
@@ -275,18 +257,13 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                     emotes.GetEmoteOrBlank(food.Name), foodAmount,
                     _local.Localize(LocalizationCategory.Food, food.Id, foodAmount)));
 
-            await _discordEmbedService.SendEmbed(
-                await _discordGuildService.GetSocketTextChannel(channels[DiscordChannel.Diary].Id), embedReward);
+            await _discordEmbedService.SendEmbed(DiscordChannel.Diary, embedReward);
         }
 
         public async Task BossAnons()
         {
-            // получаем каналы сервера
-            var channels = await _discordGuildService.GetChannels();
             // получаем роли сервера
             var roles = await _discordGuildService.GetRoles();
-            // получаем id канала дневник
-            var diaryId = channels[DiscordChannel.Diary].Id;
 
             var embed = new EmbedBuilder()
                 .WithAuthor(IzumiEventMessage.DiaryAuthorField.Parse())
@@ -294,8 +271,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                 .WithDescription(IzumiEventMessage.BossNotify.Parse(
                     Location.Village.Localize(true)));
 
-            await _discordEmbedService.SendEmbed(
-                await _discordGuildService.GetSocketTextChannel(diaryId), embed,
+            await _discordEmbedService.SendEmbed(DiscordChannel.Diary, embed,
                 // упоминаем роли события
                 $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>");
 
@@ -312,8 +288,6 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
             var emotes = await _emoteService.GetEmotes();
             // получаем роли сервера
             var roles = await _discordGuildService.GetRoles();
-            // получаем каналы сервера
-            var channels = await _discordGuildService.GetChannels();
             // получаем количество получаемой репутации за убийство босса
             var reputationReward = await _propertyService.GetPropertyValue(Property.BossReputationReward);
 
@@ -323,9 +297,6 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
             // получаем титул который нужно выдать
             var title = (Title) await _propertyService.GetPropertyValue(Property.EventMayBossTitleId);
 
-            // получаем необходимый канал
-            var eventChannel =
-                await _discordGuildService.GetSocketTextChannel(channels[DiscordChannel.VillageEvents].Id);
             var embed = new EmbedBuilder()
                 // имя нпс
                 .WithAuthor(Npc.Kio.Name())
@@ -352,10 +323,9 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                     await _propertyService.GetPropertyValue(Property.BossKillTime)));
 
             // отправляем сообщение
-            var message = await eventChannel.SendMessageAsync(
+            var message = await _discordEmbedService.SendEmbed(DiscordChannel.VillageEvents, embed,
                 // упоминаем роли события
-                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>",
-                false, _discordEmbedService.BuildEmbed(embed));
+                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>");
             // добавляем реакцию для атаки
             await message.AddReactionAsync(new Emoji(AttackEmote));
 
@@ -383,10 +353,6 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
             var usersId = users.Select(x => (long) x.Id).ToArray();
             // получаем получаемую репутацию за убийство ежедневного босса
             var reputationReward = await _propertyService.GetPropertyValue(Property.BossReputationReward);
-            // получаем каналы сервера
-            var channels = await _discordGuildService.GetChannels();
-            // получаем канал дневник
-            var diaryChan = await _discordGuildService.GetSocketTextChannel(channels[DiscordChannel.Diary].Id);
 
             // получаем баннер который нужно выдать
             var banner = await _bannerService.GetBanner(
@@ -425,21 +391,19 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                     x.DeleteMessage(channelId, messageId),
                 TimeSpan.FromHours(24));
 
-            // создаем строку с наградой
-            var rewardString =
-                IzumiEventMessage.ReputationAdded.Parse(
-                    emotes.GetEmoteOrBlank(Reputation.Village.Emote(long.MaxValue)), reputationReward,
-                    Location.Village.Localize(true)) +
-                $"{emotes.GetEmoteOrBlank(Box.Village.Emote())} {_local.Localize(Box.Village.ToString())}, " +
-                $"{banner.Rarity.Localize().ToLower()} «[{banner.Name}]({banner.Url})», титул {emotes.GetEmoteOrBlank(title.Emote())} {title.Localize()}";
-
             var embedReward = new EmbedBuilder()
                 .WithAuthor(IzumiEventMessage.DiaryAuthorField.Parse())
                 // описываем полученные награды
                 .WithDescription(IzumiEventMessage.BossRewardNotify.Parse(
-                    Location.Village.Localize(true), rewardString));
+                    Location.Village.Localize(true),
+                    IzumiEventMessage.ReputationAdded.Parse(
+                        emotes.GetEmoteOrBlank(
+                            Reputation.Village.Emote(long.MaxValue)), reputationReward,
+                        Location.Village.Localize(true)) +
+                    $"{emotes.GetEmoteOrBlank(Box.Village.Emote())} {_local.Localize(Box.Village.ToString())}, " +
+                    $"{banner.Rarity.Localize().ToLower()} «[{banner.Name}]({banner.Url})», титул {emotes.GetEmoteOrBlank(title.Emote())} {title.Localize()}"));
 
-            await _discordEmbedService.SendEmbed(diaryChan, embedReward);
+            await _discordEmbedService.SendEmbed(DiscordChannel.Diary, embedReward);
         }
     }
 }

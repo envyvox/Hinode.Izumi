@@ -68,14 +68,9 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
             // если текущее событие это майское событие - то босс не должен появляться
             if (currentEvent == Event.May) return;
 
-            // получаем каналы сервера
-            var channels = await _discordGuildService.GetChannels();
             // получаем роли сервера
             var roles = await _discordGuildService.GetRoles();
-            // получаем id канала дневник
-            var diaryId = channels[DiscordChannel.Diary].Id;
             // получаем случайную локацию
-            // ReSharper disable once PossibleNullReferenceException
             var randomLocation = (Location) _spawnLocations.GetValue(_random.Next(_spawnLocations.Length));
 
             var embed = new EmbedBuilder()
@@ -84,8 +79,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                 .WithDescription(IzumiEventMessage.BossNotify.Parse(
                     randomLocation.Localize(true)));
 
-            await _discordEmbedService.SendEmbed(
-                await _discordGuildService.GetSocketTextChannel(diaryId), embed,
+            await _discordEmbedService.SendEmbed(DiscordChannel.Diary, embed,
                 // упоминаем роли события
                 $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>");
 
@@ -101,8 +95,6 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
         {
             // получаем иконки из базы
             var emotes = await _emoteService.GetEmotes();
-            // получаем каналы сервера
-            var channels = await _discordGuildService.GetChannels();
             // получаем роли сервера
             var roles = await _discordGuildService.GetRoles();
             // получаем репутацию этой локации
@@ -166,8 +158,6 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                     throw new ArgumentOutOfRangeException();
             }
 
-            // получаем необходимый канал
-            var eventChannel = await _discordGuildService.GetSocketTextChannel(channels[channel].Id);
             var embed = new EmbedBuilder()
                 // имя нпс
                 .WithAuthor(npc.Name())
@@ -192,10 +182,9 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                     await _propertyService.GetPropertyValue(Property.BossKillTime)));
 
             // отправляем сообщение
-            var message = await eventChannel.SendMessageAsync(
+            var message = await _discordEmbedService.SendEmbed(channel, embed,
                 // упоминаем роли события
-                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>",
-                false, _discordEmbedService.BuildEmbed(embed));
+                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>");
             // добавляем реакцию для атаки
             await message.AddReactionAsync(new Emoji(AttackEmote));
 
@@ -277,10 +266,6 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                 // подтверждаем убийтство босса
                 embed.WithDescription(IzumiEventMessage.BossKilled.Parse());
 
-                // получаем каналы сервера
-                var channels = await _discordGuildService.GetChannels();
-                // получаем канал дневник
-                var diaryChan = await _discordGuildService.GetSocketTextChannel(channels[DiscordChannel.Diary].Id);
                 // создаем строку с наградой
                 var rewardString =
                     IzumiEventMessage.ReputationAdded.Parse(
@@ -294,7 +279,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                     .WithDescription(IzumiEventMessage.BossRewardNotify.Parse(
                         reputation.Location().Localize(true), rewardString));
 
-                await _discordEmbedService.SendEmbed(diaryChan, embedReward);
+                await _discordEmbedService.SendEmbed(DiscordChannel.Diary, embedReward);
             }
 
             // изменяем сообщение

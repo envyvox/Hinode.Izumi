@@ -158,8 +158,6 @@ namespace Hinode.Izumi.Services.RpgServices.EffectService.Impl
             await _discordEmbedService.SendEmbed(
                 await _discordGuildService.GetSocketUser(winner.Id), embedPm);
 
-            // получаем каналы сервера
-            var channels = await _discordGuildService.GetChannels();
             var embedNotify = new EmbedBuilder()
                 .WithAuthor(IzumiEventMessage.DiaryAuthorField.Parse())
                 // оповещаем о победе в лотерее
@@ -168,8 +166,7 @@ namespace Hinode.Izumi.Services.RpgServices.EffectService.Impl
                     emotes.GetEmoteOrBlank("LotteryTicket"), emotes.GetEmoteOrBlank(Currency.Ien.ToString()),
                     lotteryAward, _local.Localize(Currency.Ien.ToString(), lotteryAward)));
 
-            await _discordEmbedService.SendEmbed(
-                await _discordGuildService.GetSocketTextChannel(channels[DiscordChannel.Diary].Id), embedNotify);
+            await _discordEmbedService.SendEmbed(DiscordChannel.Diary, embedNotify);
         }
     }
 }
