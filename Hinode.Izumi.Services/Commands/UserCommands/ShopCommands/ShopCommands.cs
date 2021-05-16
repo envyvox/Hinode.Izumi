@@ -94,6 +94,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ShopCommands
             [Command("семена"), Alias("seed")]
             [Summary("Приобрести указанные семена")]
             [CommandUsage("!магазин купить семена 21 5", "!магазин купить семена 2")]
+            [IzumiRequireLocation(Location.CapitalShop), IzumiRequireNoDebuff(BossDebuff.CapitalStop)]
             public async Task ShopBuySeedTask(
                 [Summary("Номер семян")] long seedId,
                 [Summary("Количество")] long amount = 1) =>
@@ -102,6 +103,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ShopCommands
             [Command("сертификат"), Alias("certificate")]
             [Summary("Приобрести указанный сертификат")]
             [CommandUsage("!магазин купить сертификат 1", "!магазин купить сертификат 3")]
+            [IzumiRequireLocation(Location.CapitalShop), IzumiRequireNoDebuff(BossDebuff.CapitalStop)]
             public async Task ShopBuyCertTask(
                 [Summary("Номер сертификата")] long certificateId) =>
                 await _shopBuyCertificateCommand.Execute(Context, certificateId);
@@ -109,6 +111,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ShopCommands
             [Command("баннер"), Alias("banner")]
             [Summary("Приобрести указанный баннер")]
             [CommandUsage("!магазин купить баннер 1", "!магазин купить баннер 5")]
+            [IzumiRequireLocation(Location.CapitalShop), IzumiRequireNoDebuff(BossDebuff.CapitalStop)]
             public async Task ShopBuyBannerTask(
                 [Summary("Номер баннера")] long bannerId) =>
                 await _shopBuyBannerCommand.Execute(Context, bannerId);
@@ -116,6 +119,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ShopCommands
             [Command("рецепт"), Alias("recipe")]
             [Summary("Приобрести указанный рецепт")]
             [CommandUsage("!магазин купить рецепт 1", "!магазин купить рецепт 5")]
+            [IzumiRequireLocation(Location.Garden), IzumiRequireNoDebuff(BossDebuff.GardenStop)]
             public async Task ShopBuyRecipeTask(
                 [Summary("Номер рецепта")] long foodId) =>
                 await _shopBuyRecipeCommand.Execute(Context, foodId);
@@ -123,6 +127,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ShopCommands
             [Command("продукт"), Alias("product")]
             [Summary("Приобрести указанные продукты")]
             [CommandUsage("!магазин купить продукт 1 5", "!магазин купить продукт 2")]
+            [IzumiRequireLocation(Location.Village), IzumiRequireNoDebuff(BossDebuff.VillageStop)]
             public async Task ShopBuyProductTask(
                 [Summary("Номер продукта")] long productId,
                 [Summary("Количество")] long amount = 1) =>
@@ -131,6 +136,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ShopCommands
             [Command("чертеж"), Alias("project")]
             [Summary("Приобрести указанный чертеж")]
             [CommandUsage("!магазин купить чертеж 1", "!магазин купить чертеж 5")]
+            [IzumiRequireLocation(Location.Seaport), IzumiRequireNoDebuff(BossDebuff.SeaportStop)]
             public async Task ShopBuyProjectTask(
                 [Summary("Номер чертежа")] long projectId) =>
                 await _shopBuyProjectCommand.Execute(Context, projectId);
