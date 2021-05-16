@@ -12,12 +12,9 @@ namespace Hinode.Izumi.Services.Commands.Attributes
 {
     public class IzumiRequireLocation : PreconditionAttribute
     {
-        private readonly Location _location;
+        public Location Location { get; }
 
-        public IzumiRequireLocation(Location location)
-        {
-            _location = location;
-        }
+        public IzumiRequireLocation(Location location) => Location = location;
 
         public override async Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context,
             CommandInfo command, IServiceProvider services)
@@ -30,7 +27,7 @@ namespace Hinode.Izumi.Services.Commands.Attributes
             var userLocation = await locationService.GetUserLocation((long) context.User.Id);
 
             // если текущая локация пользователя совпадает с необходимой - возвращаем успешную проверку
-            if (userLocation == _location) return PreconditionResult.FromSuccess();
+            if (userLocation == Location) return PreconditionResult.FromSuccess();
 
             // определяем текст ошибки в зависимости от локации
             var errorMessage = userLocation switch
@@ -40,7 +37,7 @@ namespace Hinode.Izumi.Services.Commands.Attributes
                 Location.ExploreCastle => IzumiPreconditionErrorMessage.RequireLocationButYouExploringCastle.Parse(),
                 Location.Fishing => IzumiPreconditionErrorMessage.RequireLocationButYouFishing.Parse(),
                 Location.FieldWatering => IzumiPreconditionErrorMessage.RequireLocationButYouFieldWatering.Parse(),
-                _ => IzumiPreconditionErrorMessage.RequireLocationButYouInAnother.Parse(_location.Localize())
+                _ => IzumiPreconditionErrorMessage.RequireLocationButYouInAnother.Parse(Location.Localize())
             };
 
             // возвращаем ошибку

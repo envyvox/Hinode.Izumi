@@ -37,10 +37,26 @@ namespace Hinode.Izumi.Services.WebServices.CommandWebService.Impl
                     .Where(attribute => attribute.GetType() == typeof(CommandUsageAttribute))
                     .SelectMany(attribute => ((CommandUsageAttribute) attribute).Usages)
                     .ToArray();
+                // получаем требуемую локацию группы
+                var location = command.Module.Preconditions
+                    .Where(attribute => attribute.GetType() == typeof(IzumiRequireLocation))
+                    .Select(attribute => ((IzumiRequireLocation) attribute).Location)
+                    .FirstOrDefault();
+
+                // если требуемая локация группы пустая, нужно убедиться что требования нет на самой команде
+                if (location == 0)
+                {
+                    location = command.Preconditions
+                        .Where(attribute => attribute.GetType() == typeof(IzumiRequireLocation))
+                        .Select(attribute => ((IzumiRequireLocation) attribute).Location)
+                        .FirstOrDefault();
+                }
+
                 // заполняем информацию о команде
                 commandsInfo.Add(new CommandInfo
                 {
                     Categories = categories,
+                    Location = location,
                     Command = parameters.Length > 0
                         ? $"!{command.Aliases[0]} {parameters.Remove(parameters.Length - 1)}"
                         : $"!{command.Aliases[0]}",

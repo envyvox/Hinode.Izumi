@@ -6907,6 +6907,7 @@ export enum AlcoholProperty {
 
 export class CommandInfo implements ICommandInfo {
     categories?: CommandCategory[] | null;
+    location?: Location;
     command?: string | null;
     summary?: string | null;
     usages?: string[] | null;
@@ -6927,6 +6928,7 @@ export class CommandInfo implements ICommandInfo {
                 for (let item of _data["categories"])
                     this.categories!.push(item);
             }
+            this.location = _data["location"] !== undefined ? _data["location"] : <any>null;
             this.command = _data["command"] !== undefined ? _data["command"] : <any>null;
             this.summary = _data["summary"] !== undefined ? _data["summary"] : <any>null;
             if (Array.isArray(_data["usages"])) {
@@ -6951,6 +6953,7 @@ export class CommandInfo implements ICommandInfo {
             for (let item of this.categories)
                 data["categories"].push(item);
         }
+        data["location"] = this.location !== undefined ? this.location : <any>null;
         data["command"] = this.command !== undefined ? this.command : <any>null;
         data["summary"] = this.summary !== undefined ? this.summary : <any>null;
         if (Array.isArray(this.usages)) {
@@ -6964,6 +6967,7 @@ export class CommandInfo implements ICommandInfo {
 
 export interface ICommandInfo {
     categories?: CommandCategory[] | null;
+    location?: Location;
     command?: string | null;
     summary?: string | null;
     usages?: string[] | null;
@@ -6993,6 +6997,27 @@ export enum CommandCategory {
     Family = 21,
     Casino = 22,
     Rating = 23,
+}
+
+export enum Location {
+    InTransit = 0,
+    Capital = 1,
+    Garden = 2,
+    Seaport = 3,
+    Castle = 4,
+    Village = 5,
+    ExploreGarden = 6,
+    ExploreCastle = 8,
+    Fishing = 9,
+    CapitalCasino = 10,
+    CapitalMarket = 11,
+    CapitalShop = 12,
+    FieldWatering = 13,
+    WorkOnContract = 14,
+    MakingCrafting = 15,
+    MakingAlcohol = 16,
+    MakingFood = 17,
+    MakingDrink = 18,
 }
 
 export class ContractWebModel extends EntityBaseModel implements IContractWebModel {
@@ -7050,27 +7075,6 @@ export interface IContractWebModel extends IEntityBaseModel {
     currency?: number;
     reputation?: number;
     energy?: number;
-}
-
-export enum Location {
-    InTransit = 0,
-    Capital = 1,
-    Garden = 2,
-    Seaport = 3,
-    Castle = 4,
-    Village = 5,
-    ExploreGarden = 6,
-    ExploreCastle = 8,
-    Fishing = 9,
-    CapitalCasino = 10,
-    CapitalMarket = 11,
-    CapitalShop = 12,
-    FieldWatering = 13,
-    WorkOnContract = 14,
-    MakingCrafting = 15,
-    MakingAlcohol = 16,
-    MakingFood = 17,
-    MakingDrink = 18,
 }
 
 export class CraftingWebModel extends EntityBaseModel implements ICraftingWebModel {
