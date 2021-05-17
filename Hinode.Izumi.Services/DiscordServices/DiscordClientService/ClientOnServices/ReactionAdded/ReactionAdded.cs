@@ -33,7 +33,7 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
             // убеждаемся что мы получили сообщение
             var msg = await message.GetOrDownloadAsync();
             // игнорируем реакции поставленные ботом
-            if (msg.Author.IsBot) return;
+            if (socketReaction.User.Value.IsBot) return;
 
             // получаем каналы сервера
             var channels = await _discordGuildService.GetChannels();
