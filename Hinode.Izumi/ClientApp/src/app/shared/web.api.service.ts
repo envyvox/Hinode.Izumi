@@ -8295,7 +8295,7 @@ export enum Property {
     EconomyTrainingCost = 23,
     CooldownUpdateAbout = 24,
     CooldownCasinoBet = 25,
-    CraftingCost = 26,
+    CraftingPricePercent = 26,
     CraftingMarkup = 27,
     AlcoholMarkup = 28,
     DrinkMarkup = 29,

@@ -145,11 +145,11 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
                         await _ingredientService.DisplayCraftingIngredients(crafting.Id, amount) +
                         (craftingPrice == 0
                             ? ""
-                            : $"{emotes.GetEmoteOrBlank(Currency.Ien.ToString())} {craftingPrice} {_local.Localize(Currency.Ien.ToString(), craftingPrice)}"
+                            : $", {emotes.GetEmoteOrBlank(Currency.Ien.ToString())} {craftingPrice} {_local.Localize(Currency.Ien.ToString(), craftingPrice)}"
                         ), true)
                     // длительность
                     .AddField(IzumiReplyMessage.TimeFieldName.Parse(),
-                        crafting.Time.Seconds().Humanize(2, new CultureInfo("ru-RU")), true)
+                        craftingTime.Seconds().Humanize(2, new CultureInfo("ru-RU")), true)
                     // ожидаемые предметы
                     .AddField(IzumiReplyMessage.CraftingResourceExpectedFieldName.Parse(),
                         $"{emotes.GetEmoteOrBlank(crafting.Name)} {amount} {_local.Localize(crafting.Name, amount)}");
