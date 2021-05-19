@@ -2015,10 +2015,10 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Наличие рецепта",
 
             IzumiReplyMessage.RecipeInfoCheckRecipeTrue =>
-                "У вас есть {0} рецепт",
+                "{0} У вас есть {1} рецепт",
 
             IzumiReplyMessage.RecipeInfoCheckRecipeFalse =>
-                "У вас нет {0} рецепта",
+                "{0} У вас нет {1} рецепта",
 
             IzumiReplyMessage.RecipeInfoIngredientsFieldName =>
                 "Необходимые ингредиенты",

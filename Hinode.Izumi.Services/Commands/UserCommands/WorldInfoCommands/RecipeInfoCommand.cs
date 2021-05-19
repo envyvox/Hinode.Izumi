@@ -11,9 +11,11 @@ using Hinode.Izumi.Services.EmoteService;
 using Hinode.Izumi.Services.EmoteService.Impl;
 using Hinode.Izumi.Services.RpgServices.CalculationService;
 using Hinode.Izumi.Services.RpgServices.FoodService;
+using Hinode.Izumi.Services.RpgServices.ImageService;
 using Hinode.Izumi.Services.RpgServices.IngredientService;
 using Hinode.Izumi.Services.RpgServices.LocalizationService;
 using Humanizer;
+using Image = Hinode.Izumi.Data.Enums.Image;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
 {
@@ -27,10 +29,11 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
         private readonly IIngredientService _ingredientService;
         private readonly ICalculationService _calc;
         private readonly ILocalizationService _local;
+        private readonly IImageService _imageService;
 
         public RecipeInfoCommand(IDiscordEmbedService discordEmbedService, IEmoteService emoteService,
             IFoodService foodService, IIngredientService ingredientService, ICalculationService calc,
-            ILocalizationService local)
+            ILocalizationService local, IImageService imageService)
         {
             _discordEmbedService = discordEmbedService;
             _emoteService = emoteService;
@@ -38,6 +41,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
             _ingredientService = ingredientService;
             _calc = calc;
             _local = local;
+            _imageService = imageService;
         }
 
         [Command("рецепт"), Alias("recipe")]
@@ -80,6 +84,8 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
             var embed = new EmbedBuilder()
                 // название рецепта
                 .WithTitle($"`{food.Id}` {emotes.GetEmoteOrBlank("Recipe")} {_local.Localize(food.Name, 2)}")
+                // изображение приготовления
+                .WithImageUrl(await _imageService.GetImageUrl(Image.Cooking))
                 // рассказываем как приготовить блюдо
                 .WithDescription(
                     IzumiReplyMessage.RecipeInfoDesc.Parse() +
@@ -98,9 +104,9 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
                 .AddField(IzumiReplyMessage.RecipeInfoCheckRecipeFieldName.Parse(),
                     checkRecipe
                         ? IzumiReplyMessage.RecipeInfoCheckRecipeTrue.Parse(
-                            emotes.GetEmoteOrBlank("Recipe"))
+                            emotes.GetEmoteOrBlank("Checkmark"), emotes.GetEmoteOrBlank("Recipe"))
                         : IzumiReplyMessage.RecipeInfoCheckRecipeFalse.Parse(
-                            emotes.GetEmoteOrBlank("Recipe")), true)
+                            emotes.GetEmoteOrBlank("Crossmark"), emotes.GetEmoteOrBlank("Recipe")), true)
                 // необходимые ингредиенты
                 .AddField(IzumiReplyMessage.RecipeInfoIngredientsFieldName.Parse(), ingredients)
                 // стоимость приготовления
