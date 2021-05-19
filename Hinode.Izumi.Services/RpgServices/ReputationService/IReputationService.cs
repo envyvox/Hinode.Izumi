@@ -45,5 +45,7 @@ namespace Hinode.Izumi.Services.RpgServices.ReputationService
         /// <param name="location">Локация.</param>
         /// <returns>Репутация.</returns>
         Reputation GetReputationByLocation(Location location);
+
+        double UserMaxMastery(Dictionary<Reputation, UserReputationModel> userReputations);
     }
 }
