@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Data.Enums.RarityEnums;
@@ -12,6 +13,7 @@ using Hinode.Izumi.Services.RpgServices.BannerService;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
 {
+    [CommandCategory(CommandCategory.UserInfo)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class UserBannersCommand : ModuleBase<SocketCommandContext>
     {
@@ -28,6 +30,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
         }
 
         [Command("баннеры"), Alias("banners")]
+        [Summary("Посмотреть свою коллекцию баннеров")]
         public async Task UserBannersTask()
         {
             // получаем все иконки из базы

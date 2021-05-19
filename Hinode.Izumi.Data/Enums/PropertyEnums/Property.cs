@@ -120,7 +120,7 @@ namespace Hinode.Izumi.Data.Enums.PropertyEnums
         /// <summary>
         /// Стоимость изготовления (% от стоимости предмета).
         /// </summary>
-        CraftingCost = 26,
+        CraftingPricePercent = 26,
 
         /// <summary>
         /// Умножение стоимости изготавливаемого предмета на указанный % для определения цены NPC.
@@ -425,7 +425,12 @@ namespace Hinode.Izumi.Data.Enums.PropertyEnums
         /// <summary>
         ///
         /// </summary>
-        ReputationVillageTitleNumber = 87
+        ReputationVillageTitleNumber = 87,
+
+        /// <summary>
+        ///
+        /// </summary>
+        CasinoState = 88
     }
 
     public static class PropertyHelper
@@ -459,7 +464,7 @@ namespace Hinode.Izumi.Data.Enums.PropertyEnums
             Property.EconomyTrainingCost => PropertyCategory.Economy,
             Property.CooldownUpdateAbout => PropertyCategory.Cooldown,
             Property.CooldownCasinoBet => PropertyCategory.Cooldown,
-            Property.CraftingCost => PropertyCategory.Economy,
+            Property.CraftingPricePercent => PropertyCategory.Economy,
             Property.CraftingMarkup => PropertyCategory.Economy,
             Property.AlcoholMarkup => PropertyCategory.Economy,
             Property.DrinkMarkup => PropertyCategory.Economy,
@@ -521,6 +526,7 @@ namespace Hinode.Izumi.Data.Enums.PropertyEnums
             Property.ReputationSeaportTitleNumber => PropertyCategory.Reputation,
             Property.ReputationCastleTitleNumber => PropertyCategory.Reputation,
             Property.ReputationVillageTitleNumber => PropertyCategory.Reputation,
+            Property.CasinoState => PropertyCategory.WorldState,
             _ => throw new ArgumentOutOfRangeException(nameof(property), property, null)
         };
     }

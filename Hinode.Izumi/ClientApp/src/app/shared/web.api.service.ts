@@ -1171,6 +1171,75 @@ export class AlcoholPropertyService extends ServiceBase {
 @Injectable({
     providedIn: 'root'
 })
+export class CommandService extends ServiceBase {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(Injector) configuration: Injector, @Inject(HttpClient) http: HttpClient, @Optional() @Inject(SPA_BASE_URL) baseUrl?: string) {
+        super(configuration);
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : this.getBaseUrl("spa");
+    }
+
+    list(): Observable<CommandInfo[]> {
+        let url_ = this.baseUrl + "/api/command/list";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("get", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.processList(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processList(<any>response_);
+                } catch (e) {
+                    return <Observable<CommandInfo[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CommandInfo[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processList(response: HttpResponseBase): Observable<CommandInfo[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(CommandInfo.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CommandInfo[]>(<any>null);
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
 export class ContractService extends ServiceBase {
     private http: HttpClient;
     private baseUrl: string;
@@ -6836,6 +6905,121 @@ export enum AlcoholProperty {
     CraftingDoubleChance = 1,
 }
 
+export class CommandInfo implements ICommandInfo {
+    categories?: CommandCategory[] | null;
+    location?: Location;
+    command?: string | null;
+    summary?: string | null;
+    usages?: string[] | null;
+
+    constructor(data?: ICommandInfo) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["categories"])) {
+                this.categories = [] as any;
+                for (let item of _data["categories"])
+                    this.categories!.push(item);
+            }
+            this.location = _data["location"] !== undefined ? _data["location"] : <any>null;
+            this.command = _data["command"] !== undefined ? _data["command"] : <any>null;
+            this.summary = _data["summary"] !== undefined ? _data["summary"] : <any>null;
+            if (Array.isArray(_data["usages"])) {
+                this.usages = [] as any;
+                for (let item of _data["usages"])
+                    this.usages!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): CommandInfo {
+        data = typeof data === 'object' ? data : {};
+        let result = new CommandInfo();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.categories)) {
+            data["categories"] = [];
+            for (let item of this.categories)
+                data["categories"].push(item);
+        }
+        data["location"] = this.location !== undefined ? this.location : <any>null;
+        data["command"] = this.command !== undefined ? this.command : <any>null;
+        data["summary"] = this.summary !== undefined ? this.summary : <any>null;
+        if (Array.isArray(this.usages)) {
+            data["usages"] = [];
+            for (let item of this.usages)
+                data["usages"].push(item);
+        }
+        return data; 
+    }
+}
+
+export interface ICommandInfo {
+    categories?: CommandCategory[] | null;
+    location?: Location;
+    command?: string | null;
+    summary?: string | null;
+    usages?: string[] | null;
+}
+
+export enum CommandCategory {
+    Registration = 1,
+    Training = 2,
+    Referral = 3,
+    UserInfo = 4,
+    UserInfoInteraction = 5,
+    WorldInfo = 6,
+    Transit = 7,
+    Shop = 8,
+    Explore = 9,
+    Box = 10,
+    Market = 11,
+    Achievements = 12,
+    Collection = 13,
+    Cards = 14,
+    Inventory = 15,
+    Building = 16,
+    Cooking = 17,
+    Crafting = 18,
+    Field = 19,
+    Contract = 20,
+    Family = 21,
+    Casino = 22,
+    Rating = 23,
+}
+
+export enum Location {
+    InTransit = 0,
+    Capital = 1,
+    Garden = 2,
+    Seaport = 3,
+    Castle = 4,
+    Village = 5,
+    ExploreGarden = 6,
+    ExploreCastle = 8,
+    Fishing = 9,
+    CapitalCasino = 10,
+    CapitalMarket = 11,
+    CapitalShop = 12,
+    FieldWatering = 13,
+    WorkOnContract = 14,
+    MakingCrafting = 15,
+    MakingAlcohol = 16,
+    MakingFood = 17,
+    MakingDrink = 18,
+}
+
 export class ContractWebModel extends EntityBaseModel implements IContractWebModel {
     location?: Location;
     name?: string | null;
@@ -6891,27 +7075,6 @@ export interface IContractWebModel extends IEntityBaseModel {
     currency?: number;
     reputation?: number;
     energy?: number;
-}
-
-export enum Location {
-    InTransit = 0,
-    Capital = 1,
-    Garden = 2,
-    Seaport = 3,
-    Castle = 4,
-    Village = 5,
-    ExploreGarden = 6,
-    ExploreCastle = 8,
-    Fishing = 9,
-    CapitalCasino = 10,
-    CapitalMarket = 11,
-    CapitalShop = 12,
-    FieldWatering = 13,
-    WorkOnContract = 14,
-    MakingCrafting = 15,
-    MakingAlcohol = 16,
-    MakingFood = 17,
-    MakingDrink = 18,
 }
 
 export class CraftingWebModel extends EntityBaseModel implements ICraftingWebModel {
@@ -8132,7 +8295,7 @@ export enum Property {
     EconomyTrainingCost = 23,
     CooldownUpdateAbout = 24,
     CooldownCasinoBet = 25,
-    CraftingCost = 26,
+    CraftingPricePercent = 26,
     CraftingMarkup = 27,
     AlcoholMarkup = 28,
     DrinkMarkup = 29,
@@ -8194,6 +8357,7 @@ export enum Property {
     ReputationSeaportTitleNumber = 85,
     ReputationCastleTitleNumber = 86,
     ReputationVillageTitleNumber = 87,
+    CasinoState = 88,
 }
 
 export class SwaggerException extends Error {

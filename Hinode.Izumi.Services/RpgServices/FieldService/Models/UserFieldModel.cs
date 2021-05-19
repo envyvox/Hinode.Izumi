@@ -16,7 +16,7 @@ namespace Hinode.Izumi.Services.RpgServices.FieldService.Models
         /// <summary>
         /// Номер клетки.
         /// </summary>
-        public long? FieldId { get; set; }
+        public long FieldId { get; set; }
 
         /// <summary>
         /// Состояние клетки земли.

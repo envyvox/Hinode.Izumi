@@ -26,8 +26,7 @@ using Hinode.Izumi.Services.RpgServices.UserService;
 using Humanizer;
 using Image = Hinode.Izumi.Data.Enums.Image;
 
-namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCommands.CraftingStartCommands.
-    CraftingAlcoholCommand
+namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCommands.CraftingAlcoholCommand
 {
     [InjectableService]
     public class CraftingAlcoholCommand : ICraftingAlcoholCommand
@@ -67,7 +66,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
             _imageService = imageService;
         }
 
-        public async Task Execute(SocketCommandContext context, long alcoholId, long amount)
+        public async Task Execute(SocketCommandContext context, long amount, long alcoholId)
         {
             // получаем иконки из базы
             var emotes = await _emoteService.GetEmotes();
@@ -89,7 +88,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
             var craftingPrice = freeCrafting
                 ? 0
                 : await _calc.CraftingPrice(
-                    await _ingredientService.GetAlcoholCostPrice(alcohol.Id));
+                    await _ingredientService.GetAlcoholCostPrice(alcohol.Id), amount);
 
             // проверяем есть ли у пользователя деньги на оплату стоимости изготовления
             if (userCurrency.Amount < craftingPrice)
@@ -106,7 +105,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
                     (long) context.User.Id, userLocation, alcohol.Time, amount);
 
                 // отнимаем у пользователя ингредиенты для изготовления
-                await _ingredientService.RemoveAlcoholIngredients((long) context.User.Id, alcohol.Id);
+                await _ingredientService.RemoveAlcoholIngredients((long) context.User.Id, alcohol.Id, amount);
                 // обновляем пользователю текущую локацию
                 await _locationService.UpdateUserLocation((long) context.User.Id, Location.MakingAlcohol);
                 // добавляем информацию о перемещении
@@ -146,11 +145,11 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
                         await _ingredientService.DisplayAlcoholIngredients(alcohol.Id, amount) +
                         (craftingPrice == 0
                             ? ""
-                            : $"{emotes.GetEmoteOrBlank(Currency.Ien.ToString())} {craftingPrice} {_local.Localize(Currency.Ien.ToString(), craftingPrice)}"
+                            : $", {emotes.GetEmoteOrBlank(Currency.Ien.ToString())} {craftingPrice} {_local.Localize(Currency.Ien.ToString(), craftingPrice)}"
                         ), true)
                     // длительность
                     .AddField(IzumiReplyMessage.TimeFieldName.Parse(),
-                        alcohol.Time.Seconds().Humanize(2, new CultureInfo("ru-RU")), true)
+                        craftingTime.Seconds().Humanize(2, new CultureInfo("ru-RU")), true)
                     // ожидаемый алкоголь
                     .AddField(IzumiReplyMessage.CraftingAlcoholExpectedFieldName.Parse(),
                         $"{emotes.GetEmoteOrBlank(alcohol.Name)} {amount} {_local.Localize(alcohol.Name, amount)}");
@@ -159,6 +158,15 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
                 await _discordEmbedService.SendEmbed(context.User, embed);
                 await Task.CompletedTask;
             }
+        }
+
+        public async Task Execute(SocketCommandContext context, long amount, string alcoholNamePattern)
+        {
+            // получаем локализацию алкоголя
+            var alcoholLocalization = await _local.GetLocalizationByLocalizedWord(
+                LocalizationCategory.Alcohol, alcoholNamePattern);
+            // используем основной метод уже зная id алкоголя
+            await Execute(context, amount, alcoholLocalization.ItemId);
         }
 
         private async Task CheckAlcoholLocation(long userId, Location userLocation, Location craftingLocation)

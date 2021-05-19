@@ -30,6 +30,8 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
         public async Task Execute(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel socketMessageChannel,
             SocketReaction socketReaction)
         {
+            // убеждаемся что мы получили сообщение
+            var msg = await message.GetOrDownloadAsync();
             // игнорируем реакции поставленные ботом
             if (socketReaction.User.Value.IsBot) return;
 
@@ -37,8 +39,6 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
             var channels = await _discordGuildService.GetChannels();
             // получаем каналы доски сообщества
             var communityDescChannels = _communityDescService.CommunityDescChannels(channels);
-            // убеждаемся что мы получили сообщение
-            var msg = await message.GetOrDownloadAsync();
 
             // если поставленная реакция находится в получении ролей
             if (socketMessageChannel.Id == (ulong) channels[DiscordChannel.GetRoles].Id ||

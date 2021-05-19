@@ -6,6 +6,7 @@ using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Framework.Database;
 using Hinode.Izumi.Services.RpgServices.MasteryService.Models;
+using Hinode.Izumi.Services.RpgServices.ReputationService;
 
 namespace Hinode.Izumi.Services.RpgServices.MasteryService.Impl
 {
@@ -13,10 +14,12 @@ namespace Hinode.Izumi.Services.RpgServices.MasteryService.Impl
     public class MasteryService : IMasteryService
     {
         private readonly IConnectionManager _con;
+        private readonly IReputationService _reputationService;
 
-        public MasteryService(IConnectionManager con)
+        public MasteryService(IConnectionManager con, IReputationService reputationService)
         {
             _con = con;
+            _reputationService = reputationService;
         }
 
         public async Task<UserMasteryModel> GetUserMastery(long userId, Mastery mastery) =>
@@ -36,15 +39,25 @@ namespace Hinode.Izumi.Services.RpgServices.MasteryService.Impl
                     new {userId}))
             .ToDictionary(x => x.Mastery);
 
-        public async Task AddMasteryToUser(long userId, Mastery mastery, double amount) =>
+        public async Task AddMasteryToUser(long userId, Mastery mastery, double amount)
+        {
+            // получаем репутации пользователя
+            var userReputations = await _reputationService.GetUserReputation(userId);
+            // получаем максимальное мастерство пользователя
+            var userMaxMastery = _reputationService.UserMaxMastery(userReputations);
+            // добавляем мастерство пользователю убеждаясь что новое мастерство не будет больше максимального
             await _con.GetConnection()
                 .ExecuteAsync(@"
                     insert into user_masteries as um (user_id, mastery, amount)
                     values (@userId, @mastery, @amount)
                     on conflict (user_id, mastery) do update
-                        set amount = um.amount + @amount,
+                        set amount = (
+                            case when um.amount + @amount <= @userMaxMastery then um.amount + @amount
+                                 else @userMaxMastery
+                            end),
                             updated_at = now()",
-                    new {userId, mastery, amount});
+                    new {userId, mastery, amount, userMaxMastery});
+        }
 
         public async Task RemoveMasteryFromUser(long userId, Mastery mastery, double amount) =>
             await _con.GetConnection()

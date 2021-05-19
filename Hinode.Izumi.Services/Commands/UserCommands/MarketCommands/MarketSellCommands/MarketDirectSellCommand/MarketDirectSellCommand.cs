@@ -224,7 +224,8 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MarketCommands.MarketSellC
                         .WithImageUrl(await _imageService.GetImageUrl(Image.LocationCapitalMarket))
                         // подтверждаем успешную продажу на рынке
                         .WithDescription(IzumiReplyMessage.MarketSellDirectSuccess.Parse(
-                            emotes.GetEmoteOrBlank(itemName), amount, _local.Localize(itemName, amount),
+                            emotes.GetEmoteOrBlank(itemName), amount,
+                            _local.Localize(request.Category, request.ItemId, amount),
                             emotes.GetEmoteOrBlank(Currency.Ien.ToString()), amountAfterMarketTax,
                             _local.Localize(Currency.Ien.ToString(), amountAfterMarketTax),
                             marketTaxAmount, _local.Localize(Currency.Ien.ToString(), marketTaxAmount)));
@@ -239,7 +240,8 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MarketCommands.MarketSellC
                         // оповещаем владельца заявки что ему продали товар
                         .WithDescription(IzumiReplyMessage.MarketSellNotify.Parse(
                             emotes.GetEmoteOrBlank(user.Title.Emote()), user.Title.Localize(), user.Name,
-                            emotes.GetEmoteOrBlank(itemName), amount, _local.Localize(itemName, amount), request.Id));
+                            emotes.GetEmoteOrBlank(itemName), amount,
+                            _local.Localize(request.Category, request.ItemId, amount), request.Id));
 
                     await _discordEmbedService.SendEmbed(
                         await _discordGuildService.GetSocketUser(request.UserId), notify);

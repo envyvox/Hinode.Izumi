@@ -115,6 +115,21 @@ namespace Hinode.Izumi.Services.RpgServices.ReputationService.Impl
             _ => throw new ArgumentOutOfRangeException(nameof(location), location, null)
         };
 
+        public double UserMaxMastery(Dictionary<Reputation, UserReputationModel> userReputations)
+        {
+            // получаем массив доступных репутаций
+            var reputations = Enum.GetValues(typeof(Reputation)).Cast<Reputation>().ToArray();
+            // получаем среднее значение репутаций пользователя
+            var userAverageReputation =
+                reputations.Sum(reputation =>
+                    userReputations.ContainsKey(reputation) ? userReputations[reputation].Amount : 0) /
+                reputations.Length;
+            // возвращаем максимальное мастерство пользователя
+            return ReputationStatusHelper
+                .GetReputationStatus(userAverageReputation)
+                .MaxMastery();
+        }
+
         /// <summary>
         /// Проверяет получение пользователем награды за репутацию.
         /// </summary>

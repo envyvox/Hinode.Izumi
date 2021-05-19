@@ -123,8 +123,8 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MarketCommands.MarketBuyCo
                 await _inventoryService.AddItemToUser(
                     request.UserId, InventoryCategory.Currency, Currency.Ien.GetHashCode(), amountAfterMarketTax);
                 // обновляем заявку на рынке
-                await _marketService.UpdateOrDeleteMarketRequest(request.Category, request.ItemId, request.Amount,
-                    amount);
+                await _marketService.UpdateOrDeleteMarketRequest(
+                    request.Category, request.ItemId, request.Amount, amount);
                 // добавляем пользователю купленные по заявке предметы
                 await _inventoryService.AddItemToUser(
                     (long) context.User.Id, request.Category, request.ItemId, amount);
@@ -181,7 +181,8 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MarketCommands.MarketBuyCo
                     .WithImageUrl(await _imageService.GetImageUrl(Image.LocationCapitalMarket))
                     // подверждаем успешную покупку по заявке
                     .WithDescription(IzumiReplyMessage.MarketBuyDirectSuccess.Parse(
-                        emotes.GetEmoteOrBlank(itemName), amount, _local.Localize(itemName, amount),
+                        emotes.GetEmoteOrBlank(itemName), amount,
+                        _local.Localize(request.Category, request.ItemId, amount),
                         emotes.GetEmoteOrBlank(Currency.Ien.ToString()), request.Price * amount,
                         _local.Localize(Currency.Ien.ToString(), request.Price * amount)));
 
@@ -193,8 +194,9 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MarketCommands.MarketBuyCo
                     // оповещаем владельца заявки о том, что у него купили товар
                     .WithDescription(IzumiReplyMessage.MarketBuyNotify.Parse(
                         emotes.GetEmoteOrBlank(user.Title.Emote()), user.Title.Localize(), user.Name,
-                        emotes.GetEmoteOrBlank(itemName), amount, _local.Localize(itemName, amount), request.Id,
-                        emotes.GetEmoteOrBlank(Currency.Ien.ToString()), amountAfterMarketTax,
+                        emotes.GetEmoteOrBlank(itemName), amount,
+                        _local.Localize(request.Category, request.ItemId, amount),
+                        request.Id, emotes.GetEmoteOrBlank(Currency.Ien.ToString()), amountAfterMarketTax,
                         _local.Localize(Currency.Ien.ToString(), amountAfterMarketTax),
                         marketTaxAmount, _local.Localize(Currency.Ien.ToString(), marketTaxAmount)));
 

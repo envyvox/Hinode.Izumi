@@ -15,6 +15,7 @@ using Hinode.Izumi.Services.Commands.UserCommands.MarketCommands.MarketSellComma
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.MarketCommands
 {
+    [CommandCategory(CommandCategory.Market)]
     [Group("рынок"), Alias("group")]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     [IzumiRequireLocation(Location.CapitalMarket), IzumiRequireNoDebuff(BossDebuff.CapitalStop)]
@@ -27,7 +28,8 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MarketCommands
             _marketInfoCommand = marketInfoCommand;
         }
 
-        [Command]
+        [Command("")]
+        [Summary("Посмотреть информацию о командах рынка")]
         public async Task MarketInfoTask() =>
             await _marketInfoCommand.Execute(Context);
 
@@ -47,18 +49,30 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MarketCommands
                 _marketCreateBuyRequestCommand = marketCreateBuyRequestCommand;
             }
 
-            [Command]
-            public async Task MarketCheckTopSellingRequestsTask(MarketCategory category,
-                [Remainder] string pattern = null) =>
+            [Command("")]
+            [Summary("Посмотреть лучшие заявки в указанной категори или даже по указанному предмету")]
+            [CommandUsage("!рынок купить 1", "!рынок купить 1 уголь")]
+            public async Task MarketCheckTopSellingRequestsTask(
+                [Summary("Номер категории")] MarketCategory category,
+                [Summary("Название предмета")] [Remainder] string pattern = null) =>
                 await _marketCheckTopSellingRequestsCommand.Execute(Context, category, pattern);
 
-            [Command]
-            public async Task MarketDirectBuyTask(long requestId, long amount = 1) =>
+            [Command("")]
+            [Summary("Купить предметы по указанной заявке")]
+            [CommandUsage("!рынок купить 323 10", "!рынок купить 234")]
+            public async Task MarketDirectBuyTask(
+                [Summary("Номер заявки")] long requestId,
+                [Summary("Количество")] long amount = 1) =>
                 await _marketDirectBuyCommand.Execute(Context, requestId, amount);
 
-            [Command]
-            public async Task MarketCreateBuyRequestTask(MarketCategory category, string pattern, long price,
-                long amount = 1) =>
+            [Command("")]
+            [Summary("Создать заявку на покупку указанного предмета")]
+            [CommandUsage("!рынок купить 1 уголь 5 10", "!рынок купить 3 вино 600")]
+            public async Task MarketCreateBuyRequestTask(
+                [Summary("Номер категории")] MarketCategory category,
+                [Summary("Название предмета")] string pattern,
+                [Summary("Цена за единицу")] long price,
+                [Summary("Количество")] long amount = 1) =>
                 await _marketCreateBuyRequestCommand.Execute(Context, category, pattern, price, amount);
         }
 
@@ -78,18 +92,30 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MarketCommands
                 _marketCreateSellRequestCommand = marketCreateSellRequestCommand;
             }
 
-            [Command]
-            public async Task MarketCheckTopBuyingRequestsTask(MarketCategory category,
-                [Remainder] string pattern = null) =>
+            [Command("")]
+            [Summary("Посмотреть лучшие заявки в указанной категори или даже по указанному предмету")]
+            [CommandUsage("!рынок продать  1", "!рынок продать 1 уголь")]
+            public async Task MarketCheckTopBuyingRequestsTask(
+                [Summary("Номер категории")] MarketCategory category,
+                [Summary("Название предмета")] [Remainder] string pattern = null) =>
                 await _marketCheckTopBuyingRequestsCommand.Execute(Context, category, pattern);
 
-            [Command]
-            public async Task MarketDirectSellTask(long requestId, long amount = 1) =>
+            [Command("")]
+            [Summary("Продать предметы по указанной заявке")]
+            [CommandUsage("!рынок продать 323 10", "!рынок продать 234")]
+            public async Task MarketDirectSellTask(
+                [Summary("Номер заявки")] long requestId,
+                [Summary("Количество")] long amount = 1) =>
                 await _marketDirectSellCommand.Execute(Context, requestId, amount);
 
-            [Command]
-            public async Task MarketCreateSellRequestTask(MarketCategory category, string pattern, long price,
-                long amount = 1) =>
+            [Command("")]
+            [Summary("Создать заявку на продажу указанного предмета")]
+            [CommandUsage("!рынок продать 1 уголь 5 10", "!рынок продать 3 вино 600")]
+            public async Task MarketCreateSellRequestTask(
+                [Summary("Номер категории")] MarketCategory category,
+                [Summary("Название предмета")] string pattern,
+                [Summary("Цена за единицу")] long price,
+                [Summary("Количество")] long amount = 1) =>
                 await _marketCreateSellRequestCommand.Execute(Context, category, pattern, price, amount);
         }
 
@@ -106,12 +132,16 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MarketCommands
                 _marketRequestCancelCommand = marketRequestCancelCommand;
             }
 
-            [Command]
+            [Command("")]
+            [Summary("Посмотреть созданные вами заявки на рынке")]
             public async Task MarketRequestListTask() =>
                 await _marketRequestListCommand.Execute(Context);
 
             [Command("отменить"), Alias("cancel")]
-            public async Task MarketRequestCancelTask(long requestId) =>
+            [Summary("Отменить созданную вами заявку на рынке")]
+            [CommandUsage("!рынок заявки отменить 324")]
+            public async Task MarketRequestCancelTask(
+                [Summary("Номер заявки")] long requestId) =>
                 await _marketRequestCancelCommand.Execute(Context, requestId);
         }
     }

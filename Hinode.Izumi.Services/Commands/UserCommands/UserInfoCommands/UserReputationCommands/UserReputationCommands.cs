@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
+using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.ReputationEnums;
 using Hinode.Izumi.Services.Commands.Attributes;
@@ -8,6 +9,7 @@ using Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.UserReputatio
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.UserReputationCommands
 {
+    [CommandCategory(CommandCategory.UserInfo)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class UserReputationCommands : ModuleBase<SocketCommandContext>
     {
@@ -22,11 +24,15 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.UserReput
         }
 
         [Command("репутация"), Alias("reputation")]
+        [Summary("Посмотреть свою репутацию в городах")]
         public async Task UserReputationTask() =>
             await _userReputationListCommand.Execute(Context);
 
         [Command("репутация"), Alias("reputation")]
-        public async Task UserReputationTask(Reputation reputation) =>
+        [Summary("Посмотреть свой прогресс указанной репутации")]
+        [CommandUsage("!репутация 1", "!репутация 5")]
+        public async Task UserReputationTask(
+            [Summary("Номер репутации")] Reputation reputation) =>
             await _userReputationInfoCommand.Execute(Context, reputation);
     }
 }

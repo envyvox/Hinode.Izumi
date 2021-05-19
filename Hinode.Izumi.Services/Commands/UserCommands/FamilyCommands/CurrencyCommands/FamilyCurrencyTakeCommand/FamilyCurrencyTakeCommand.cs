@@ -49,7 +49,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.FamilyCommands.CurrencyCom
                 await Task.FromException(new Exception(IzumiReplyMessage.FamilyStatusRegistration.Parse()));
             }
             // проверяем что пользователь глава семьи или его заместитель
-            else if (userFamily.Status != UserInFamilyStatus.Head ||
+            else if (userFamily.Status != UserInFamilyStatus.Head &&
                      userFamily.Status != UserInFamilyStatus.Deputy)
             {
                 await Task.FromException(new Exception(IzumiReplyMessage.UserFamilyStatusRequireNotDefault.Parse()));

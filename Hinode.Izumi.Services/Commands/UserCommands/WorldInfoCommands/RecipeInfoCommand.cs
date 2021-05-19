@@ -11,12 +11,15 @@ using Hinode.Izumi.Services.EmoteService;
 using Hinode.Izumi.Services.EmoteService.Impl;
 using Hinode.Izumi.Services.RpgServices.CalculationService;
 using Hinode.Izumi.Services.RpgServices.FoodService;
+using Hinode.Izumi.Services.RpgServices.ImageService;
 using Hinode.Izumi.Services.RpgServices.IngredientService;
 using Hinode.Izumi.Services.RpgServices.LocalizationService;
 using Humanizer;
+using Image = Hinode.Izumi.Data.Enums.Image;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
 {
+    [CommandCategory(CommandCategory.Cooking, CommandCategory.WorldInfo)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class RecipeInfoCommand : ModuleBase<SocketCommandContext>
     {
@@ -26,10 +29,11 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
         private readonly IIngredientService _ingredientService;
         private readonly ICalculationService _calc;
         private readonly ILocalizationService _local;
+        private readonly IImageService _imageService;
 
         public RecipeInfoCommand(IDiscordEmbedService discordEmbedService, IEmoteService emoteService,
             IFoodService foodService, IIngredientService ingredientService, ICalculationService calc,
-            ILocalizationService local)
+            ILocalizationService local, IImageService imageService)
         {
             _discordEmbedService = discordEmbedService;
             _emoteService = emoteService;
@@ -37,15 +41,22 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
             _ingredientService = ingredientService;
             _calc = calc;
             _local = local;
+            _imageService = imageService;
         }
 
         [Command("рецепт"), Alias("recipe")]
-        public async Task RecipeInfoCommandTask(long foodId) =>
+        [Summary("Посмотреть рецепт блюда с указанным номером")]
+        [CommandUsage("!рецепт 1", "!рецепт 4")]
+        public async Task RecipeInfoCommandTask(
+            [Summary("Номер блюда")] long foodId) =>
             // выводим рецепт
             await RecipeInfoTask(foodId);
 
         [Command("рецепт"), Alias("recipe")]
-        public async Task RecipeInfoCommandTask([Remainder] string foodName)
+        [Summary("Посмотреть рецепт блюда с указанным названием")]
+        [CommandUsage("!рецепт тортильи", "!рецепт яичницы")]
+        public async Task RecipeInfoCommandTask(
+            [Summary("Название блюда")] [Remainder] string foodName)
         {
             // получаем локализацию блюда
             var foodLocal = await _local.GetLocalizationByLocalizedWord(LocalizationCategory.Food, foodName);
@@ -73,6 +84,8 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
             var embed = new EmbedBuilder()
                 // название рецепта
                 .WithTitle($"`{food.Id}` {emotes.GetEmoteOrBlank("Recipe")} {_local.Localize(food.Name, 2)}")
+                // изображение приготовления
+                .WithImageUrl(await _imageService.GetImageUrl(Image.Cooking))
                 // рассказываем как приготовить блюдо
                 .WithDescription(
                     IzumiReplyMessage.RecipeInfoDesc.Parse() +
@@ -91,9 +104,9 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
                 .AddField(IzumiReplyMessage.RecipeInfoCheckRecipeFieldName.Parse(),
                     checkRecipe
                         ? IzumiReplyMessage.RecipeInfoCheckRecipeTrue.Parse(
-                            emotes.GetEmoteOrBlank("Recipe"))
+                            emotes.GetEmoteOrBlank("Checkmark"), emotes.GetEmoteOrBlank("Recipe"))
                         : IzumiReplyMessage.RecipeInfoCheckRecipeFalse.Parse(
-                            emotes.GetEmoteOrBlank("Recipe")), true)
+                            emotes.GetEmoteOrBlank("Crossmark"), emotes.GetEmoteOrBlank("Recipe")), true)
                 // необходимые ингредиенты
                 .AddField(IzumiReplyMessage.RecipeInfoIngredientsFieldName.Parse(), ingredients)
                 // стоимость приготовления

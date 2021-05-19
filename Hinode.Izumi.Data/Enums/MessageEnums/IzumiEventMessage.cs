@@ -36,7 +36,8 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         EventTimeReduceTransitFieldName,
         EventTimeReduceTransitFieldDesc,
         EventMayStartFooter,
-        EventMayEndDesc
+        EventMayEndDesc,
+        LotteryWinner
     }
 
     public static class IzumiEventMessageHelper
@@ -152,6 +153,9 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiEventMessage.EventMayEndDesc =>
                 "Вот и подошло к концу **майское событие**, надеюсь, что все любители приключений успели насытиться угощениями жителей. Ну, а теперь нужно возвращаться к ежедневной рутине...\n\nК счастью ненадолго, ведь уже в следующем месяце жители планируют провести еще одно событие, там и встретимся!",
+
+            IzumiEventMessage.LotteryWinner =>
+                "Все жители **столицы** только и говорят о везунчике {0} {1} **{2}**, который победил в {3} лотерее и получил {4} {5} {6}, вот бы и мне так везло...",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };

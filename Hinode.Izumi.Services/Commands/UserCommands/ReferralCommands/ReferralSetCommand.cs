@@ -17,6 +17,7 @@ using Microsoft.Extensions.Options;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.ReferralCommands
 {
+    [CommandCategory(CommandCategory.Referral)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class ReferralSetCommand : ModuleBase<SocketCommandContext>
     {
@@ -40,7 +41,10 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ReferralCommands
         }
 
         [Command("пригласил"), Alias("пригласила", "invited")]
-        public async Task ReferralSetTask([Remainder] string referralName)
+        [Summary("Указать пригласившего пользователя")]
+        [CommandUsage("!пригласил Холли", "!пригласила Рыбка")]
+        public async Task ReferralSetTask(
+            [Summary("Игровое имя")] [Remainder] string referralName)
         {
             // получаем иконки из базы
             var emotes = await _emoteService.GetEmotes();

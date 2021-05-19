@@ -117,7 +117,8 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MarketCommands.MarketSellC
                 // выводим информацию о заявке
                 embed.AddField(IzumiReplyMessage.MarketSellFieldName.Parse(
                         emotes.GetEmoteOrBlank("List"), request.Id, emotes.GetEmoteOrBlank(user.Title.Emote()),
-                        user.Title.Localize(), user.Name, emotes.GetEmoteOrBlank(itemName), _local.Localize(itemName)),
+                        user.Title.Localize(), user.Name, emotes.GetEmoteOrBlank(itemName),
+                        _local.Localize(request.Category, request.ItemId)),
                     IzumiReplyMessage.MarketRequestInfo.Parse(
                         emotes.GetEmoteOrBlank(Currency.Ien.ToString()), request.Price,
                         _local.Localize(Currency.Ien.ToString(), request.Price), request.Amount) +

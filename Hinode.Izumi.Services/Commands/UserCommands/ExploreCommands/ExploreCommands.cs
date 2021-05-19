@@ -8,6 +8,7 @@ using Hinode.Izumi.Services.Commands.UserCommands.ExploreCommands.ExploreGardenC
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.ExploreCommands
 {
+    [CommandCategory(CommandCategory.Explore)]
     [Group("исследовать"), Alias("explore")]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class ExploreCommands : ModuleBase<SocketCommandContext>
@@ -22,11 +23,13 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ExploreCommands
         }
 
         [Command("сад"), Alias("garden")]
+        [Summary("Отправиться исследовать сад")]
         [IzumiRequireLocation(Location.Garden), IzumiRequireNoDebuff(BossDebuff.GardenStop)]
         public async Task ExploreGardenTask() =>
             await _exploreGardenCommand.Execute(Context);
 
         [Command("шахту"), Alias("mine")]
+        [Summary("Отправиться исследовать шахту")]
         [IzumiRequireLocation(Location.Castle), IzumiRequireNoDebuff(BossDebuff.CastleStop)]
         public async Task ExploreCastleTask() =>
             await _exploreCastleCommand.Execute(Context);

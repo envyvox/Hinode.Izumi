@@ -56,12 +56,9 @@ namespace Hinode.Izumi.Services.Commands.ModerationCommands.MuteCommand
                 .AddField(IzumiReplyMessage.MuteSignatureFieldName.Parse(),
                     $"**{(admin ? DiscordRole.Administration.Name() : DiscordRole.Moderator.Name())}** {context.User.Mention} `@{context.User.Username}`");
 
-            await _discordEmbedService.SendEmbed(
-                await _discordGuildService.GetSocketTextChannel(channels[DiscordChannel.Chat].Id), embed);
-
+            await _discordEmbedService.SendEmbed(DiscordChannel.Chat, embed);
             // дублируем сообщение в log-mute
-            await _discordEmbedService.SendEmbed(
-                await _discordGuildService.GetSocketTextChannel(channels[DiscordChannel.LogMute].Id), embed);
+            await _discordEmbedService.SendEmbed(DiscordChannel.LogMute, embed);
 
             // запускаем джобу для снятия блокировки
             BackgroundJob.Schedule<IMuteJob>(x => x.Unmute(userId), TimeSpan.FromMinutes(duration));

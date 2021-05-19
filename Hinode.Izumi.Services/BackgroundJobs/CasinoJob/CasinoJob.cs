@@ -5,11 +5,12 @@ using Hangfire;
 using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
+using Hinode.Izumi.Data.Enums.PropertyEnums;
 using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Services.BackgroundJobs.DiscordJob;
 using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService;
-using Hinode.Izumi.Services.DiscordServices.DiscordGuildService;
 using Hinode.Izumi.Services.RpgServices.ImageService;
+using Hinode.Izumi.Services.RpgServices.PropertyService;
 using Image = Hinode.Izumi.Data.Enums.Image;
 
 namespace Hinode.Izumi.Services.BackgroundJobs.CasinoJob
@@ -18,25 +19,21 @@ namespace Hinode.Izumi.Services.BackgroundJobs.CasinoJob
     public class CasinoJob : ICasinoJob
     {
         private readonly IDiscordEmbedService _discordEmbedService;
-        private readonly IDiscordGuildService _discordGuildService;
         private readonly IImageService _imageService;
+        private readonly IPropertyService _propertyService;
 
-        public CasinoJob(IDiscordEmbedService discordEmbedService, IDiscordGuildService discordGuildService,
-            IImageService imageService)
+        public CasinoJob(IDiscordEmbedService discordEmbedService, IImageService imageService,
+            IPropertyService propertyService)
         {
             _discordEmbedService = discordEmbedService;
-            _discordGuildService = discordGuildService;
             _imageService = imageService;
+            _propertyService = propertyService;
         }
 
         public async Task Open()
         {
-            // получаем роли сервера
-            var roles = await _discordGuildService.GetRoles();
-            // получаем каналы сервера
-            var channels = await _discordGuildService.GetChannels();
-            // получаем канал событий столицы
-            var channelId = channels[DiscordChannel.CapitalEvents].Id;
+            // обновляем состояние казино на 1 - открыто
+            await _propertyService.UpdateProperty(Property.CasinoState, 1);
 
             var embed = new EmbedBuilder()
                 // имя нпс
@@ -49,24 +46,18 @@ namespace Hinode.Izumi.Services.BackgroundJobs.CasinoJob
                 .WithImageUrl(await _imageService.GetImageUrl(Image.LocationCapitalCasino));
 
             // отправляем сообщение
-            var message = await (await _discordGuildService.GetSocketTextChannel(channelId))
-                .SendMessageAsync(
-                    // упоминаем роли события
-                    $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>",
-                    false, _discordEmbedService.BuildEmbed(embed));
+            var message = await _discordEmbedService.SendEmbed(DiscordChannel.CapitalEvents, embed);
 
             // запускаем джобу с удалением сообщения
             BackgroundJob.Schedule<IDiscordJob>(x =>
-                    x.DeleteMessage(channelId, (long) message.Id),
+                    x.DeleteMessage((long) message.Channel.Id, (long) message.Id),
                 TimeSpan.FromHours(12));
         }
 
         public async Task Close()
         {
-            // получаем каналы сервера
-            var channels = await _discordGuildService.GetChannels();
-            // получаем канал событий столицы
-            var channelId = channels[DiscordChannel.CapitalEvents].Id;
+            // обновляем состояние казино на 0 - закрыто
+            await _propertyService.UpdateProperty(Property.CasinoState, 0);
 
             var embed = new EmbedBuilder()
                 // имя нпс
@@ -79,13 +70,11 @@ namespace Hinode.Izumi.Services.BackgroundJobs.CasinoJob
                 .WithImageUrl(await _imageService.GetImageUrl(Image.LocationCapitalCasino));
 
             // отправляем сообщение
-            var message = await (await _discordGuildService.GetSocketTextChannel(channelId))
-                .SendMessageAsync("", false,
-                    _discordEmbedService.BuildEmbed(embed));
+            var message = await _discordEmbedService.SendEmbed(DiscordChannel.CapitalEvents, embed);
 
             // запускаем джобу с удалением сообщения
             BackgroundJob.Schedule<IDiscordJob>(x =>
-                    x.DeleteMessage(channelId, (long) message.Id),
+                    x.DeleteMessage((long) message.Channel.Id, (long) message.Id),
                 TimeSpan.FromHours(12));
         }
     }

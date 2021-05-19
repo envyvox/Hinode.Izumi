@@ -8,6 +8,7 @@ using Hinode.Izumi.Services.Commands.UserCommands.ShopCommands.FisherCommands.Fi
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.ShopCommands.FisherCommands
 {
+    [CommandCategory(CommandCategory.Shop)]
     [Group("рыбак"), Alias("fisher")]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     [IzumiRequireLocation(Location.Seaport), IzumiRequireNoDebuff(BossDebuff.SeaportStop)]
@@ -22,7 +23,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.ShopCommands.FisherCommand
             _fisherSellCommand = fisherSellCommand;
         }
 
-        [Command]
+        [Command("")]
         public async Task FisherListTask() =>
             await _fisherListCommand.Execute(Context);
 

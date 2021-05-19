@@ -15,14 +15,17 @@ using Hinode.Izumi.Services.EmoteService.Impl;
 using Hinode.Izumi.Services.RpgServices.AchievementService;
 using Hinode.Izumi.Services.RpgServices.CooldownService;
 using Hinode.Izumi.Services.RpgServices.InventoryService;
+using Hinode.Izumi.Services.RpgServices.LocalizationService;
 using Hinode.Izumi.Services.RpgServices.PropertyService;
 using Hinode.Izumi.Services.RpgServices.StatisticService;
 using Humanizer;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands
 {
+    [CommandCategory(CommandCategory.Casino)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     [IzumiRequireLocation(Location.CapitalCasino), IzumiRequireNoDebuff(BossDebuff.CapitalStop)]
+    [IzumiRequireCasinoOpen]
     public class BetCommand : ModuleBase<SocketCommandContext>
     {
         private readonly IDiscordEmbedService _discordEmbedService;
@@ -32,10 +35,11 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands
         private readonly IStatisticService _statisticService;
         private readonly IAchievementService _achievementService;
         private readonly IPropertyService _propertyService;
+        private readonly ILocalizationService _local;
 
         public BetCommand(IDiscordEmbedService discordEmbedService, IEmoteService emoteService,
             ICooldownService cooldownService, IInventoryService inventoryService, IStatisticService statisticService,
-            IAchievementService achievementService, IPropertyService propertyService)
+            IAchievementService achievementService, IPropertyService propertyService, ILocalizationService local)
         {
             _discordEmbedService = discordEmbedService;
             _emoteService = emoteService;
@@ -44,10 +48,14 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands
             _statisticService = statisticService;
             _achievementService = achievementService;
             _propertyService = propertyService;
+            _local = local;
         }
 
         [Command("ставка"), Alias("bet")]
-        public async Task BetTask(long amount = 0)
+        [Summary("Сделать ставку в казино")]
+        [CommandUsage("!ставка 200", "!ставка 1000")]
+        public async Task BetTask(
+            [Summary("Сумма ставки")] long amount = 0)
         {
             // получаем текущее время
             var timeNow = DateTimeOffset.Now;
@@ -62,7 +70,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands
                 await Task.FromException(new Exception(IzumiReplyMessage.GamblingBetCooldown.Parse(
                     userCooldown.Expiration
                         .Subtract(timeNow).TotalMinutes.Minutes()
-                        .Humanize(2, new CultureInfo("ru-RU")))));
+                        .Humanize(1, new CultureInfo("ru-RU")))));
             }
             else
             {
@@ -115,7 +123,8 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands
                             case >= 55 and < 90:
 
                                 cubeDropString += IzumiReplyMessage.GamblingBetWon.Parse(
-                                    emotes.GetEmoteOrBlank(Currency.Ien.ToString()), amount * 2);
+                                    emotes.GetEmoteOrBlank(Currency.Ien.ToString()), amount * 2,
+                                    _local.Localize(Currency.Ien.ToString(), amount * 2));
 
                                 // добавляем пользователю валюту за победу
                                 await _inventoryService.AddItemToUser(
@@ -127,7 +136,8 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands
                             case >= 90 and < 100:
 
                                 cubeDropString += IzumiReplyMessage.GamblingBetWon.Parse(
-                                    emotes.GetEmoteOrBlank(Currency.Ien.ToString()), amount * 4);
+                                    emotes.GetEmoteOrBlank(Currency.Ien.ToString()), amount * 4,
+                                    _local.Localize(Currency.Ien.ToString(), amount * 4));
 
                                 // добавляем пользователю валюту за победу
                                 await _inventoryService.AddItemToUser(
@@ -139,7 +149,8 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands
                             case 100:
 
                                 cubeDropString += IzumiReplyMessage.GamblingBetWon.Parse(
-                                    emotes.GetEmoteOrBlank(Currency.Ien.ToString()), amount * 10);
+                                    emotes.GetEmoteOrBlank(Currency.Ien.ToString()), amount * 10,
+                                    _local.Localize(Currency.Ien.ToString(), amount * 10));
 
                                 // добавляем пользователю валюту за победу
                                 await _inventoryService.AddItemToUser(
@@ -157,7 +168,8 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands
                             default:
 
                                 cubeDropString += IzumiReplyMessage.GamblingBetLose.Parse(
-                                    emotes.GetEmoteOrBlank(Currency.Ien.ToString()), amount);
+                                    emotes.GetEmoteOrBlank(Currency.Ien.ToString()), amount,
+                                    _local.Localize(Currency.Ien.ToString(), amount));
 
                                 // отнимаем у пользователя валюту за поражение
                                 await _inventoryService.RemoveItemFromUser(

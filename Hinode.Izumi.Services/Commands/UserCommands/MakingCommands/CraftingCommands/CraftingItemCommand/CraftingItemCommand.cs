@@ -26,8 +26,7 @@ using Hinode.Izumi.Services.RpgServices.UserService;
 using Humanizer;
 using Image = Hinode.Izumi.Data.Enums.Image;
 
-namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCommands.CraftingStartCommands.
-    CraftingItemCommand
+namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCommands.CraftingItemCommand
 {
     [InjectableService]
     public class CraftingItemCommand : ICraftingItemCommand
@@ -67,7 +66,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
             _imageService = imageService;
         }
 
-        public async Task Execute(SocketCommandContext context, long craftingId, long amount)
+        public async Task Execute(SocketCommandContext context, long amount, long craftingId)
         {
             // получаем иконки из базы
             var emotes = await _emoteService.GetEmotes();
@@ -89,7 +88,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
             var craftingPrice = freeCrafting
                 ? 0
                 : await _calc.CraftingPrice(
-                    await _ingredientService.GetCraftingCostPrice(crafting.Id));
+                    await _ingredientService.GetCraftingCostPrice(crafting.Id), amount);
 
             // проверяем есть ли у пользователя деньги на оплату стоимости изготовления
             if (userCurrency.Amount < craftingPrice)
@@ -106,7 +105,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
                     (long) context.User.Id, userLocation, crafting.Time, amount);
 
                 // отнимаем у пользователя ингредиенты для изготовления
-                await _ingredientService.RemoveCraftingIngredients((long) context.User.Id, crafting.Id);
+                await _ingredientService.RemoveCraftingIngredients((long) context.User.Id, crafting.Id, amount);
                 // обновляем пользователю текущую локацию
                 await _locationService.UpdateUserLocation((long) context.User.Id, Location.MakingCrafting);
                 // добавляем информацию о перемещении
@@ -146,11 +145,11 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
                         await _ingredientService.DisplayCraftingIngredients(crafting.Id, amount) +
                         (craftingPrice == 0
                             ? ""
-                            : $"{emotes.GetEmoteOrBlank(Currency.Ien.ToString())} {craftingPrice} {_local.Localize(Currency.Ien.ToString(), craftingPrice)}"
+                            : $", {emotes.GetEmoteOrBlank(Currency.Ien.ToString())} {craftingPrice} {_local.Localize(Currency.Ien.ToString(), craftingPrice)}"
                         ), true)
                     // длительность
                     .AddField(IzumiReplyMessage.TimeFieldName.Parse(),
-                        crafting.Time.Seconds().Humanize(2, new CultureInfo("ru-RU")), true)
+                        craftingTime.Seconds().Humanize(2, new CultureInfo("ru-RU")), true)
                     // ожидаемые предметы
                     .AddField(IzumiReplyMessage.CraftingResourceExpectedFieldName.Parse(),
                         $"{emotes.GetEmoteOrBlank(crafting.Name)} {amount} {_local.Localize(crafting.Name, amount)}");
@@ -158,6 +157,15 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
                 await _discordEmbedService.SendEmbed(context.User, embed);
                 await Task.CompletedTask;
             }
+        }
+
+        public async Task Execute(SocketCommandContext context, long amount, string itemNamePattern)
+        {
+            // получаем локализацию предмета
+            var itemLocalization = await _local.GetLocalizationByLocalizedWord(
+                LocalizationCategory.Crafting, itemNamePattern);
+            // используем основной метод уже зная id предмета
+            await Execute(context, amount, itemLocalization.ItemId);
         }
 
         private async Task CheckCraftingLocation(long userId, Location userLocation, Location craftingLocation)

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
+using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Services.Commands.Attributes;
 using Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.UserDeckCommands.UserDeckAddCommand;
@@ -8,6 +9,7 @@ using Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.UserDeckComma
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.UserDeckCommands
 {
+    [CommandCategory(CommandCategory.Cards, CommandCategory.UserInfo)]
     [Group("колода"), Alias("deck")]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class UserDeckCommands : ModuleBase<SocketCommandContext>
@@ -24,16 +26,23 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.UserDeckC
             _userDeckRemoveCommand = userDeckRemoveCommand;
         }
 
-        [Command]
+        [Command("")]
+        [Summary("Посмотреть свою текущую колоду")]
         public async Task UserDeckListTask() =>
             await _userDeckListCommand.Execute(Context);
 
         [Command("добавить"), Alias("add")]
-        public async Task UserDeckAddTask(long cardId) =>
+        [Summary("Добавить указанную карточку в свою колоду")]
+        [CommandUsage("!колода добавить 1", "!колода добавить 5")]
+        public async Task UserDeckAddTask(
+            [Summary("Номер карточки")] long cardId) =>
             await _userDeckAddCommand.Execute(Context, cardId);
 
         [Command("убрать"), Alias("remove")]
-        public async Task UserDeckRemove(long cardId) =>
+        [Summary("Убрать указанную карточку из своей колоды")]
+        [CommandUsage("!колода убрать 1", "!колода убрать 5")]
+        public async Task UserDeckRemove(
+            [Summary("Номер карточки")] long cardId) =>
             await _userDeckRemoveCommand.Execute(Context, cardId);
     }
 }

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Services.Commands.Attributes;
@@ -12,6 +13,7 @@ using Hinode.Izumi.Services.RpgServices.FamilyService;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.FamilyCommands
 {
+    [CommandCategory(CommandCategory.Family)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class FamilyListCommand : ModuleBase<SocketCommandContext>
     {
@@ -28,6 +30,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.FamilyCommands
         }
 
         [Command("семьи"), Alias("families")]
+        [Summary("Посмотреть список семей в игровом мире")]
         public async Task FamilyListTask()
         {
             // получаем иконки из базы

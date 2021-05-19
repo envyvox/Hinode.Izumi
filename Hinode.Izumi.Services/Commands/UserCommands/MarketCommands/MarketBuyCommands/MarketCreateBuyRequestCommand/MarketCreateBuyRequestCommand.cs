@@ -71,7 +71,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MarketCommands.MarketBuyCo
             if (userRequest != null)
             {
                 await Task.FromException(new Exception(IzumiReplyMessage.MarketRequestAlready.Parse(
-                    userRequest.Id, emotes.GetEmoteOrBlank(itemName), _local.Localize(itemName))));
+                    userRequest.Id, emotes.GetEmoteOrBlank(itemName), _local.Localize(category, itemId))));
             }
             // проверяем хватает ли пользователю денег на оплату заявки
             else if (userCurrency.Amount < price * amount)
@@ -153,7 +153,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MarketCommands.MarketBuyCo
                             .WithImageUrl(await _imageService.GetImageUrl(Image.LocationCapitalMarket))
                             // подтверждаем успешное создание заявки
                             .WithDescription(IzumiReplyMessage.MarketBuyRequestSuccess.Parse(
-                                emotes.GetEmoteOrBlank(itemName), amount, _local.Localize(itemName, amount),
+                                emotes.GetEmoteOrBlank(itemName), amount, _local.Localize(category, itemId, amount),
                                 emotes.GetEmoteOrBlank(Currency.Ien.ToString()), price,
                                 _local.Localize(Currency.Ien.ToString(), price)));
 

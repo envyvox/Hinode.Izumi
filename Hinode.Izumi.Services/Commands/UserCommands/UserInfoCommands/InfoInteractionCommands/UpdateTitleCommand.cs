@@ -13,6 +13,7 @@ using Hinode.Izumi.Services.RpgServices.UserService;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.InfoInteractionCommands
 {
+    [CommandCategory(CommandCategory.UserInfo, CommandCategory.UserInfoInteraction)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class UpdateTitleCommand : ModuleBase<SocketCommandContext>
     {
@@ -29,7 +30,10 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands.InfoInter
         }
 
         [Command("титул"), Alias("title")]
-        public async Task UpdateTitleTask(Title title)
+        [Summary("Обновить текущий титул на указанный")]
+        [CommandUsage("!титул 1", "!титул 5")]
+        public async Task UpdateTitleTask(
+            [Summary("Номер титула")] Title title)
         {
             // получаем иконки из базы
             var emotes = await _emoteService.GetEmotes();

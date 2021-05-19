@@ -9,6 +9,7 @@ using Hinode.Izumi.Services.RpgServices.LocalizationService;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CookingCommands
 {
+    [CommandCategory(CommandCategory.Cooking)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class CookingCommands : ModuleBase<SocketCommandContext>
     {
@@ -25,16 +26,27 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CookingComm
         }
 
         [Command("приготовление")]
-        public async Task CookingListTask(long masteryBracket = 0) =>
+        [Summary("Посмотреть доступные категории рецептов или список приобренных рецептов в указанной категории")]
+        [CommandUsage("!приготовление", "!приготовление 1")]
+        public async Task CookingListTask(
+            [Summary("Номер категории")] long masteryBracket = 0) =>
             await _cookingListCommand.Execute(Context, masteryBracket);
 
         [Command("приготовить")]
-        public async Task CookingStartTask(long amount, long foodId) =>
+        [Summary("Приготовить блюда по указанному номеру")]
+        [CommandUsage("!приготовить 1 4")]
+        public async Task CookingStartTask(
+            [Summary("Количество")] long amount,
+            [Summary("Номер блюда")] long foodId) =>
             // пробуем приготовить
             await _cookingStartCommand.Execute(Context, amount, foodId);
 
         [Command("приготовить")]
-        public async Task CookingStartTask(long amount, [Remainder] string foodName)
+        [Summary("Приготовить блюда по указанному названию")]
+        [CommandUsage("!приготовить 1 яичница")]
+        public async Task CookingStartTask(
+            [Summary("Количество")] long amount,
+            [Summary("Название блюда")] [Remainder] string foodName)
         {
             // получаем локализацию блюда
             var foodLocal = await _local.GetLocalizationByLocalizedWord(LocalizationCategory.Food, foodName);

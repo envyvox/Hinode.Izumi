@@ -9,9 +9,11 @@ using Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands.LotteryCommands
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands.LotteryCommands
 {
+    [CommandCategory(CommandCategory.Casino)]
     [Group("лотерея"), Alias("lottery")]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     [IzumiRequireLocation(Location.CapitalCasino), IzumiRequireNoDebuff(BossDebuff.CapitalStop)]
+    [IzumiRequireCasinoOpen]
     public class LotteryCommands : ModuleBase<SocketCommandContext>
     {
         private readonly ILotteryInfoCommand _lotteryInfoCommand;
@@ -26,16 +28,20 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands.LotteryComm
             _lotteryGiftCommand = lotteryGiftCommand;
         }
 
-        [Command]
+        [Command("")]
+        [Summary("Посмотреть информацию о лотерее")]
         public async Task LotteryInfoTask() =>
             await _lotteryInfoCommand.Execute(Context);
 
         [Command("купить"), Alias("buy")]
+        [Summary("Приобрести лотерейный билет")]
         public async Task LotteryBuyTask() =>
             await _lotteryBuyCommand.Execute(Context);
 
         [Command("подарить"), Alias("gift")]
-        public async Task LotteryGiftTask([Remainder] string namePattern) =>
+        [Summary("Подарить лотереный билет указанному пользователю")]
+        public async Task LotteryGiftTask(
+            [Summary("Игровое имя")] [Remainder] string namePattern) =>
             await _lotteryGiftCommand.Execute(Context, namePattern);
     }
 }

@@ -22,16 +22,14 @@ namespace Hinode.Izumi.Services.BackgroundJobs.SeasonJob
         private readonly IDiscordEmbedService _discordEmbedService;
         private readonly IEmoteService _emoteService;
         private readonly IFieldService _fieldService;
-        private readonly IDiscordGuildService _discordGuildService;
 
         public SeasonJob(IPropertyService propertyService, IDiscordEmbedService discordEmbedService,
-            IEmoteService emoteService, IFieldService fieldService, IDiscordGuildService discordGuildService)
+            IEmoteService emoteService, IFieldService fieldService)
         {
             _propertyService = propertyService;
             _discordEmbedService = discordEmbedService;
             _emoteService = emoteService;
             _fieldService = fieldService;
-            _discordGuildService = discordGuildService;
         }
 
         public async Task SpringComing() => await NewSeasonComing(Season.Spring);
@@ -60,8 +58,6 @@ namespace Hinode.Izumi.Services.BackgroundJobs.SeasonJob
             var emotes = await _emoteService.GetEmotes();
             // получаем текущее время
             var timeNow = DateTimeOffset.Now;
-            // получаем каналы дискорда из базы
-            var channels = await _discordGuildService.GetChannels();
 
             // добавляем джобу со сменой сезона через неделю
             BackgroundJob.Schedule<ISeasonJob>(
@@ -82,10 +78,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.SeasonJob
                         _ => throw new ArgumentOutOfRangeException(nameof(season), season, null)
                     });
 
-            await _discordEmbedService.SendEmbed(
-                // получаем канал дневника в дискорде
-                await _discordGuildService.GetSocketTextChannel(
-                    channels[DiscordChannel.Diary].Id), embed);
+            await _discordEmbedService.SendEmbed(DiscordChannel.Diary, embed);
         }
     }
 }

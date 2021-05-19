@@ -19,6 +19,7 @@ using Image = Hinode.Izumi.Data.Enums.Image;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
 {
+    [CommandCategory(CommandCategory.UserInfo)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class UserEffectCommand : ModuleBase<SocketCommandContext>
     {
@@ -42,6 +43,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.UserInfoCommands
         }
 
         [Command("эффекты"), Alias("effects")]
+        [Summary("Посмотреть текущие эффекты")]
         public async Task UserEffectsTask()
         {
             // получаем все иконки из базы

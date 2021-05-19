@@ -165,11 +165,9 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         LotteryBuyAlready,
         LotteryBuyNoCurrency,
         LotteryBuySuccess,
-        LotteryInfoDesc,
         LotteryInfoRulesFieldName,
         LotteryInfoRulesFieldDesc,
         LotteryInfoCurrentMembersFieldName,
-        LotteryInfoCurrentMembersFieldDesc,
         LotteryGiftAlreadyHave,
         LotteryGiftNoCurrency,
         LotteryGiftSuccess,
@@ -515,7 +513,11 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         CommunityDescAuthor,
         CommunityDescAuthorGotRole,
         ReputationRewardAuthor,
-        ReputationRewardDesc
+        ReputationRewardDesc,
+        LotteryGiftInfoFieldName,
+        LotteryGiftInfoFieldDesc,
+        LotteryInfoCurrentMembersNull,
+        CasinoClosed
     }
 
     public static class IzumiReplyMessageHelper
@@ -735,23 +737,25 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Вы возвращаетесь с улыбкой на лице и гордо демонстрируете жителям города {0} {1}.\nЕсть чем гордиться, понимаю, но рыбы в здешних водах еще полно, возвращайтесь за новым уловом поскорее!",
 
             IzumiReplyMessage.GamblingBetCooldown =>
-                "Извините, но дилер раскрывает новую колоду. Попробуйте еще раз через {0}.",
+                "Простите, но кубик куда-то закатился! Буквально **{0}** и мы его найдем. Ну или возьмем новый.",
 
             IzumiReplyMessage.GamblingBetNoCurrency =>
                 "Прискорбно, но у вас иссякли {0} иены на подобную ставку. Не унывайте! Двери нашего казино всегда открыты, возвращайтесь в любое время!",
 
-            IzumiReplyMessage.GamblingBetMinCurrency => "Извините, но мы играем по-крупному! Не меньше {0} {1} иен.",
+            IzumiReplyMessage.GamblingBetMinCurrency =>
+                "Извините, но мы играем по-крупному! Не меньше {0} {1} иен.",
 
             IzumiReplyMessage.GamblingBetMaxCurrency =>
                 "Ничего себе, у вас крупная сумма! Но вы не могли бы разделить ставку по {0} {1} иен максимум? Иначе крупье может хватить удар от таких богатств.",
 
-            IzumiReplyMessage.GamblingBetCubeDrop => "*На кубиках выпадает {0}.*\n\n",
+            IzumiReplyMessage.GamblingBetCubeDrop =>
+                "*На кубиках выпадает {0}.*\n\n",
 
             IzumiReplyMessage.GamblingBetWon =>
-                "Прямо чувствуется, как повышается азарт от игры и выигранных {0} {1} иен! Главное, не теряйте свое чувство меры!",
+                "Прямо чувствуется, как повышается азарт от игры и выигранных {0} {1} {2}! Главное, не теряйте свое чувство меры!",
 
             IzumiReplyMessage.GamblingBetLose =>
-                "Неудача. Карта не пошла. Уверяем, колода не крапленая и {0} {1} иен честно проиграны!",
+                "Сожалеем, вы проиграли {0} {1} {2}! Не сильно вините дилера.",
 
             IzumiReplyMessage.GamblingBetNoAmount =>
                 "Вы забыли указать на какое количество {0} иен в этот раз мы будем делать ставку.",
@@ -1017,20 +1021,14 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
             IzumiReplyMessage.LotteryBuySuccess =>
                 "Вы успешно приобрели {0} лотерейный билет за {1} {2} {3}, теперь осталось дождаться розыгрыша.",
 
-            IzumiReplyMessage.LotteryInfoDesc =>
-                "Приобретите {0} лотерейный билет через команду `!лотерея купить` за {1} {2} {3}, чтобы получить возможность выиграть {1} {4} {3}!\n\nВы так же можете `!лотерея подарить [игровое имя]` отправить {0} лотерейный билет в {5} подарок другому игроку, заплатив еще {1} {6} {3} за услуги курьера, который доставит подарок в любую точку мира.",
-
             IzumiReplyMessage.LotteryInfoRulesFieldName =>
                 "Правила участия",
 
             IzumiReplyMessage.LotteryInfoRulesFieldDesc =>
-                "Покупаете {0} лотерейный билет и ожидаете, когда наберется 10 участников. Затем случайным образом выбирается победитель, который получит {1} приз. Повторяете пока не станете местным миллионером ;)",
+                "Напишите `!лотерея купить` чтобы приобрести {0} лотерейный билет за {1} {2} {3} и ожидайте, когда наберется **{4} участников**.\n\nЗатем будет выбран **один победитель** который получит {1} {5} {6}.\n> Победитель выбирается случайным образом из всех участников.",
 
             IzumiReplyMessage.LotteryInfoCurrentMembersFieldName =>
                 "Текущие участники",
-
-            IzumiReplyMessage.LotteryInfoCurrentMembersFieldDesc =>
-                "На данный момент {0} участников уже приобрели {1} лотерейный билет, до розыграша осталось еще {2}!\n\n{3}",
 
             IzumiReplyMessage.LotteryGiftAlreadyHave =>
                 "У {0} {1} **{2}** уже есть {3} лотерейный билет, лучше подарить его кому-либо еще.",
@@ -1192,7 +1190,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "{0} Как получить эффект?",
 
             IzumiReplyMessage.UserEffectsHelpFieldDesc =>
-                "Временные эффекты можно получить если `!съесть [название]` еду, а постоянные лишь активировав особые {0} карточки.",
+                "Постоянные эффекты можно получить лишь добавив особые карточки в свою {0} колоду.",
 
             IzumiReplyMessage.EatFoodSuccess =>
                 "Вы съели {0} {1} {2} и получили {3} {4} {5}.",
@@ -1915,7 +1913,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Напишите `!изготовление алкоголя [номер]` для просмотра рецепта алкоголя.",
 
             IzumiReplyMessage.CraftingAlcoholInfoDesc =>
-                "Для изготовления отправляйтесь в указанную локацию и напишите `!изготовить алкоголь [номер] [количество]`.\n*Количество указывать не обязательно, по-умолчанию это 1.*",
+                "Для изготовления отправляйтесь в указанную локацию и напишите `!изготовить алкоголь [количество] [номер]`.\n*Количество указывать не обязательно, по-умолчанию это 1.*",
 
             IzumiReplyMessage.IngredientsFieldName =>
                 "Необходимые ингредиенты",
@@ -1927,7 +1925,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Локация",
 
             IzumiReplyMessage.CraftingItemInfoDesc =>
-                "Для изготовления отправляйтесь в указанную локацию и напишите `!изготовить предмет [номер] [количество]`.\n*Количество указывать не обязательно, по-умолчанию это 1.*",
+                "Для изготовления отправляйтесь в указанную локацию и напишите `!изготовить предмет [количество] [номер]`.\n*Количество указывать не обязательно, по-умолчанию это 1.*",
 
             IzumiReplyMessage.UnmuteDesc =>
                 "Блокировка чата истекла, вы можете продолжить общение.",
@@ -2017,10 +2015,10 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Наличие рецепта",
 
             IzumiReplyMessage.RecipeInfoCheckRecipeTrue =>
-                "У вас есть {0} рецепт",
+                "{0} У вас есть {1} рецепт",
 
             IzumiReplyMessage.RecipeInfoCheckRecipeFalse =>
-                "У вас нет {0} рецепта",
+                "{0} У вас нет {1} рецепта",
 
             IzumiReplyMessage.RecipeInfoIngredientsFieldName =>
                 "Необходимые ингредиенты",
@@ -2074,6 +2072,15 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.ReputationRewardDesc =>
                 "Вы достигли {0} `{1}` репутации в **{2}** и получаете {3} {4} {5}.",
+
+            IzumiReplyMessage.LotteryGiftInfoFieldName =>
+                "Курьерская служба",
+
+            IzumiReplyMessage.LotteryGiftInfoFieldDesc =>
+                "Напишите `!лотерея подарить [игровое имя]` чтобы отправить {0} лотерейный билет в **подарок** другому игроку. Курьер доставит его в любую точку мира!\n> При оплате доставки, необходимо будет доплатить {1} {2} {3} за услуги курьерской службы.",
+
+            IzumiReplyMessage.LotteryInfoCurrentMembersNull =>
+                "На данный момент нет пользователей с {0} лотерейным билетом.",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };

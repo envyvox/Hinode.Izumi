@@ -26,6 +26,7 @@ using Hinode.Izumi.Services.RpgServices.PropertyService;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands
 {
+    [CommandCategory(CommandCategory.Box)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class OpenBoxCommand : ModuleBase<SocketCommandContext>
     {
@@ -61,7 +62,11 @@ namespace Hinode.Izumi.Services.Commands.UserCommands
         }
 
         [Command("открыть"), Alias("open")]
-        public async Task OpenBoxTask(long amount, [Remainder] string boxName)
+        [Summary("Открыть указанные коробки")]
+        [CommandUsage("!открыть 1 сбережение", "!открыть 5 лотков")]
+        public async Task OpenBoxTask(
+            [Summary("Количество")] long amount,
+            [Summary("Название коробки")] [Remainder] string boxName)
         {
             // получаем иконки из базы
             _emotes = await _emoteService.GetEmotes();

@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Data.Enums.RarityEnums;
@@ -12,6 +13,7 @@ using Hinode.Izumi.Services.RpgServices.CardService;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
 {
+    [CommandCategory(CommandCategory.Cards, CommandCategory.WorldInfo)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class CardInfoCommand : ModuleBase<SocketCommandContext>
     {
@@ -28,7 +30,10 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.WorldInfoCommands
         }
 
         [Command("карточка"), Alias("card")]
-        public async Task CardInfoTask(long cardId)
+        [Summary("Посмотреть информацию об указанной карточке")]
+        [CommandUsage("!карточка 1", "!карточка 10")]
+        public async Task CardInfoTask(
+            [Summary("Номер карточки")] long cardId)
         {
             // получаем карточку с таким id
             var card = await _cardService.GetCard(cardId);

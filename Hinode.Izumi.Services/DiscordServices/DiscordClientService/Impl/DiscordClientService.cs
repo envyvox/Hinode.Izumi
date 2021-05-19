@@ -236,19 +236,14 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.Impl
                 message.Author.IsBot)
                 return;
 
+            // если команда пришла не в личных сообщениях - игнорируем
+            if (socketMessage.Channel.GetType() != typeof(SocketDMChannel)) return;
+
             // создаем контекст команды
             var context = new SocketCommandContext(_socketClient, message);
 
             // выполняем команду
             await _commands.ExecuteAsync(context, argPos, _serviceProvider);
-
-            // если сообщение было отправлено на сервере его нужно удалить
-            if (context.Channel.GetType() != typeof(SocketDMChannel))
-            {
-                // делаем паузу для того чтобы дискорд успел обработать сообщение
-                await Task.Delay(1000);
-                await message.DeleteAsync();
-            }
         }
 
         private async Task SocketClientOnMessageDeleted(Cacheable<IMessage, ulong> message,

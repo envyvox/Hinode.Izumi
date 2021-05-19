@@ -43,6 +43,24 @@ namespace Hinode.Izumi.Services.RpgServices.LocalizationService
         /// <exception cref="IzumiNullableMessage.LocalizationByKeyword"></exception>
         string Localize(string keyword, long amount = 1);
 
+        /// <summary>
+        /// Локазирирует название в зависимости от количества (используя приватный метод GetLocalizationByKeyword).
+        /// </summary>
+        /// <param name="category">Категория локализации.</param>
+        /// <param name="itemId">Id предмета.</param>
+        /// <param name="amount">Количество.</param>
+        /// <returns>Локализированное название.</returns>
+        /// <exception cref="IzumiNullableMessage.LocalizationByKeyword"></exception>
         string Localize(LocalizationCategory category, long itemId, long amount = 1);
+
+        /// <summary>
+        /// Локазирирует название в зависимости от количества (используя приватный метод GetLocalizationByKeyword).
+        /// </summary>
+        /// <param name="requestCategory">Категория рынка.</param>
+        /// <param name="itemId">Id предмета.</param>
+        /// <param name="amount">Количество.</param>
+        /// <returns>Локализированное название.</returns>
+        /// <exception cref="IzumiNullableMessage.LocalizationByKeyword"></exception>
+        string Localize(MarketCategory requestCategory, long itemId, long amount = 1);
     }
 }

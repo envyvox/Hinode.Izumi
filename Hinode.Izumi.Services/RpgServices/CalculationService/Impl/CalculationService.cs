@@ -255,17 +255,22 @@ namespace Hinode.Izumi.Services.RpgServices.CalculationService.Impl
             return Random.Next(1, 101) > chance;
         }
 
-        public async Task<long> CraftingPrice(long costPrice)
+        public async Task<long> CraftingPrice(long costPrice, long amount = 0)
         {
             // получаем % стоимости изготовления
-            var craftingCost = await _propertyService.GetPropertyValue(Property.CraftingCost);
-            return (long)
-                // стоимость изготовления не может быть меньше 1
-                (costPrice / 100.0 * craftingCost < 1
+            var craftingPercent = await _propertyService.GetPropertyValue(Property.CraftingPricePercent);
+            // получаем стоимость изготовления
+            var craftingPrice = (long) (costPrice / 100.0 * craftingPercent < 1
+                    // стоимость изготовления не может быть меньше 1
                     ? 1
                     // стоимость изготовления это % от себестоимости
-                    : costPrice / 100.0 * craftingCost
+                    : costPrice / 100.0 * craftingPercent
                 );
+            return amount > 0
+                // если количество больше нуля - нужно умножить цену на количество
+                ? craftingPrice * amount
+                // если нет - просто возвращаем цену
+                : craftingPrice;
         }
 
         public async Task<long> FoodRecipePrice(long costPrice)

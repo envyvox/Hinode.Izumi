@@ -19,6 +19,7 @@ using Hinode.Izumi.Services.RpgServices.UserService;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands
 {
+    [CommandCategory(CommandCategory.Cooking)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class EatFoodCommand : ModuleBase<SocketCommandContext>
     {
@@ -49,7 +50,11 @@ namespace Hinode.Izumi.Services.Commands.UserCommands
         }
 
         [Command("съесть"), Alias("eat")]
-        public async Task EatFoodCommandTask(long amount, [Remainder] string foodName)
+        [Summary("Съесть блюдо с указанным названием")]
+        [CommandUsage("!съесть 1 особый тыквенный пирог", "!съесть 5 особых тыквенных")]
+        public async Task EatFoodCommandTask(
+            [Summary("Количество")] long amount,
+            [Summary("Название блюда")] [Remainder] string foodName)
         {
             // находим локализацию блюда
             var foodLocal = await _local.GetLocalizationByLocalizedWord(LocalizationCategory.Food, foodName);
@@ -58,7 +63,11 @@ namespace Hinode.Izumi.Services.Commands.UserCommands
         }
 
         [Command("съесть"), Alias("eat")]
-        public async Task EatFoodCommandTask(long amount, long foodId) =>
+        [Summary("Съесть блюдо с указанным номером")]
+        [CommandUsage("!съесть 1 79", "!съесть 5 79")]
+        public async Task EatFoodCommandTask(
+            [Summary("Количество")] long amount,
+            [Summary("Номер блюда")] long foodId) =>
             // пытаемся съесть
             await EatFoodTask(amount, foodId);
 

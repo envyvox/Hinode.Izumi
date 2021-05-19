@@ -24,12 +24,6 @@ namespace Hinode.Izumi.Services.TimeService
                     .TotalMinutes)
                 .Humanize(1, new CultureInfo("ru-RU"))}";
 
-        public bool TimeBetween(TimeSpan begin, TimeSpan end)
-        {
-            var now = TimeZoneInfo.ConvertTime(DateTime.Now, _timeZoneInfo).TimeOfDay;
-            return begin < end ? begin <= now && now <= end : !(end < now && now < begin);
-        }
-
         public TimesDay GetCurrentTimesDay()
         {
             var timeNow = TimeZoneInfo.ConvertTime(DateTime.Now, _timeZoneInfo);

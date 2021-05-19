@@ -103,7 +103,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.FieldCommands.FieldCollect
                     if (seed.ReGrowth > 0)
                     {
                         // запускаем повторный рост семян
-                        await _fieldService.StartReGrowth((long) context.User.Id, fieldId);
+                        await _fieldService.StartReGrowth((long) context.User.Id, userField.FieldId);
 
                         embed.WithDescription(IzumiReplyMessage.UserFieldCollectSuccessReGrowth.Parse(
                             emotes.GetEmoteOrBlank(crop.Name), amount, _local.Localize(crop.Name, amount),
@@ -112,7 +112,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.FieldCommands.FieldCollect
                     else
                     {
                         // сбрасываем состоение клетки участка на пустое
-                        await _fieldService.ResetField((long) context.User.Id, fieldId);
+                        await _fieldService.ResetField((long) context.User.Id, userField.FieldId);
 
                         embed.WithDescription(IzumiReplyMessage.UserFieldCollectSuccess.Parse(
                             emotes.GetEmoteOrBlank(crop.Name), amount, _local.Localize(crop.Name, amount)));

@@ -55,20 +55,27 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.CasinoCommands.LotteryComm
             var lotteryRequireUsers = await _propertyService.GetPropertyValue(Property.LotteryRequireUsers);
 
             var embed = new EmbedBuilder()
-                // команды лотереи
-                .WithDescription(IzumiReplyMessage.LotteryInfoDesc.Parse(
-                    emotes.GetEmoteOrBlank("LotteryTicket"), emotes.GetEmoteOrBlank(Currency.Ien.ToString()),
-                    lotteryPrice, _local.Localize(Currency.Ien.ToString(), lotteryPrice), lotteryAward,
-                    emotes.GetEmoteOrBlank("Gift"), lotteryDeliveryPrice))
                 // правила участия
                 .AddField(IzumiReplyMessage.LotteryInfoRulesFieldName.Parse(),
                     IzumiReplyMessage.LotteryInfoRulesFieldDesc.Parse(
-                        emotes.GetEmoteOrBlank("LotteryTicket"), emotes.GetEmoteOrBlank(Currency.Ien.ToString())))
+                        emotes.GetEmoteOrBlank("LotteryTicket"), emotes.GetEmoteOrBlank(Currency.Ien.ToString()),
+                        lotteryPrice, _local.Localize(Currency.Ien.ToString(), lotteryPrice),
+                        lotteryRequireUsers, lotteryAward, _local.Localize(Currency.Ien.ToString(), lotteryAward)) +
+                    $"\n{emotes.GetEmoteOrBlank("Blank")}")
+
+                // служба доставки
+                .AddField(IzumiReplyMessage.LotteryGiftInfoFieldName.Parse(),
+                    IzumiReplyMessage.LotteryGiftInfoFieldDesc.Parse(
+                        emotes.GetEmoteOrBlank("LotteryTicket"), emotes.GetEmoteOrBlank(Currency.Ien.ToString()),
+                        lotteryDeliveryPrice, _local.Localize(Currency.Ien.ToString(), lotteryDeliveryPrice)) +
+                    $"\n{emotes.GetEmoteOrBlank("Blank")}")
+
                 // список пользователей с лотереей
                 .AddField(IzumiReplyMessage.LotteryInfoCurrentMembersFieldName.Parse(),
-                    IzumiReplyMessage.LotteryInfoCurrentMembersFieldDesc.Parse(
-                        lotteryUsers.Length, emotes.GetEmoteOrBlank("LotteryTicket"),
-                        lotteryRequireUsers - lotteryUsers.Length, lotteryUsersString));
+                    lotteryUsersString.Length > 0
+                        ? lotteryUsersString
+                        : IzumiReplyMessage.LotteryInfoCurrentMembersNull.Parse(
+                            emotes.GetEmoteOrBlank("LotteryTicket")));
 
             await _discordEmbedService.SendEmbed(context.User, embed);
             await Task.CompletedTask;

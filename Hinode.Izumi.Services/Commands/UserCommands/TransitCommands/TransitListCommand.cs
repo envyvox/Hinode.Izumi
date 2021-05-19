@@ -26,6 +26,7 @@ using Image = Hinode.Izumi.Data.Enums.Image;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.TransitCommands
 {
+    [CommandCategory(CommandCategory.Transit)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class TransitListCommand : ModuleBase<SocketCommandContext>
     {
@@ -60,6 +61,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.TransitCommands
         }
 
         [Command("отправления"), Alias("transits")]
+        [Summary("Посмотреть доступные отправления из текущей локации")]
         public async Task TransitListTask()
         {
             // получаем информацию о перемещении пользователя

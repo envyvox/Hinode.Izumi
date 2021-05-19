@@ -24,6 +24,7 @@ using Image = Hinode.Izumi.Data.Enums.Image;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands.TransitCommands
 {
+    [CommandCategory(CommandCategory.Transit)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class TransitMakeCommand : ModuleBase<SocketCommandContext>
     {
@@ -56,7 +57,10 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.TransitCommands
         }
 
         [Command("отправиться"), Alias("transit")]
-        public async Task TransitMakeTask(Location destination = 0)
+        [Summary("Отправиться в указанную локацию")]
+        [CommandUsage("!отправиться 1", "!отправиться 5")]
+        public async Task TransitMakeTask(
+            [Summary("Номер локации")] Location destination = 0)
         {
             // получаем пользователя из базы
             var user = await _userService.GetUser((long) Context.User.Id);

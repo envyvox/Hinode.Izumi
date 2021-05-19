@@ -99,7 +99,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CookingComm
                 var cookingPrice = freeCooking
                     ? 0
                     : await _calc.CraftingPrice(
-                        await _ingredientService.GetFoodCostPrice(food.Id));
+                        await _ingredientService.GetFoodCostPrice(food.Id), amount);
 
                 // проверяем что у пользователя хватит денег на оплату приготовления
                 if (userCurrency.Amount < cookingPrice)
@@ -116,7 +116,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CookingComm
                         (long) context.User.Id, userLocation, food.Time, amount);
 
                     // отнимаем у пользователя ингредиенты для приготовления
-                    await _ingredientService.RemoveFoodIngredients((long) context.User.Id, foodId);
+                    await _ingredientService.RemoveFoodIngredients((long) context.User.Id, foodId, amount);
                     // обновляем пользователю текущую локацию
                     await _locationService.UpdateUserLocation((long) context.User.Id, Location.MakingFood);
                     // добавляем информацию о перемещении

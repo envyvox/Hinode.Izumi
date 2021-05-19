@@ -180,8 +180,8 @@ namespace Hinode.Izumi.Services.DiscordServices.CommunityDescService.Impl
                       and active = true",
                     new {authorId, voteLike = Vote.Like});
 
-            // если автор собрал количество кратное 100
-            if (authorLikes % 100 == 0)
+            // если автор собрал количество кратное 500
+            if (authorLikes % 500 == 0)
             {
                 // получаем иконки из базы
                 var emotes = await _emoteService.GetEmotes();

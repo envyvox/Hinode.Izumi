@@ -15,6 +15,7 @@ using Hinode.Izumi.Services.RpgServices.UserService;
 
 namespace Hinode.Izumi.Services.Commands.UserCommands
 {
+    [CommandCategory(CommandCategory.Rating)]
     [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
     public class PointsTopCommand : ModuleBase<SocketCommandContext>
     {
@@ -35,6 +36,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands
         }
 
         [Command("топ"), Alias("рейтинг", "top", "rating")]
+        [Summary("Посмотреть рейтинг приключений")]
         public async Task PointsTopTask()
         {
             // получаем иконки из базы
