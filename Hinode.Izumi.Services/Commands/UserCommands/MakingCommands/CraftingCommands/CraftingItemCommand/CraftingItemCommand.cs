@@ -105,7 +105,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
                     (long) context.User.Id, userLocation, crafting.Time, amount);
 
                 // отнимаем у пользователя ингредиенты для изготовления
-                await _ingredientService.RemoveCraftingIngredients((long) context.User.Id, crafting.Id);
+                await _ingredientService.RemoveCraftingIngredients((long) context.User.Id, crafting.Id, amount);
                 // обновляем пользователю текущую локацию
                 await _locationService.UpdateUserLocation((long) context.User.Id, Location.MakingCrafting);
                 // добавляем информацию о перемещении

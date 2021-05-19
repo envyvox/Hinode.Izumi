@@ -105,7 +105,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
                     (long) context.User.Id, userLocation, alcohol.Time, amount);
 
                 // отнимаем у пользователя ингредиенты для изготовления
-                await _ingredientService.RemoveAlcoholIngredients((long) context.User.Id, alcohol.Id);
+                await _ingredientService.RemoveAlcoholIngredients((long) context.User.Id, alcohol.Id, amount);
                 // обновляем пользователю текущую локацию
                 await _locationService.UpdateUserLocation((long) context.User.Id, Location.MakingAlcohol);
                 // добавляем информацию о перемещении
