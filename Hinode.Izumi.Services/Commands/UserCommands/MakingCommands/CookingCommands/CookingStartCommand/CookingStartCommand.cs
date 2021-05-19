@@ -99,7 +99,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CookingComm
                 var cookingPrice = freeCooking
                     ? 0
                     : await _calc.CraftingPrice(
-                        await _ingredientService.GetFoodCostPrice(food.Id));
+                        await _ingredientService.GetFoodCostPrice(food.Id), amount);
 
                 // проверяем что у пользователя хватит денег на оплату приготовления
                 if (userCurrency.Amount < cookingPrice)
