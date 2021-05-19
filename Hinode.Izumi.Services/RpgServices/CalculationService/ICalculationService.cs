@@ -24,7 +24,7 @@ namespace Hinode.Izumi.Services.RpgServices.CalculationService
         Task<double> MasteryFishingXp(long userFishingMastery, bool success);
         Task<FishRarity> FishRarity(long userFishingMastery);
         Task<bool> FishingCheckSuccess(long userFishingMastery, FishRarity rarity);
-        Task<long> CraftingPrice(long costPrice);
+        Task<long> CraftingPrice(long costPrice, long amount = 0);
         Task<long> FoodRecipePrice(long costPrice);
         Task<long> Profit(long npcPrice, long costPrice, long craftingPrice);
         Task<long> NpcPrice(MarketCategory category, long costPrice);

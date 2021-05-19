@@ -88,7 +88,7 @@ namespace Hinode.Izumi.Services.Commands.UserCommands.MakingCommands.CraftingCom
             var craftingPrice = freeCrafting
                 ? 0
                 : await _calc.CraftingPrice(
-                    await _ingredientService.GetCraftingCostPrice(crafting.Id));
+                    await _ingredientService.GetCraftingCostPrice(crafting.Id), amount);
 
             // проверяем есть ли у пользователя деньги на оплату стоимости изготовления
             if (userCurrency.Amount < craftingPrice)

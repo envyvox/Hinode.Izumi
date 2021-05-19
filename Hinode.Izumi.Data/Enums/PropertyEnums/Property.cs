@@ -120,7 +120,7 @@ namespace Hinode.Izumi.Data.Enums.PropertyEnums
         /// <summary>
         /// Стоимость изготовления (% от стоимости предмета).
         /// </summary>
-        CraftingCost = 26,
+        CraftingPricePercent = 26,
 
         /// <summary>
         /// Умножение стоимости изготавливаемого предмета на указанный % для определения цены NPC.
@@ -464,7 +464,7 @@ namespace Hinode.Izumi.Data.Enums.PropertyEnums
             Property.EconomyTrainingCost => PropertyCategory.Economy,
             Property.CooldownUpdateAbout => PropertyCategory.Cooldown,
             Property.CooldownCasinoBet => PropertyCategory.Cooldown,
-            Property.CraftingCost => PropertyCategory.Economy,
+            Property.CraftingPricePercent => PropertyCategory.Economy,
             Property.CraftingMarkup => PropertyCategory.Economy,
             Property.AlcoholMarkup => PropertyCategory.Economy,
             Property.DrinkMarkup => PropertyCategory.Economy,
