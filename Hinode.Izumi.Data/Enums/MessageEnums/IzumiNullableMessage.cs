@@ -38,7 +38,10 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         Building,
         FamilyInvite,
         LocalizationByLocalizedWordBar,
-        LocalizationByLocalizedWordBox
+        LocalizationByLocalizedWordBox,
+        LocalizationByLocalizedWordPoint,
+        Banner,
+        LocalizationByLocalizedWordSeafood
     }
 
     public static class IzumiNullableMessageHelper
@@ -172,6 +175,15 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiNullableMessage.LocalizationByLocalizedWordBox =>
                 "Никогда не слышала о коробке с таким названием.",
+
+            IzumiNullableMessage.LocalizationByLocalizedWordPoint =>
+                "Никогда не слышала о рейтинге с таким названием.",
+
+            IzumiNullableMessage.Banner =>
+                "Никогда не слышала о баннере с таким номером.",
+
+            IzumiNullableMessage.LocalizationByLocalizedWordSeafood =>
+                "Никогда не слышала о морепродукте с таким названием.",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };

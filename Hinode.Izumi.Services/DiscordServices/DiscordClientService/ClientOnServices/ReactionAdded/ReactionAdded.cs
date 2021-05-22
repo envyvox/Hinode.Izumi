@@ -5,26 +5,24 @@ using Discord.WebSocket;
 using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Framework.Autofac;
-using Hinode.Izumi.Services.DiscordServices.CommunityDescService;
-using Hinode.Izumi.Services.DiscordServices.DiscordGuildService;
-using Hinode.Izumi.Services.EmoteService;
-using Hinode.Izumi.Services.EmoteService.Impl;
+using Hinode.Izumi.Services.DiscordServices.CommunityDescService.Commands;
+using Hinode.Izumi.Services.DiscordServices.CommunityDescService.Queries;
+using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Commands;
+using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries;
+using Hinode.Izumi.Services.EmoteService.Queries;
+using Hinode.Izumi.Services.Extensions;
+using MediatR;
 
 namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnServices.ReactionAdded
 {
     [InjectableService]
     public class ReactionAdded : IReactionAdded
     {
-        private readonly IDiscordGuildService _discordGuildService;
-        private readonly ICommunityDescService _communityDescService;
-        private readonly IEmoteService _emoteService;
+        private readonly IMediator _mediator;
 
-        public ReactionAdded(IDiscordGuildService discordGuildService, IEmoteService emoteService,
-            ICommunityDescService communityDescService)
+        public ReactionAdded(IMediator mediator)
         {
-            _discordGuildService = discordGuildService;
-            _communityDescService = communityDescService;
-            _emoteService = emoteService;
+            _mediator = mediator;
         }
 
         public async Task Execute(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel socketMessageChannel,
@@ -36,9 +34,9 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
             if (socketReaction.User.Value.IsBot) return;
 
             // получаем каналы сервера
-            var channels = await _discordGuildService.GetChannels();
+            var channels = await _mediator.Send(new GetDiscordChannelsQuery());
             // получаем каналы доски сообщества
-            var communityDescChannels = _communityDescService.CommunityDescChannels(channels);
+            var communityDescChannels = await _mediator.Send(new GetCommunityDescChannelsQuery());
 
             // если поставленная реакция находится в получении ролей
             if (socketMessageChannel.Id == (ulong) channels[DiscordChannel.GetRoles].Id ||
@@ -69,9 +67,18 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
                 };
 
                 // проверяем есть ли у пользователя уже эта роль
-                var hasRole = await _discordGuildService.CheckRoleInUser((long) socketReaction.UserId, role);
-                // если есть - снимаем, если нет - добавляем
-                await _discordGuildService.ToggleRoleInUser((long) socketReaction.UserId, role, !hasRole);
+                var hasRole = await _mediator.Send(new CheckDiscordRoleInUserQuery((long) socketReaction.UserId, role));
+
+                // если есть - снимаем
+                if (hasRole)
+                {
+                    await _mediator.Send(new RemoveDiscordRoleFromUserCommand((long) socketReaction.UserId, role));
+                }
+                // если нет - добавляем
+                else
+                {
+                    await _mediator.Send(new AddDiscordRoleToUserCommand((long) socketReaction.UserId, role));
+                }
 
                 // снимаем поставленную пользователем реакцию
                 await msg.RemoveReactionAsync(socketReaction.Emote, socketReaction.User.Value);
@@ -85,8 +92,8 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
                     socketReaction.Emote.Name != "Dislike") return;
 
                 // получаем сообщение из базы
-                var contentMessage = await _communityDescService.GetContentMessage(
-                    (long) socketMessageChannel.Id, (long) socketReaction.MessageId);
+                var contentMessage = await _mediator.Send(new GetContentMessageQuery(
+                    (long) socketMessageChannel.Id, (long) socketReaction.MessageId));
 
                 // если пользователь поставил реакцию на свое же сообщение
                 if (socketReaction.UserId == (ulong) contentMessage.UserId)
@@ -101,10 +108,10 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
                     // определяем ее противоположную реакцию
                     var antiVote = vote == Vote.Like ? Vote.Dislike : Vote.Like;
                     // получаем реакции пользователя на это сообщение
-                    var userVotes = await _communityDescService.GetUserVotesOnMessage(
-                        (long) socketReaction.UserId, contentMessage.Id);
+                    var userVotes = await _mediator.Send(new GetUserVotesOnMessageQuery(
+                        (long) socketReaction.UserId, contentMessage.Id));
                     // получаем иконки из базы
-                    var emotes = await _emoteService.GetEmotes();
+                    var emotes = await _mediator.Send(new GetEmotesQuery());
 
                     // если пользователь ставил до этого противоположную реакцию ее нужно снять
                     if (userVotes.ContainsKey(antiVote) && userVotes[antiVote].Active)
@@ -121,15 +128,15 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
                     if (userVotes.ContainsKey(vote))
                     {
                         // активируем реакцию пользотеля в базе
-                        await _communityDescService.ActivateUserVote(
-                            (long) socketReaction.UserId, contentMessage.Id, vote);
+                        await _mediator.Send(new ActivateUserVoteCommand(
+                            (long) socketReaction.UserId, contentMessage.Id, vote));
                     }
                     // если он ставит эту реацию впервые
                     else
                     {
                         // добавляем реакцию пользователя в базу
-                        await _communityDescService.AddUserVote(
-                            (long) socketReaction.UserId, contentMessage.Id, vote);
+                        await _mediator.Send(new CreateUserVoteCommand(
+                            (long) socketReaction.UserId, contentMessage.Id, vote));
                     }
                 }
             }

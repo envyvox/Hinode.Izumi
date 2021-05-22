@@ -37,7 +37,7 @@ namespace Hinode.Izumi.Services.WebServices.CropWebService.Impl
         public async Task<CropWebModel> Upsert(CropWebModel model)
         {
             // сбрасываем запись в кэше
-            _cache.Remove(string.Format(CacheExtensions.CropKey, model.Id));
+            _cache.Remove(string.Format(CacheExtensions.CropByIdKey, model.Id));
             _cache.Remove(string.Format(CacheExtensions.CropBySeedKey, model.SeedId));
 
             var query = model.Id == 0

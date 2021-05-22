@@ -8,9 +8,10 @@ using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Data.Enums.PropertyEnums;
 using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Services.BackgroundJobs.DiscordJob;
-using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService;
-using Hinode.Izumi.Services.RpgServices.ImageService;
-using Hinode.Izumi.Services.RpgServices.PropertyService;
+using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands;
+using Hinode.Izumi.Services.GameServices.PropertyService.Commands;
+using Hinode.Izumi.Services.ImageService.Queries;
+using MediatR;
 using Image = Hinode.Izumi.Data.Enums.Image;
 
 namespace Hinode.Izumi.Services.BackgroundJobs.CasinoJob
@@ -18,35 +19,30 @@ namespace Hinode.Izumi.Services.BackgroundJobs.CasinoJob
     [InjectableService]
     public class CasinoJob : ICasinoJob
     {
-        private readonly IDiscordEmbedService _discordEmbedService;
-        private readonly IImageService _imageService;
-        private readonly IPropertyService _propertyService;
+        private readonly IMediator _mediator;
 
-        public CasinoJob(IDiscordEmbedService discordEmbedService, IImageService imageService,
-            IPropertyService propertyService)
+        public CasinoJob(IMediator mediator)
         {
-            _discordEmbedService = discordEmbedService;
-            _imageService = imageService;
-            _propertyService = propertyService;
+            _mediator = mediator;
         }
 
         public async Task Open()
         {
             // обновляем состояние казино на 1 - открыто
-            await _propertyService.UpdateProperty(Property.CasinoState, 1);
+            await _mediator.Send(new UpdatePropertyCommand(Property.CasinoState, 1));
 
             var embed = new EmbedBuilder()
                 // имя нпс
                 .WithAuthor(Npc.Jodi.Name())
                 // изображение нпс
-                .WithThumbnailUrl(await _imageService.GetImageUrl(Image.NpcCapitalJodi))
+                .WithThumbnailUrl(await _mediator.Send(new GetImageUrlQuery(Image.NpcCapitalJodi)))
                 // оповещение об открытии казино
                 .WithDescription(IzumiEventMessage.CasinoOpen.Parse())
                 // изображение казино
-                .WithImageUrl(await _imageService.GetImageUrl(Image.LocationCapitalCasino));
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Image.LocationCapitalCasino)));
 
             // отправляем сообщение
-            var message = await _discordEmbedService.SendEmbed(DiscordChannel.CapitalEvents, embed);
+            var message = await _mediator.Send(new SendEmbedToChannelCommand(DiscordChannel.CapitalEvents, embed));
 
             // запускаем джобу с удалением сообщения
             BackgroundJob.Schedule<IDiscordJob>(x =>
@@ -57,20 +53,20 @@ namespace Hinode.Izumi.Services.BackgroundJobs.CasinoJob
         public async Task Close()
         {
             // обновляем состояние казино на 0 - закрыто
-            await _propertyService.UpdateProperty(Property.CasinoState, 0);
+            await _mediator.Send(new UpdatePropertyCommand(Property.CasinoState, 0));
 
             var embed = new EmbedBuilder()
                 // имя нпс
                 .WithAuthor(Npc.Jodi.Name())
                 // изображение нпс
-                .WithThumbnailUrl(await _imageService.GetImageUrl(Image.NpcCapitalJodi))
+                .WithThumbnailUrl(await _mediator.Send(new GetImageUrlQuery(Image.NpcCapitalJodi)))
                 // оповещение об закрытии казино
                 .WithDescription(IzumiEventMessage.CasinoClosed.Parse())
                 // изображение нпс
-                .WithImageUrl(await _imageService.GetImageUrl(Image.LocationCapitalCasino));
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Image.LocationCapitalCasino)));
 
             // отправляем сообщение
-            var message = await _discordEmbedService.SendEmbed(DiscordChannel.CapitalEvents, embed);
+            var message = await _mediator.Send(new SendEmbedToChannelCommand(DiscordChannel.CapitalEvents, embed));
 
             // запускаем джобу с удалением сообщения
             BackgroundJob.Schedule<IDiscordJob>(x =>

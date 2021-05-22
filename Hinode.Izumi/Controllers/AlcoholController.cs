@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Hinode.Izumi.Data.Enums;
-using Hinode.Izumi.Services.RpgServices.CalculationService;
-using Hinode.Izumi.Services.RpgServices.IngredientService;
+using Hinode.Izumi.Services.GameServices.AlcoholService.Queries;
+using Hinode.Izumi.Services.GameServices.CalculationService.Queries;
 using Hinode.Izumi.Services.WebServices.AlcoholWebService;
 using Hinode.Izumi.Services.WebServices.AlcoholWebService.Models;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,15 +16,13 @@ namespace Hinode.Izumi.Controllers
     public class AlcoholController : ControllerBase
     {
         private readonly IAlcoholWebService _alcoholWebService;
-        private readonly ICalculationService _calc;
-        private readonly IIngredientService _ingredientService;
+        private readonly IMediator _mediator;
 
-        public AlcoholController(IAlcoholWebService alcoholWebService, ICalculationService calc,
-            IIngredientService ingredientService)
+
+        public AlcoholController(IAlcoholWebService alcoholWebService, IMediator mediator)
         {
             _alcoholWebService = alcoholWebService;
-            _calc = calc;
-            _ingredientService = ingredientService;
+            _mediator = mediator;
         }
 
         [HttpGet, Route("list")]
@@ -36,13 +35,17 @@ namespace Hinode.Izumi.Controllers
             foreach (var alcohol in alcohols)
             {
                 // считаем себестоимость
-                alcohol.CostPrice = await _ingredientService.GetAlcoholCostPrice(alcohol.Id);
+                alcohol.CostPrice = await _mediator.Send(new GetAlcoholCostPriceQuery(
+                    alcohol.Id));
                 // считаем стоимость изготовления
-                alcohol.CraftingPrice = await _calc.CraftingPrice(alcohol.CostPrice);
+                alcohol.CraftingPrice = await _mediator.Send(new GetCraftingPriceQuery(
+                    alcohol.CostPrice));
                 // считаем цену нпс
-                alcohol.NpcPrice = await _calc.NpcPrice(MarketCategory.Alcohol, alcohol.CostPrice);
+                alcohol.NpcPrice = await _mediator.Send(new GetNpcPriceQuery(
+                    MarketCategory.Alcohol, alcohol.CostPrice));
                 // считаем чистую прибыль
-                alcohol.Profit = await _calc.Profit(alcohol.NpcPrice, alcohol.CostPrice, alcohol.CraftingPrice);
+                alcohol.Profit = await _mediator.Send(new GetProfitQuery(
+                    alcohol.CostPrice, alcohol.CraftingPrice, alcohol.NpcPrice));
             }
 
             // возвращаем дополненный массив из всего алкоголя
@@ -57,13 +60,17 @@ namespace Hinode.Izumi.Controllers
             var alcohol = await _alcoholWebService.Get(id);
 
             // считаем себестоимость
-            alcohol.CostPrice = await _ingredientService.GetAlcoholCostPrice(alcohol.Id);
+            alcohol.CostPrice = await _mediator.Send(new GetAlcoholCostPriceQuery(
+                alcohol.Id));
             // считаем стоимость изготовления
-            alcohol.CraftingPrice = await _calc.CraftingPrice(alcohol.CostPrice);
+            alcohol.CraftingPrice = await _mediator.Send(new GetCraftingPriceQuery(
+                alcohol.CostPrice));
             // считаем цену нпс
-            alcohol.NpcPrice = await _calc.NpcPrice(MarketCategory.Alcohol, alcohol.CostPrice);
+            alcohol.NpcPrice = await _mediator.Send(new GetNpcPriceQuery(
+                MarketCategory.Alcohol, alcohol.CostPrice));
             // считаем чистую прибыль
-            alcohol.Profit = await _calc.Profit(alcohol.NpcPrice, alcohol.CostPrice, alcohol.CraftingPrice);
+            alcohol.Profit = await _mediator.Send(new GetProfitQuery(
+                alcohol.CostPrice, alcohol.CraftingPrice, alcohol.NpcPrice));
 
             // возвращаем алкоголь
             return Ok(alcohol);

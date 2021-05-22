@@ -7878,7 +7878,7 @@ export enum Image {
     RegistryCommand = 43,
     RegistryGetAnonsRoles = 44,
     Inventory = 45,
-    Training = 46,
+    Tutorial = 46,
     CommandError = 47,
     ShopProject = 48,
     EventMayPicnic = 49,
@@ -7947,6 +7947,7 @@ export enum LocalizationCategory {
     Bar = 11,
     Box = 12,
     Points = 13,
+    Seafood = 14,
 }
 
 export class MasteryPropertyWebModel extends EntityBaseModel implements IMasteryPropertyWebModel {

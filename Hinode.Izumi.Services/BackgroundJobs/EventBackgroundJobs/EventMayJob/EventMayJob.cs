@@ -12,20 +12,23 @@ using Hinode.Izumi.Data.Enums.RarityEnums;
 using Hinode.Izumi.Data.Enums.ReputationEnums;
 using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Services.BackgroundJobs.DiscordJob;
-using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService;
-using Hinode.Izumi.Services.DiscordServices.DiscordGuildService;
-using Hinode.Izumi.Services.EmoteService;
-using Hinode.Izumi.Services.EmoteService.Impl;
-using Hinode.Izumi.Services.RpgServices.BannerService;
-using Hinode.Izumi.Services.RpgServices.FoodService;
-using Hinode.Izumi.Services.RpgServices.ImageService;
-using Hinode.Izumi.Services.RpgServices.InventoryService;
-using Hinode.Izumi.Services.RpgServices.LocalizationService;
-using Hinode.Izumi.Services.RpgServices.PropertyService;
-using Hinode.Izumi.Services.RpgServices.ReputationService;
-using Hinode.Izumi.Services.RpgServices.StatisticService;
-using Hinode.Izumi.Services.RpgServices.UserService;
+using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands;
+using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries;
+using Hinode.Izumi.Services.EmoteService.Queries;
+using Hinode.Izumi.Services.Extensions;
+using Hinode.Izumi.Services.GameServices.BannerService.Commands;
+using Hinode.Izumi.Services.GameServices.BannerService.Queries;
+using Hinode.Izumi.Services.GameServices.FoodService.Queries;
+using Hinode.Izumi.Services.GameServices.InventoryService.Commands;
+using Hinode.Izumi.Services.GameServices.LocalizationService;
+using Hinode.Izumi.Services.GameServices.PropertyService.Commands;
+using Hinode.Izumi.Services.GameServices.PropertyService.Queries;
+using Hinode.Izumi.Services.GameServices.ReputationService.Commands;
+using Hinode.Izumi.Services.GameServices.StatisticService.Commands;
+using Hinode.Izumi.Services.GameServices.UserService.Commands;
+using Hinode.Izumi.Services.ImageService.Queries;
 using Humanizer;
+using MediatR;
 using Image = Hinode.Izumi.Data.Enums.Image;
 
 namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
@@ -33,55 +36,30 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
     [InjectableService]
     public class EventMayJob : IEventMayJob
     {
-        private readonly IDiscordEmbedService _discordEmbedService;
-        private readonly IEmoteService _emoteService;
-        private readonly IPropertyService _propertyService;
-        private readonly IDiscordGuildService _discordGuildService;
-        private readonly IImageService _imageService;
-        private readonly IUserService _userService;
-        private readonly IInventoryService _inventoryService;
-        private readonly IFoodService _foodService;
+        private readonly IMediator _mediator;
         private readonly ILocalizationService _local;
         private readonly TimeZoneInfo _timeZoneInfo;
-        private readonly IReputationService _reputationService;
-        private readonly IStatisticService _statisticService;
-        private readonly IBannerService _bannerService;
-
         private const string PicnicEmote = "🔥";
         private const string AttackEmote = "⚔️";
 
-        public EventMayJob(IDiscordEmbedService discordEmbedService, IEmoteService emoteService,
-            IPropertyService propertyService, IDiscordGuildService discordGuildService, IImageService imageService,
-            IUserService userService, IInventoryService inventoryService, IFoodService foodService,
-            ILocalizationService local, TimeZoneInfo timeZoneInfo, IReputationService reputationService,
-            IStatisticService statisticService, IBannerService bannerService)
+        public EventMayJob(IMediator mediator, ILocalizationService local, TimeZoneInfo timeZoneInfo)
         {
-            _discordEmbedService = discordEmbedService;
-            _emoteService = emoteService;
-            _propertyService = propertyService;
-            _discordGuildService = discordGuildService;
-            _imageService = imageService;
-            _userService = userService;
-            _inventoryService = inventoryService;
-            _foodService = foodService;
+            _mediator = mediator;
             _local = local;
             _timeZoneInfo = timeZoneInfo;
-            _reputationService = reputationService;
-            _statisticService = statisticService;
-            _bannerService = bannerService;
         }
 
         public async Task Start()
         {
             // получаем роли сервера
-            var roles = await _discordGuildService.GetRoles();
+            var roles = await _mediator.Send(new GetDiscordRolesQuery());
             // получаем каналы сервера
-            var channels = await _discordGuildService.GetChannels();
+            var channels = await _mediator.Send(new GetDiscordChannelsQuery());
             // получаем иконки из базы
-            var emotes = await _emoteService.GetEmotes();
+            var emotes = await _mediator.Send(new GetEmotesQuery());
 
             // обновляем текущее событие в базе
-            await _propertyService.UpdateProperty(Property.CurrentEvent, (long) Event.May);
+            await _mediator.Send(new UpdatePropertyCommand(Property.CurrentEvent, (long) Event.May));
 
             var embed = new EmbedBuilder()
                 .WithAuthor(IzumiEventMessage.DiaryAuthorField.Parse())
@@ -96,13 +74,13 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                 // рассказываем про ускорение перемещения
                 .AddField(IzumiEventMessage.EventTimeReduceTransitFieldName.Parse(),
                     IzumiEventMessage.EventTimeReduceTransitFieldDesc.Parse(
-                        await _propertyService.GetPropertyValue(Property.EventReduceTransitTime)))
+                        await _mediator.Send(new GetPropertyValueQuery(Property.EventReduceTransitTime))))
                 // рассказываем про конец события
                 .WithFooter(IzumiEventMessage.EventMayStartFooter.Parse());
 
-            await _discordEmbedService.SendEmbed(DiscordChannel.Diary, embed,
+            await _mediator.Send(new SendEmbedToChannelCommand(DiscordChannel.Diary, embed,
                 // упоминаем роли события
-                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.YearlyEvents].Id}>");
+                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.YearlyEvents].Id}>"));
 
             // запускаем джобу появления пикника
             RecurringJob.AddOrUpdate<IEventMayJob>(
@@ -120,22 +98,22 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
         public async Task End()
         {
             // обновляем текущее событие в базе
-            await _propertyService.UpdateProperty(Property.CurrentEvent, (long) Event.None);
+            await _mediator.Send(new UpdatePropertyCommand(Property.CurrentEvent, (long) Event.None));
 
             var embed = new EmbedBuilder()
                 .WithAuthor(IzumiEventMessage.DiaryAuthorField.Parse())
                 // подтверждаем конец события
                 .WithDescription(IzumiEventMessage.EventMayEndDesc.Parse());
 
-            await _discordEmbedService.SendEmbed(DiscordChannel.Diary, embed);
+            await _mediator.Send(new SendEmbedToChannelCommand(DiscordChannel.Diary, embed));
         }
 
         public async Task PicnicAnons()
         {
             // получаем иконки из базы
-            var emotes = await _emoteService.GetEmotes();
+            var emotes = await _mediator.Send(new GetEmotesQuery());
             // получаем роли сервера
-            var roles = await _discordGuildService.GetRoles();
+            var roles = await _mediator.Send(new GetDiscordRolesQuery());
 
             var embed = new EmbedBuilder()
                 .WithAuthor(IzumiEventMessage.DiaryAuthorField.Parse())
@@ -144,9 +122,9 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                     Location.Village.Localize(true), 30.Minutes().Humanize(1, new CultureInfo("ru-RU")),
                     emotes.GetEmoteOrBlank("Energy")));
 
-            await _discordEmbedService.SendEmbed(DiscordChannel.Diary, embed,
+            await _mediator.Send(new SendEmbedToChannelCommand(DiscordChannel.Diary, embed,
                 // упоминаем роли события
-                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>");
+                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>"));
 
             // запускаем джобу с появлением пикника через пол часа
             BackgroundJob.Schedule<IEventMayJob>(
@@ -157,21 +135,21 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
         public async Task PicnicSpawn()
         {
             // получаем иконки из базы
-            var emotes = await _emoteService.GetEmotes();
+            var emotes = await _mediator.Send(new GetEmotesQuery());
             // получаем роли сервера
-            var roles = await _discordGuildService.GetRoles();
+            var roles = await _mediator.Send(new GetDiscordRolesQuery());
             // получаем блюдо которое нужно выдать за участие в пикнике
-            var food = await _foodService.GetFood(
+            var food = await _mediator.Send(new GetFoodQuery(
                 // получаем id необходимого нам блюда
-                await _propertyService.GetPropertyValue(Property.EventMayPicnicFoodId));
+                await _mediator.Send(new GetPropertyValueQuery(Property.EventMayPicnicFoodId))));
             // получаем количество выдаваемого блюда
-            var foodAmount = await _propertyService.GetPropertyValue(Property.EventMayPicnicFoodAmount);
+            var foodAmount = await _mediator.Send(new GetPropertyValueQuery(Property.EventMayPicnicFoodAmount));
 
             var embed = new EmbedBuilder()
                 // имя нпс
                 .WithAuthor(Npc.Kio.Name())
                 // изображение нпс
-                .WithThumbnailUrl(await _imageService.GetImageUrl(Image.NpcVillageKio))
+                .WithThumbnailUrl(await _mediator.Send(new GetImageUrlQuery(Image.NpcVillageKio)))
                 // подверждаем появление пикника и рассказываем как в нем учавствовать
                 .WithDescription(IzumiEventMessage.EventMayPicnicSpawnDesc.Parse(
                     PicnicEmote))
@@ -181,15 +159,15 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                         emotes.GetEmoteOrBlank("Energy"), emotes.GetEmoteOrBlank(food.Name), foodAmount,
                         _local.Localize(LocalizationCategory.Food, food.Id, foodAmount)))
                 // изображение пикника
-                .WithImageUrl(await _imageService.GetImageUrl(Image.EventMayPicnic))
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Image.EventMayPicnic)))
                 // длительность пикника
                 .WithFooter(IzumiEventMessage.EventMayPicnicSpawnFooter.Parse(
                     10.Minutes().Humanize(1, new CultureInfo("ru-RU"))));
 
             // отправляем сообщение
-            var message = await _discordEmbedService.SendEmbed(DiscordChannel.VillageEvents, embed,
+            var message = await _mediator.Send(new SendEmbedToChannelCommand(DiscordChannel.VillageEvents, embed,
                 // упоминаем роли события
-                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>");
+                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>"));
             // добавляем реакцию для участия в пикнике
             await message.AddReactionAsync(new Emoji(PicnicEmote));
 
@@ -202,9 +180,9 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
         public async Task PicnicEnd(long channelId, long messageId)
         {
             // получаем иконки из базы
-            var emotes = await _emoteService.GetEmotes();
+            var emotes = await _mediator.Send(new GetEmotesQuery());
             // получаем сообщение
-            var message = await _discordGuildService.GetIUserMessage(channelId, messageId);
+            var message = await _mediator.Send(new GetDiscordUserMessageQuery(channelId, messageId));
             // получаем пользователей нажавших на реакцию
             var reactionUsers = await message
                 .GetReactionUsersAsync(new Emoji(PicnicEmote), int.MaxValue)
@@ -215,35 +193,35 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                 .Select(x => (long) x.Id)
                 .ToArray();
             // получаем блюдо которое нужно выдать за участие в пикнике
-            var food = await _foodService.GetFood(
+            var food = await _mediator.Send(new GetFoodQuery(
                 // получаем id необходимого нам блюда
-                await _propertyService.GetPropertyValue(Property.EventMayPicnicFoodId));
+                await _mediator.Send(new GetPropertyValueQuery(Property.EventMayPicnicFoodId))));
             // получаем количество выдаваемого блюда
-            var foodAmount = await _propertyService.GetPropertyValue(Property.EventMayPicnicFoodAmount);
+            var foodAmount = await _mediator.Send(new GetPropertyValueQuery(Property.EventMayPicnicFoodAmount));
 
             // снимаем реакции с сообщения
             await message.RemoveAllReactionsAsync();
             // полностью восстанавливаем энергию пользователям
-            await _userService.AddEnergyToUser(users, 100);
+            await _mediator.Send(new AddEnergyToUsersCommand(users, 100));
             // выдаем пользователям это блюдо
-            await _inventoryService.AddItemToUser(users, InventoryCategory.Food, food.Id,
+            await _mediator.Send(new AddItemToUsersByInventoryCategoryCommand(users, InventoryCategory.Food, food.Id,
                 // получаем количество которое необходимо выдать
-                await _propertyService.GetPropertyValue(Property.EventMayPicnicFoodAmount));
+                await _mediator.Send(new GetPropertyValueQuery(Property.EventMayPicnicFoodAmount))));
 
             var embed = new EmbedBuilder()
                 // имя нпс
                 .WithAuthor(Npc.Kio.Name())
                 // изображение нпс
-                .WithThumbnailUrl(await _imageService.GetImageUrl(Image.NpcVillageKio))
+                .WithThumbnailUrl(await _mediator.Send(new GetImageUrlQuery(Image.NpcVillageKio)))
                 // изображение пикника
-                .WithImageUrl(await _imageService.GetImageUrl(Image.EventMayPicnic))
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Image.EventMayPicnic)))
                 // подверждаем что пикник закончен и пользователи получили награду
                 .WithDescription(IzumiEventMessage.EventMayPicnicEndDesc.Parse(
                     emotes.GetEmoteOrBlank(food.Name), foodAmount,
                     _local.Localize(LocalizationCategory.Food, food.Id, foodAmount)));
 
             // изменяем сообщение
-            await _discordEmbedService.ModifyEmbed(message, embed);
+            await _mediator.Send(new ModifyEmbedCommand(message, embed));
             // запускаем джобу с удалением сообщения
             BackgroundJob.Schedule<IDiscordJob>(x =>
                     x.DeleteMessage(channelId, messageId),
@@ -257,13 +235,13 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                     emotes.GetEmoteOrBlank(food.Name), foodAmount,
                     _local.Localize(LocalizationCategory.Food, food.Id, foodAmount)));
 
-            await _discordEmbedService.SendEmbed(DiscordChannel.Diary, embedReward);
+            await _mediator.Send(new SendEmbedToChannelCommand(DiscordChannel.Diary, embedReward));
         }
 
         public async Task BossAnons()
         {
             // получаем роли сервера
-            var roles = await _discordGuildService.GetRoles();
+            var roles = await _mediator.Send(new GetDiscordRolesQuery());
 
             var embed = new EmbedBuilder()
                 .WithAuthor(IzumiEventMessage.DiaryAuthorField.Parse())
@@ -271,37 +249,37 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                 .WithDescription(IzumiEventMessage.BossNotify.Parse(
                     Location.Village.Localize(true)));
 
-            await _discordEmbedService.SendEmbed(DiscordChannel.Diary, embed,
+            await _mediator.Send(new SendEmbedToChannelCommand(DiscordChannel.Diary, embed,
                 // упоминаем роли события
-                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>");
+                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>"));
 
             BackgroundJob.Schedule<IEventMayJob>(
                 x => x.BossSpawn(),
                 TimeSpan.FromMinutes(
                     // получаем время оповещения о вторжении босса
-                    await _propertyService.GetPropertyValue(Property.BossNotifyTime)));
+                    await _mediator.Send(new GetPropertyValueQuery(Property.BossNotifyTime))));
         }
 
         public async Task BossSpawn()
         {
             // получаем иконки из базы
-            var emotes = await _emoteService.GetEmotes();
+            var emotes = await _mediator.Send(new GetEmotesQuery());
             // получаем роли сервера
-            var roles = await _discordGuildService.GetRoles();
+            var roles = await _mediator.Send(new GetDiscordRolesQuery());
             // получаем количество получаемой репутации за убийство босса
-            var reputationReward = await _propertyService.GetPropertyValue(Property.BossReputationReward);
+            var reputationReward = await _mediator.Send(new GetPropertyValueQuery(Property.BossReputationReward));
 
             // получаем баннер который нужно выдать
-            var banner = await _bannerService.GetBanner(
-                await _propertyService.GetPropertyValue(Property.EventMayBossBannerId));
+            var banner = await _mediator.Send(new GetBannerQuery(
+                await _mediator.Send(new GetPropertyValueQuery(Property.EventMayBossBannerId))));
             // получаем титул который нужно выдать
-            var title = (Title) await _propertyService.GetPropertyValue(Property.EventMayBossTitleId);
+            var title = (Title) await _mediator.Send(new GetPropertyValueQuery(Property.EventMayBossTitleId));
 
             var embed = new EmbedBuilder()
                 // имя нпс
                 .WithAuthor(Npc.Kio.Name())
                 // изображение нпс
-                .WithThumbnailUrl(await _imageService.GetImageUrl(Npc.Kio.Image()))
+                .WithThumbnailUrl(await _mediator.Send(new GetImageUrlQuery(Npc.Kio.Image())))
                 // описание вторжения ежедневного босса
                 .WithDescription(
                     IzumiEventMessage.BossHere.Parse(
@@ -316,16 +294,16 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                     $"{banner.Rarity.Localize().ToLower()} «[{banner.Name}]({banner.Url})»\n " +
                     $"титул {emotes.GetEmoteOrBlank(title.Emote())} {title.Localize()}")
                 // изображение босса
-                .WithImageUrl(await _imageService.GetImageUrl(Image.BossVillage))
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Image.BossVillage)))
                 // сколько времени дается на убийство ежедневного босса
                 .WithFooter(IzumiEventMessage.BossHereFooter.Parse(
                     // получаем длительность боя с ежедневным боссом
-                    await _propertyService.GetPropertyValue(Property.BossKillTime)));
+                    await _mediator.Send(new GetPropertyValueQuery(Property.BossKillTime))));
 
             // отправляем сообщение
-            var message = await _discordEmbedService.SendEmbed(DiscordChannel.VillageEvents, embed,
+            var message = await _mediator.Send(new SendEmbedToChannelCommand(DiscordChannel.VillageEvents, embed,
                 // упоминаем роли события
-                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>");
+                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>"));
             // добавляем реакцию для атаки
             await message.AddReactionAsync(new Emoji(AttackEmote));
 
@@ -334,15 +312,15 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                     (long) message.Channel.Id, (long) message.Id),
                 TimeSpan.FromMinutes(
                     // получаем длительность боя с ежедневным боссом
-                    await _propertyService.GetPropertyValue(Property.BossKillTime)));
+                    await _mediator.Send(new GetPropertyValueQuery(Property.BossKillTime))));
         }
 
         public async Task BossKill(long channelId, long messageId)
         {
             // получаем иконки из базы
-            var emotes = await _emoteService.GetEmotes();
+            var emotes = await _mediator.Send(new GetEmotesQuery());
             // получаем сообщение
-            var message = await _discordGuildService.GetIUserMessage(channelId, messageId);
+            var message = await _mediator.Send(new GetDiscordUserMessageQuery(channelId, messageId));
             // получаем пользователей нажавших на реакцию
             var reactionUsers = await message
                 .GetReactionUsersAsync(new Emoji(AttackEmote), int.MaxValue)
@@ -352,40 +330,40 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
             // получаем id пользователей
             var usersId = users.Select(x => (long) x.Id).ToArray();
             // получаем получаемую репутацию за убийство ежедневного босса
-            var reputationReward = await _propertyService.GetPropertyValue(Property.BossReputationReward);
+            var reputationReward = await _mediator.Send(new GetPropertyValueQuery(Property.BossReputationReward));
 
             // получаем баннер который нужно выдать
-            var banner = await _bannerService.GetBanner(
-                await _propertyService.GetPropertyValue(Property.EventMayBossBannerId));
+            var banner = await _mediator.Send(new GetBannerQuery(
+                await _mediator.Send(new GetPropertyValueQuery(Property.EventMayBossBannerId))));
             // получаем титул который нужно выдать
-            var title = (Title) await _propertyService.GetPropertyValue(Property.EventMayBossTitleId);
+            var title = (Title) await _mediator.Send(new GetPropertyValueQuery(Property.EventMayBossTitleId));
 
             // снимаем все реакции с сообщения
             await message.RemoveAllReactionsAsync();
             // добавляем пользователям коробки
-            await _inventoryService.AddItemToUser
-                (usersId, InventoryCategory.Box, Box.Village.GetHashCode());
+            await _mediator.Send(new AddItemToUsersByInventoryCategoryCommand(
+                usersId, InventoryCategory.Box, Box.Village.GetHashCode()));
             // добавляем пользователям репутацию
-            await _reputationService.AddReputationToUser(usersId, Reputation.Village, reputationReward);
+            await _mediator.Send(new AddReputationToUsersCommand(usersId, Reputation.Village, reputationReward));
             // добавляем пользователям статистику
-            await _statisticService.AddStatisticToUser(usersId, Statistic.BossKilled);
+            await _mediator.Send(new AddStatisticToUsersCommand(usersId, Statistic.BossKilled));
             // добавляем баннер пользователям
-            await _bannerService.AddBannerToUser(usersId, banner.Id);
+            await _mediator.Send(new AddBannerToUsersCommand(usersId, banner.Id));
             // добавляем титул пользователям
-            await _userService.AddTitleToUser(usersId, title);
+            await _mediator.Send(new AddTitleToUsersCommand(usersId, title));
 
             var embed = new EmbedBuilder()
                 // имя нпс
                 .WithAuthor(Npc.Kio.Name())
                 // изображение нпс
-                .WithThumbnailUrl(await _imageService.GetImageUrl(Npc.Kio.Image()))
+                .WithThumbnailUrl(await _mediator.Send(new GetImageUrlQuery(Npc.Kio.Image())))
                 // изображение босса
-                .WithImageUrl(await _imageService.GetImageUrl(Image.BossVillage))
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Image.BossVillage)))
                 // подтверждаем убийтство босса
                 .WithDescription(IzumiEventMessage.BossKilled.Parse());
 
             // изменяем сообщение
-            await _discordEmbedService.ModifyEmbed(message, embed);
+            await _mediator.Send(new ModifyEmbedCommand(message, embed));
             // запускаем джобу с удалением сообщения
             BackgroundJob.Schedule<IDiscordJob>(x =>
                     x.DeleteMessage(channelId, messageId),
@@ -403,7 +381,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob
                     $"{emotes.GetEmoteOrBlank(Box.Village.Emote())} {_local.Localize(Box.Village.ToString())}, " +
                     $"{banner.Rarity.Localize().ToLower()} «[{banner.Name}]({banner.Url})», титул {emotes.GetEmoteOrBlank(title.Emote())} {title.Localize()}"));
 
-            await _discordEmbedService.SendEmbed(DiscordChannel.Diary, embedReward);
+            await _mediator.Send(new SendEmbedToChannelCommand(DiscordChannel.Diary, embedReward));
         }
     }
 }

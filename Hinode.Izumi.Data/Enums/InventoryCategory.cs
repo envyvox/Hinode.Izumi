@@ -17,7 +17,8 @@ namespace Hinode.Izumi.Data.Enums
         Seed = 8,
         Crop = 9,
         Fish = 10,
-        Food = 11
+        Food = 11,
+        Seafood = 12
     }
 
     public static class InventoryCategoryHelper
@@ -40,6 +41,7 @@ namespace Hinode.Izumi.Data.Enums
             InventoryCategory.Fish => "Рыба",
             InventoryCategory.Food => "Блюда",
             InventoryCategory.Box => "Коробки",
+            InventoryCategory.Seafood => "Морепродукты",
             _ => throw new ArgumentOutOfRangeException(nameof(category), category, null)
         };
     }

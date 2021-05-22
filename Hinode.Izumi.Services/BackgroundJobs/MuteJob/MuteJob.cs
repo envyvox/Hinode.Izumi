@@ -3,34 +3,34 @@ using Discord;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Framework.Autofac;
-using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService;
-using Hinode.Izumi.Services.DiscordServices.DiscordGuildService;
+using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands;
+using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Commands;
+using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries;
+using MediatR;
 
 namespace Hinode.Izumi.Services.BackgroundJobs.MuteJob
 {
     [InjectableService]
     public class MuteJob : IMuteJob
     {
-        private readonly IDiscordEmbedService _discordEmbedService;
-        private readonly IDiscordGuildService _discordGuildService;
+        private readonly IMediator _mediator;
 
-        public MuteJob(IDiscordEmbedService discordEmbedService, IDiscordGuildService discordGuildService)
+        public MuteJob(IMediator mediator)
         {
-            _discordEmbedService = discordEmbedService;
-            _discordGuildService = discordGuildService;
+            _mediator = mediator;
         }
 
         public async Task Unmute(long userId)
         {
             // снимаем роль блокировки чата с пользователя
-            await _discordGuildService.ToggleRoleInUser(userId, DiscordRole.Mute, false);
+            await _mediator.Send(new RemoveDiscordRoleFromUserCommand(userId, DiscordRole.Mute));
 
             var embed = new EmbedBuilder()
                 // подтвержаем снятия блокировки чата
                 .WithDescription(IzumiReplyMessage.UnmuteDesc.Parse());
 
-            await _discordEmbedService.SendEmbed(
-                await _discordGuildService.GetSocketUser(userId), embed);
+            await _mediator.Send(new SendEmbedToUserCommand(
+                await _mediator.Send(new GetDiscordSocketUserQuery(userId)), embed));
         }
     }
 }

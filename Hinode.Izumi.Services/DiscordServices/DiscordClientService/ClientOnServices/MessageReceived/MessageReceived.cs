@@ -8,36 +8,26 @@ using Hinode.Izumi.Data.Enums.AchievementEnums;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Services.BackgroundJobs.DiscordJob;
-using Hinode.Izumi.Services.DiscordServices.CommunityDescService;
-using Hinode.Izumi.Services.DiscordServices.DiscordGuildService;
-using Hinode.Izumi.Services.EmoteService;
-using Hinode.Izumi.Services.EmoteService.Impl;
-using Hinode.Izumi.Services.RpgServices.AchievementService;
-using Hinode.Izumi.Services.RpgServices.StatisticService;
-using Hinode.Izumi.Services.RpgServices.UserService;
+using Hinode.Izumi.Services.DiscordServices.CommunityDescService.Commands;
+using Hinode.Izumi.Services.DiscordServices.CommunityDescService.Queries;
+using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries;
+using Hinode.Izumi.Services.EmoteService.Queries;
+using Hinode.Izumi.Services.Extensions;
+using Hinode.Izumi.Services.GameServices.AchievementService.Commands;
+using Hinode.Izumi.Services.GameServices.StatisticService.Commands;
+using Hinode.Izumi.Services.GameServices.UserService.Queries;
+using MediatR;
 
 namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnServices.MessageReceived
 {
     [InjectableService]
     public class MessageReceived : IMessageReceived
     {
-        private readonly IDiscordGuildService _discordGuildService;
-        private readonly IStatisticService _statisticService;
-        private readonly IUserService _userService;
-        private readonly IAchievementService _achievementService;
-        private readonly IEmoteService _emoteService;
-        private readonly ICommunityDescService _communityDescService;
+        private readonly IMediator _mediator;
 
-        public MessageReceived(IDiscordGuildService discordGuildService, IStatisticService statisticService,
-            IUserService userService, IAchievementService achievementService, IEmoteService emoteService,
-            ICommunityDescService communityDescService)
+        public MessageReceived(IMediator mediator)
         {
-            _discordGuildService = discordGuildService;
-            _statisticService = statisticService;
-            _userService = userService;
-            _achievementService = achievementService;
-            _emoteService = emoteService;
-            _communityDescService = communityDescService;
+            _mediator = mediator;
         }
 
         public async Task Execute(DiscordSocketClient socketClient, SocketMessage socketMessage)
@@ -46,9 +36,9 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
             if (socketMessage.Author.IsBot) return;
 
             // получаем каналы сервера
-            var channels = await _discordGuildService.GetChannels();
+            var channels = await _mediator.Send(new GetDiscordChannelsQuery());
             // получаем из них каналы доски сообщества
-            var communityDescChannels = _communityDescService.CommunityDescChannels(channels);
+            var communityDescChannels = await _mediator.Send(new GetCommunityDescChannelsQuery());
 
             // если сообщение находится в канале доски сообщества
             if (communityDescChannels.Contains(socketMessage.Channel.Id))
@@ -61,8 +51,8 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
                     // добавляем реакции голосования
                     await AddVotes((IUserMessage) socketMessage);
                     // добавляем сообщение в базу
-                    await _communityDescService.AddContentMessage(
-                        (long) socketMessage.Author.Id, (long) socketMessage.Channel.Id, (long) socketMessage.Id);
+                    await _mediator.Send(new CreateContentMessageCommand(
+                        (long) socketMessage.Author.Id, (long) socketMessage.Channel.Id, (long) socketMessage.Id));
                 }
 
                 // если нет - удаляем сообщение
@@ -78,20 +68,20 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
             if (socketMessage.Channel.Id == (ulong) channels[DiscordChannel.Chat].Id)
             {
                 // проверяем есть ли у пользователя нитро буст
-                var hasNitroRole = await _discordGuildService.CheckRoleInUser(
-                    (long) socketMessage.Author.Id, DiscordRole.Nitro);
+                var hasNitroRole = await _mediator.Send(new CheckDiscordRoleInUserQuery(
+                    (long) socketMessage.Author.Id, DiscordRole.Nitro));
                 // проверяем есть ли у пользователя роль модератора
-                var hasModeratorRole = await _discordGuildService.CheckRoleInUser(
-                    (long) socketMessage.Author.Id, DiscordRole.Moderator);
+                var hasModeratorRole = await _mediator.Send(new CheckDiscordRoleInUserQuery(
+                    (long) socketMessage.Author.Id, DiscordRole.Moderator));
                 // проверяем есть ли у пользователя роль ивент-менеджера
-                var hasEventManagerRole = await _discordGuildService.CheckRoleInUser(
-                    (long) socketMessage.Author.Id, DiscordRole.EventManager);
+                var hasEventManagerRole = await _mediator.Send(new CheckDiscordRoleInUserQuery(
+                    (long) socketMessage.Author.Id, DiscordRole.EventManager));
                 // проверяем есть ли у пользователя роль администратора
-                var hasAdministrationRole = await _discordGuildService.CheckRoleInUser(
-                    (long) socketMessage.Author.Id, DiscordRole.Administration);
+                var hasAdministrationRole = await _mediator.Send(new CheckDiscordRoleInUserQuery(
+                    (long) socketMessage.Author.Id, DiscordRole.Administration));
                 var hasStaffRole = hasModeratorRole || hasEventManagerRole || hasAdministrationRole;
                 // проверяем зарегистрирован ли пользователь в игровом мире
-                var checkUser = await _userService.CheckUser((long) socketMessage.Author.Id);
+                var checkUser = await _mediator.Send(new CheckUserByIdQuery((long) socketMessage.Author.Id));
 
                 // если сообщение имеет вложение или ссылку и пользователь не имеет роли нитро-буста или стафа
                 if (CheckAttachment(socketMessage) && !(hasNitroRole || hasStaffRole))
@@ -103,10 +93,11 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
                 if (checkUser)
                 {
                     // добавляем статистику пользователю
-                    await _statisticService.AddStatisticToUser((long) socketMessage.Author.Id, Statistic.Messages);
+                    await _mediator.Send(new AddStatisticToUserCommand(
+                        (long) socketMessage.Author.Id, Statistic.Messages));
                     // проверяем выполнил ли пользователь достижение
-                    await _achievementService.CheckAchievement(
-                        (long) socketMessage.Author.Id, Achievement.FirstMessage);
+                    await _mediator.Send(new CheckAchievementInUserCommand(
+                        (long) socketMessage.Author.Id, Achievement.FirstMessage));
                 }
             }
         }
@@ -122,7 +113,7 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
         private async Task AddVotes(IUserMessage message)
         {
             // получаем иконки из базы
-            var emotes = await _emoteService.GetEmotes();
+            var emotes = await _mediator.Send(new GetEmotesQuery());
             // добавляем реакции голосования
             await message.AddReactionsAsync(new IEmote[]
             {

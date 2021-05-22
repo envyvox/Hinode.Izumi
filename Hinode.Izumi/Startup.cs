@@ -13,10 +13,12 @@ using Hinode.Izumi.Framework.Database.DapperHandlers;
 using Hinode.Izumi.Framework.EF;
 using Hinode.Izumi.Framework.Hangfire;
 using Hinode.Izumi.Framework.Web;
+using Hinode.Izumi.Services;
 using Hinode.Izumi.Services.DiscordServices.DiscordClientService;
 using Hinode.Izumi.Services.DiscordServices.DiscordClientService.Impl;
 using Hinode.Izumi.Services.DiscordServices.DiscordClientService.Options;
 using Hinode.Izumi.Services.Extensions;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -79,6 +81,8 @@ namespace Hinode.Izumi
             });
             // add swagger
             services.AddSwaggerDocument();
+            // добавляем медиатр и указываем ассембли в которой он будет искать файлы
+            services.AddMediatR(typeof(ServicesMediatREntryPoint).Assembly);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -98,6 +102,7 @@ namespace Hinode.Izumi
                     await next();
                     return;
                 }
+
                 var ips = (_config.GetValue<string>("AllowedIps") ?? "").Split(';');
                 var remoteIp = context.Request.Headers["X-Real-IP"].ToString();
                 if (!((IList) ips).Contains(remoteIp))
@@ -157,14 +162,29 @@ namespace Hinode.Izumi
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
-            var assembly = typeof(IDiscordClientService).Assembly;
-            builder.RegisterAssemblyTypes(assembly)
+            var servicesAssembly = typeof(IDiscordClientService).Assembly;
+            var commandsAssembly =
+                Assembly.Load("Hinode.Izumi.Commands, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null");
+
+            builder.RegisterAssemblyTypes(servicesAssembly)
                 .Where(x => x.IsDefined(typeof(InjectableServiceAttribute), false) &&
                             x.GetCustomAttribute<InjectableServiceAttribute>().IsSingletone)
                 .As(x => x.GetInterfaces()[0])
                 .SingleInstance();
 
-            builder.RegisterAssemblyTypes(assembly)
+            builder.RegisterAssemblyTypes(servicesAssembly)
+                .Where(x => x.IsDefined(typeof(InjectableServiceAttribute), false) &&
+                            !x.GetCustomAttribute<InjectableServiceAttribute>().IsSingletone)
+                .As(x => x.GetInterfaces()[0])
+                .InstancePerLifetimeScope();
+
+            builder.RegisterAssemblyTypes(commandsAssembly)
+                .Where(x => x.IsDefined(typeof(InjectableServiceAttribute), false) &&
+                            x.GetCustomAttribute<InjectableServiceAttribute>().IsSingletone)
+                .As(x => x.GetInterfaces()[0])
+                .SingleInstance();
+
+            builder.RegisterAssemblyTypes(commandsAssembly)
                 .Where(x => x.IsDefined(typeof(InjectableServiceAttribute), false) &&
                             !x.GetCustomAttribute<InjectableServiceAttribute>().IsSingletone)
                 .As(x => x.GetInterfaces()[0])

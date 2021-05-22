@@ -6,8 +6,9 @@ using Dapper;
 using Hinode.Izumi.Data.Enums.PropertyEnums;
 using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Framework.Database;
-using Hinode.Izumi.Services.RpgServices.AlcoholService;
+using Hinode.Izumi.Services.GameServices.AlcoholService.Queries;
 using Hinode.Izumi.Services.WebServices.AlcoholPropertyWebService.Models;
+using MediatR;
 using Microsoft.Extensions.Caching.Memory;
 using CacheExtensions = Hinode.Izumi.Services.Extensions.CacheExtensions;
 
@@ -17,14 +18,14 @@ namespace Hinode.Izumi.Services.WebServices.AlcoholPropertyWebService.Impl
     public class AlcoholPropertyWebService : IAlcoholPropertyWebService
     {
         private readonly IConnectionManager _con;
-        private readonly IAlcoholService _alcoholService;
         private readonly IMemoryCache _cache;
+        private readonly IMediator _mediator;
 
-        public AlcoholPropertyWebService(IConnectionManager con, IAlcoholService alcoholService, IMemoryCache cache)
+        public AlcoholPropertyWebService(IConnectionManager con, IMemoryCache cache, IMediator mediator)
         {
             _con = con;
-            _alcoholService = alcoholService;
             _cache = cache;
+            _mediator = mediator;
         }
 
         public async Task<IEnumerable<AlcoholPropertyWebModel>> GetAllAlcoholProperties() =>
@@ -85,7 +86,7 @@ namespace Hinode.Izumi.Services.WebServices.AlcoholPropertyWebService.Impl
         public async Task Upload()
         {
             // получаем весь алкоголь
-            var alcohols = await _alcoholService.GetAllAlcohol();
+            var alcohols = await _mediator.Send(new GetAllAlcoholQuery());
             // получаем все свойства алкоголя в массив номеров
             var alcoholProperties = Enum.GetValues(typeof(AlcoholProperty))
                 .Cast<AlcoholProperty>()

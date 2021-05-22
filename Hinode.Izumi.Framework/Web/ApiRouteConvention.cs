@@ -11,7 +11,7 @@ namespace Hinode.Izumi.Framework.Web
             var prefix = new AttributeRouteModel(new RouteAttribute("api"));
             foreach (var selector in application.Controllers.SelectMany(x => x.Selectors))
             {
-                selector.AttributeRouteModel = selector.AttributeRouteModel != null
+                selector.AttributeRouteModel = selector.AttributeRouteModel is not null
                     ? AttributeRouteModel.CombineAttributeRouteModel(prefix, selector.AttributeRouteModel)
                     : prefix;
             }

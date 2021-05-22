@@ -50,7 +50,7 @@
         RegistryCommand = 43,
         RegistryGetAnonsRoles = 44,
         Inventory = 45,
-        Training = 46,
+        Tutorial = 46,
         CommandError = 47,
         ShopProject = 48,
         EventMayPicnic = 49

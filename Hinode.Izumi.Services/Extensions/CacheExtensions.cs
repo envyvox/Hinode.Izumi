@@ -12,6 +12,9 @@ namespace Hinode.Izumi.Services.Extensions
             new MemoryCacheEntryOptions()
                 .SetAbsoluteExpiration(TimeSpan.FromMinutes(5));
 
+        public const string AchievementIdKey = "achievement_id_{0}";
+        public const string AchievementTypeKey = "achievement_type_{0}";
+        public const string UserAchievementKey = "user_{0}_achievement_{1}";
         public const string AlcoholKey = "alcohol_{0}";
         public const string BuildingIdKey = "building_id_{0}";
         public const string BuildingTypeKey = "building_type_{0}";
@@ -21,7 +24,7 @@ namespace Hinode.Izumi.Services.Extensions
         public const string ContractKey = "contract_{0}";
         public const string ContractLocationKey = "contract_location_{0}";
         public const string CraftingKey = "crafting_{0}";
-        public const string CropKey = "crop_{0}";
+        public const string CropByIdKey = "crop_{0}";
         public const string CropBySeedKey = "crop_with_seed_id_{0}";
         public const string DrinkKey = "drink_{0}";
         public const string FishKey = "fish_{0}";
@@ -43,5 +46,6 @@ namespace Hinode.Izumi.Services.Extensions
         public const string UserWithIdCheckKey = "user_id_{0}_check";
         public const string UserWithNameCheckKey = "user_name_{0}_check";
         public const string EmotesKey = "emotes";
+        public const string BannerKey = "banner_{0}";
     }
 }
