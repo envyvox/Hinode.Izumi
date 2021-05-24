@@ -53,6 +53,10 @@
         Tutorial = 46,
         CommandError = 47,
         ShopProject = 48,
-        EventMayPicnic = 49
+        EventMayPicnic = 49,
+        Spring = 50,
+        Summer = 51,
+        Autumn = 52,
+        Winter = 53
     }
 }

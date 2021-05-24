@@ -8,9 +8,12 @@ using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Data.Enums.PropertyEnums;
 using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands;
+using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries;
 using Hinode.Izumi.Services.EmoteService.Queries;
+using Hinode.Izumi.Services.Extensions;
 using Hinode.Izumi.Services.GameServices.FieldService.Commands;
 using Hinode.Izumi.Services.GameServices.PropertyService.Commands;
+using Hinode.Izumi.Services.ImageService.Queries;
 using MediatR;
 
 namespace Hinode.Izumi.Services.BackgroundJobs.SeasonJob
@@ -49,6 +52,8 @@ namespace Hinode.Izumi.Services.BackgroundJobs.SeasonJob
         {
             // получаем иконки из базы
             var emotes = await _mediator.Send(new GetEmotesQuery());
+            // получаем роли сервера
+            var roles = await _mediator.Send(new GetDiscordRolesQuery());
             // получаем текущее время
             var timeNow = DateTimeOffset.Now;
 
@@ -59,19 +64,19 @@ namespace Hinode.Izumi.Services.BackgroundJobs.SeasonJob
 
             var embed = new EmbedBuilder()
                 .WithAuthor(IzumiEventMessage.DiaryAuthorField.Parse())
-                .WithDescription(
-                    // определяем текст в зависимости от сезона
-                    season switch
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(season.Image())))
+                .WithDescription(season switch
                     {
                         Season.Spring => IzumiEventMessage.SpringComing.Parse(),
-                        Season.Summer => IzumiEventMessage.SummerComing.Parse(),
+                        Season.Summer => IzumiEventMessage.SummerComing.Parse(emotes.GetEmoteOrBlank("Rice")),
                         Season.Autumn => IzumiEventMessage.AutumnComing.Parse(),
                         Season.Winter => IzumiEventMessage.WinterComing.Parse(),
-                        Season.Any => throw new ArgumentOutOfRangeException(nameof(season), season, null),
                         _ => throw new ArgumentOutOfRangeException(nameof(season), season, null)
                     });
 
-            await _mediator.Send(new SendEmbedToChannelCommand(DiscordChannel.Diary, embed));
+            await _mediator.Send(new SendEmbedToChannelCommand(DiscordChannel.Diary, embed,
+                // упоминаем роли событий
+                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.YearlyEvents].Id}>"));
         }
     }
 }
