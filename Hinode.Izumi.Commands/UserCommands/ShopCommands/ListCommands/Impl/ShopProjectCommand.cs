@@ -55,6 +55,11 @@ namespace Hinode.Izumi.Commands.UserCommands.ShopCommands.ListCommands.Impl
                     $"Стоимость: {emotes.GetEmoteOrBlank(Currency.Ien.ToString())} {project.Price} {_local.Localize(Currency.Ien.ToString(), project.Price)}");
             }
 
+            // если нечего отобразить пользователю - выводим сообщение о том, что он все купил
+            if (embed.Fields.Count < 1)
+                embed.AddField(IzumiReplyMessage.ShopProjectSoldFieldName.Parse(),
+                    IzumiReplyMessage.ShopProjectSoldFieldDesc.Parse());
+
             await _mediator.Send(new SendEmbedToUserCommand(context.User, embed));
             await Task.CompletedTask;
         }

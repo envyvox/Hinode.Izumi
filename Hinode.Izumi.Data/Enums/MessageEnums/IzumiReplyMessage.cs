@@ -517,7 +517,8 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         LotteryGiftInfoFieldName,
         LotteryGiftInfoFieldDesc,
         LotteryInfoCurrentMembersNull,
-        CasinoClosed
+        ShopProjectSoldFieldName,
+        ShopProjectSoldFieldDesc
     }
 
     public static class IzumiReplyMessageHelper
@@ -2081,6 +2082,10 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.LotteryInfoCurrentMembersNull =>
                 "На данный момент нет пользователей с {0} лотерейным билетом.",
+
+            IzumiReplyMessage.ShopProjectSoldFieldName => "У вас уже все есть",
+
+            IzumiReplyMessage.ShopProjectSoldFieldDesc => "На полках этого магазина в данный момент нет ничего, что могло бы вас заинтересовать.",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };
