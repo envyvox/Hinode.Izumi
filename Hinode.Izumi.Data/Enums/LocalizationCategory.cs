@@ -68,6 +68,11 @@
         /// <summary>
         /// Очки.
         /// </summary>
-        Points = 13
+        Points = 13,
+
+        /// <summary>
+        /// Морепродукты.
+        /// </summary>
+        Seafood
     }
 }

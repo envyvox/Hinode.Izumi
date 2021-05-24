@@ -1,22 +1,22 @@
 ﻿using System.Threading.Tasks;
 using Hinode.Izumi.Data.Enums.EffectEnums;
 using Hinode.Izumi.Framework.Autofac;
-using Hinode.Izumi.Services.RpgServices.EffectService;
+using Hinode.Izumi.Services.GameServices.EffectService.Commands;
+using MediatR;
 
 namespace Hinode.Izumi.Services.BackgroundJobs.EffectJob
 {
     [InjectableService]
     public class EffectJob : IEffectJob
     {
-        private readonly IEffectService _effectService;
+        private readonly IMediator _mediator;
 
-        public EffectJob(IEffectService effectService)
+        public EffectJob(IMediator mediator)
         {
-            _effectService = effectService;
+            _mediator = mediator;
         }
 
-
         public async Task RemoveEffectFromUser(long userId, Effect effect) =>
-            await _effectService.RemoveEffectFromUser(userId, effect);
+            await _mediator.Send(new RemoveEffectFromUserCommand(userId, effect));
     }
 }

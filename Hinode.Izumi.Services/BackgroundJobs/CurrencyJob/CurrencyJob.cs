@@ -4,39 +4,34 @@ using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.EffectEnums;
 using Hinode.Izumi.Data.Enums.PropertyEnums;
 using Hinode.Izumi.Framework.Autofac;
-using Hinode.Izumi.Services.RpgServices.EffectService;
-using Hinode.Izumi.Services.RpgServices.InventoryService;
-using Hinode.Izumi.Services.RpgServices.PropertyService;
+using Hinode.Izumi.Services.GameServices.EffectService.Queries;
+using Hinode.Izumi.Services.GameServices.InventoryService.Commands;
+using Hinode.Izumi.Services.GameServices.PropertyService.Queries;
+using MediatR;
 
 namespace Hinode.Izumi.Services.BackgroundJobs.CurrencyJob
 {
     [InjectableService]
     public class CurrencyJob : ICurrencyJob
     {
-        private readonly IEffectService _effectService;
-        private readonly IInventoryService _inventoryService;
-        private readonly IPropertyService _propertyService;
+        private readonly IMediator _mediator;
 
-        public CurrencyJob(IEffectService effectService, IInventoryService inventoryService,
-            IPropertyService propertyService)
+        public CurrencyJob(IMediator mediator)
         {
-            _effectService = effectService;
-            _inventoryService = inventoryService;
-            _propertyService = propertyService;
+            _mediator = mediator;
         }
-
 
         public async Task DailyIncome()
         {
             // получаем пользователей с эффектом получения ежедневных иен
-            var users = await _effectService.GetUsersWithEffect(Effect.DailyIenIncome);
+            var users = await _mediator.Send(new GetUsersWithEffectQuery(Effect.DailyIenIncome));
             // получаем массив с их Id
             var usersId = users.Select(x => x.Id).ToArray();
             // получаем количество ежедневных иен
-            var amount = await _propertyService.GetPropertyValue(Property.EconomyDailyIncome);
+            var amount = await _mediator.Send(new GetPropertyValueQuery(Property.EconomyDailyIncome));
             // добавляем иены всем подходящим пользователям
-            await _inventoryService.AddItemToUser(
-                usersId, InventoryCategory.Currency, Currency.Ien.GetHashCode(), amount);
+            await _mediator.Send(new AddItemToUsersByInventoryCategoryCommand(
+                usersId, InventoryCategory.Currency, Currency.Ien.GetHashCode(), amount));
         }
     }
 }

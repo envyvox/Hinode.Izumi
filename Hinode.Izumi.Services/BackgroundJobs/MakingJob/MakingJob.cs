@@ -6,23 +6,25 @@ using Hinode.Izumi.Data.Enums.AchievementEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Data.Enums.PropertyEnums;
 using Hinode.Izumi.Framework.Autofac;
-using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService;
-using Hinode.Izumi.Services.DiscordServices.DiscordGuildService;
-using Hinode.Izumi.Services.EmoteService;
-using Hinode.Izumi.Services.EmoteService.Impl;
-using Hinode.Izumi.Services.RpgServices.AchievementService;
-using Hinode.Izumi.Services.RpgServices.AlcoholService;
-using Hinode.Izumi.Services.RpgServices.CalculationService;
-using Hinode.Izumi.Services.RpgServices.CollectionService;
-using Hinode.Izumi.Services.RpgServices.CraftingService;
-using Hinode.Izumi.Services.RpgServices.FoodService;
-using Hinode.Izumi.Services.RpgServices.ImageService;
-using Hinode.Izumi.Services.RpgServices.InventoryService;
-using Hinode.Izumi.Services.RpgServices.LocalizationService;
-using Hinode.Izumi.Services.RpgServices.LocationService;
-using Hinode.Izumi.Services.RpgServices.MasteryService;
-using Hinode.Izumi.Services.RpgServices.StatisticService;
-using Hinode.Izumi.Services.RpgServices.TrainingService;
+using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands;
+using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries;
+using Hinode.Izumi.Services.EmoteService.Queries;
+using Hinode.Izumi.Services.Extensions;
+using Hinode.Izumi.Services.GameServices.AchievementService.Commands;
+using Hinode.Izumi.Services.GameServices.AlcoholService.Queries;
+using Hinode.Izumi.Services.GameServices.CalculationService.Queries;
+using Hinode.Izumi.Services.GameServices.CollectionService.Commands;
+using Hinode.Izumi.Services.GameServices.CraftingService.Queries;
+using Hinode.Izumi.Services.GameServices.FoodService.Queries;
+using Hinode.Izumi.Services.GameServices.InventoryService.Commands;
+using Hinode.Izumi.Services.GameServices.LocalizationService;
+using Hinode.Izumi.Services.GameServices.LocationService.Commands;
+using Hinode.Izumi.Services.GameServices.MasteryService.Commands;
+using Hinode.Izumi.Services.GameServices.MasteryService.Queries;
+using Hinode.Izumi.Services.GameServices.StatisticService.Commands;
+using Hinode.Izumi.Services.GameServices.TutorialService.Commands;
+using Hinode.Izumi.Services.ImageService.Queries;
+using MediatR;
 using Image = Hinode.Izumi.Data.Enums.Image;
 
 namespace Hinode.Izumi.Services.BackgroundJobs.MakingJob
@@ -30,88 +32,61 @@ namespace Hinode.Izumi.Services.BackgroundJobs.MakingJob
     [InjectableService]
     public class MakingJob : IMakingJob
     {
-        private readonly IDiscordEmbedService _discordEmbedService;
-        private readonly IDiscordGuildService _discordGuildService;
-        private readonly IEmoteService _emoteService;
+        private readonly IMediator _mediator;
         private readonly ILocalizationService _local;
-        private readonly IStatisticService _statisticService;
-        private readonly IAchievementService _achievementService;
-        private readonly IMasteryService _masteryService;
-        private readonly IInventoryService _inventoryService;
-        private readonly IImageService _imageService;
-        private readonly ICollectionService _collectionService;
-        private readonly IFoodService _foodService;
-        private readonly ILocationService _locationService;
-        private readonly ICalculationService _calc;
-        private readonly ICraftingService _craftingService;
-        private readonly IAlcoholService _alcoholService;
-        private readonly ITrainingService _trainingService;
 
-        public MakingJob(IDiscordEmbedService discordEmbedService, IDiscordGuildService discordGuildService,
-            IEmoteService emoteService, ILocalizationService local, IStatisticService statisticService,
-            IAchievementService achievementService, IMasteryService masteryService, IInventoryService inventoryService,
-            IImageService imageService, ICollectionService collectionService, IFoodService foodService,
-            ILocationService locationService, ICalculationService calc, ICraftingService craftingService,
-            IAlcoholService alcoholService, ITrainingService trainingService)
+        public MakingJob(IMediator mediator, ILocalizationService local)
         {
-            _discordEmbedService = discordEmbedService;
-            _discordGuildService = discordGuildService;
-            _emoteService = emoteService;
+            _mediator = mediator;
             _local = local;
-            _statisticService = statisticService;
-            _achievementService = achievementService;
-            _masteryService = masteryService;
-            _inventoryService = inventoryService;
-            _imageService = imageService;
-            _collectionService = collectionService;
-            _foodService = foodService;
-            _locationService = locationService;
-            _calc = calc;
-            _craftingService = craftingService;
-            _alcoholService = alcoholService;
-            _trainingService = trainingService;
         }
+
 
         public async Task CompleteCrafting(long userId, long craftingId, long amount, Location location)
         {
             // получаем изготавливаемый предмет
-            var crafting = await _craftingService.GetCrafting(craftingId);
+            var crafting = await _mediator.Send(new GetCraftingQuery(craftingId));
             // получаем иконки из базы
-            var emotes = await _emoteService.GetEmotes();
+            var emotes = await _mediator.Send(new GetEmotesQuery());
             // получаем мастерство изготовления пользователя и округляем его
             var userMastery = (long) Math.Floor(
-                (await _masteryService.GetUserMastery(userId, Mastery.Crafting))
+                (await _mediator.Send(new GetUserMasteryQuery(userId, Mastery.Crafting)))
                 .Amount);
             // определяем количество итоговых изготовленных предметов после проков мастерства
-            var amountAfterProcs = await _calc.CraftingAmountAfterMasteryProcs(crafting.Id, userMastery, amount);
+            var amountAfterProcs = await _mediator.Send(new GetCraftingAmountAfterMasteryProcsQuery(
+                crafting.Id, userMastery, amount));
 
             // обновляем текущую локацию пользователя
-            await _locationService.UpdateUserLocation(userId, location);
+            await _mediator.Send(new UpdateUserLocationCommand(userId, location));
             // удаляем информацию о перемещении
-            await _locationService.RemoveUserMovement(userId);
+            await _mediator.Send(new DeleteUserMovementCommand(userId));
             // добавляем пользователю изготовленные предметы
-            await _inventoryService.AddItemToUser(userId, InventoryCategory.Crafting, crafting.Id, amountAfterProcs);
+            await _mediator.Send(new AddItemToUserByInventoryCategoryCommand(
+                userId, InventoryCategory.Crafting, crafting.Id, amountAfterProcs));
             // добавляем пользователь запись в коллекции
-            await _collectionService.AddCollectionToUser(userId, CollectionCategory.Crafting, crafting.Id);
+            await _mediator.Send(new AddCollectionToUserCommand(
+                userId, CollectionCategory.Crafting, crafting.Id));
             // добавляем пользователю мастерство изготовления
-            await _masteryService.AddMasteryToUser(userId, Mastery.Crafting,
+            await _mediator.Send(new AddMasteryToUserCommand(userId, Mastery.Crafting,
                 // определяем количество полученного мастерства изготовления
-                await _calc.MasteryXp(MasteryXpProperty.CraftingResource, userMastery, amount));
+                await _mediator.Send(new GetMasteryXpQuery(
+                    MasteryXpProperty.CraftingResource, userMastery, amount))));
             // добавляем пользователю статистику созданных предметов
-            await _statisticService.AddStatisticToUser(userId, Statistic.CraftingResource, amountAfterProcs);
+            await _mediator.Send(new AddStatisticToUserCommand(
+                userId, Statistic.CraftingResource, amountAfterProcs));
             // проверяем выполнил ли пользователь достижения
-            await _achievementService.CheckAchievement(userId, new[]
+            await _mediator.Send(new CheckAchievementsInUserCommand(userId, new[]
             {
                 Achievement.FirstCraftResource,
                 Achievement.Craft30Resource,
                 Achievement.Craft250Resource,
                 Achievement.CompleteCollectionCrafting
-            });
+            }));
 
             var embed = new EmbedBuilder()
                 .WithAuthor(Location.MakingCrafting.Localize())
                 // баннер изготовления
-                .WithImageUrl(await _imageService.GetImageUrl(Image.Crafting))
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Image.Crafting)))
                 // оповещаем о окончании процесса изготовления
                 .WithDescription(
                     IzumiReplyMessage.CraftingResourceCompleteDesc.Parse(
@@ -121,51 +96,57 @@ namespace Hinode.Izumi.Services.BackgroundJobs.MakingJob
                 .AddField(IzumiReplyMessage.CraftingResourceReceivedFieldName.Parse(),
                     $"{emotes.GetEmoteOrBlank(crafting.Name)} {amountAfterProcs} {_local.Localize(crafting.Name, amountAfterProcs)}");
 
-            await _discordEmbedService.SendEmbed(
-                await _discordGuildService.GetSocketUser(userId), embed);
+            await _mediator.Send(new SendEmbedToUserCommand(
+                await _mediator.Send(new GetDiscordSocketUserQuery(userId)), embed));
             await Task.CompletedTask;
         }
 
         public async Task CompleteAlcohol(long userId, long alcoholId, long amount, Location location)
         {
             // получаем изготавливаемый алкоголь
-            var alcohol = await _alcoholService.GetAlcohol(alcoholId);
+            var alcohol = await _mediator.Send(new GetAlcoholQuery(alcoholId));
             // получаем иконки из базы
-            var emotes = await _emoteService.GetEmotes();
+            var emotes = await _mediator.Send(new GetEmotesQuery());
             // получаем мастерство изготовления пользователя и округляем его
             var userMastery = (long) Math.Floor(
-                (await _masteryService.GetUserMastery(userId, Mastery.Crafting))
+                (await _mediator.Send(new GetUserMasteryQuery(userId, Mastery.Crafting)))
                 .Amount);
             // определяем количество изготовленного алкоголя после проков мастерства
-            var amountAfterProcs = await _calc.AlcoholAmountAfterMasteryProcs(alcohol.Id, userMastery, amount);
+            var amountAfterProcs = await _mediator.Send(new GetAlcoholAmountAfterMasteryProcsQuery(
+                alcohol.Id, userMastery, amount));
 
             // обновляем текущую локацию пользователя
-            await _locationService.UpdateUserLocation(userId, location);
+            await _mediator.Send(new UpdateUserLocationCommand(userId, location));
             // удаляем информацию о перемещении
-            await _locationService.RemoveUserMovement(userId);
+            await _mediator.Send(new DeleteUserMovementCommand(userId));
             // добавляем пользователю изготовленный алкоголь
-            await _inventoryService.AddItemToUser(userId, InventoryCategory.Alcohol, alcohol.Id, amountAfterProcs);
+            await _mediator.Send(new AddItemToUserByInventoryCategoryCommand(
+                userId, InventoryCategory.Alcohol,
+                alcohol.Id, amountAfterProcs));
             // добавляем пользователю запись в коллекцию
-            await _collectionService.AddCollectionToUser(userId, CollectionCategory.Alcohol, alcohol.Id);
+            await _mediator.Send(new AddCollectionToUserCommand(
+                userId, CollectionCategory.Alcohol, alcohol.Id));
             // добавляем пользователю мастерство изготовление
-            await _masteryService.AddMasteryToUser(userId, Mastery.Crafting,
+            await _mediator.Send(new AddMasteryToUserCommand(userId, Mastery.Crafting,
                 // определяем количество полученного мастерства изготовления
-                await _calc.MasteryXp(MasteryXpProperty.CraftingAlcohol, userMastery, amount));
+                await _mediator.Send(new GetMasteryXpQuery(
+                    MasteryXpProperty.CraftingAlcohol, userMastery, amount))));
             // добавляем пользователю статистику изготовленного алкоголя
-            await _statisticService.AddStatisticToUser(userId, Statistic.CraftingAlcohol, amountAfterProcs);
+            await _mediator.Send(new AddStatisticToUserCommand(
+                userId, Statistic.CraftingAlcohol, amountAfterProcs));
             // проверяем выполнил ли пользователь достижения
-            await _achievementService.CheckAchievement(userId, new[]
+            await _mediator.Send(new CheckAchievementsInUserCommand(userId, new[]
             {
                 Achievement.FirstCraftAlcohol,
                 Achievement.Craft10Alcohol,
                 Achievement.Craft80Alcohol,
                 Achievement.CompleteCollectionAlcohol
-            });
+            }));
 
             var embed = new EmbedBuilder()
                 .WithAuthor(Location.MakingAlcohol.Localize())
                 // баннер изготовления
-                .WithImageUrl(await _imageService.GetImageUrl(Image.Crafting))
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Image.Crafting)))
                 // оповещаем о окончании изготовления
                 .WithDescription(
                     IzumiReplyMessage.CraftingAlcoholCompleteDesc.Parse(
@@ -175,38 +156,39 @@ namespace Hinode.Izumi.Services.BackgroundJobs.MakingJob
                 .AddField(IzumiReplyMessage.CraftingAlcoholReceivedFieldName.Parse(),
                     $"{emotes.GetEmoteOrBlank(alcohol.Name)} {amountAfterProcs} {_local.Localize(alcohol.Name, amountAfterProcs)}");
 
-            await _discordEmbedService.SendEmbed(
-                await _discordGuildService.GetSocketUser(userId), embed);
+            await _mediator.Send(new SendEmbedToUserCommand(
+                await _mediator.Send(new GetDiscordSocketUserQuery(userId)), embed));
             await Task.CompletedTask;
         }
 
         public async Task CompleteFood(long userId, long foodId, long amount, Location location)
         {
             // получаем иконки из базы
-            var emotes = await _emoteService.GetEmotes();
+            var emotes = await _mediator.Send(new GetEmotesQuery());
             // получаем приготавливаемую еду
-            var food = await _foodService.GetFood(foodId);
+            var food = await _mediator.Send(new GetFoodQuery(foodId));
             // получаем мастерство приготовления пользователя и округляем его
             var userMastery = (long) Math.Floor(
-                (await _masteryService.GetUserMastery(userId, Mastery.Cooking))
+                (await _mediator.Send(new GetUserMasteryQuery(userId, Mastery.Cooking)))
                 .Amount);
 
             // обновляем текущую локацию пользователя
-            await _locationService.UpdateUserLocation(userId, location);
+            await _mediator.Send(new UpdateUserLocationCommand(userId, location));
             // удаляем информацию о перемещении
-            await _locationService.RemoveUserMovement(userId);
+            await _mediator.Send(new DeleteUserMovementCommand(userId));
             // добавляем пользователю приготовленную еду
-            await _inventoryService.AddItemToUser(userId, InventoryCategory.Food, foodId, amount);
+            await _mediator.Send(
+                new AddItemToUserByInventoryCategoryCommand(userId, InventoryCategory.Food, foodId, amount));
             // добавляем пользователю запись в коллекцию
-            await _collectionService.AddCollectionToUser(userId, CollectionCategory.Food, foodId);
+            await _mediator.Send(new AddCollectionToUserCommand(userId, CollectionCategory.Food, foodId));
             // добавляем пользователю мастерство приготовления
-            await _masteryService.AddMasteryToUser(userId, Mastery.Cooking,
+            await _mediator.Send(new AddMasteryToUserCommand(userId, Mastery.Cooking,
                 // определяем количество полученного мастерства приготовления
-                await _calc.MasteryXp(MasteryXpProperty.Cooking, userMastery, amount));
+                await _mediator.Send(new GetMasteryXpQuery(MasteryXpProperty.Cooking, userMastery, amount))));
             // добавляем пользователю статистику приготовленного блюда
-            await _statisticService.AddStatisticToUser(userId, Statistic.Cooking, amount);
+            await _mediator.Send(new AddStatisticToUserCommand(userId, Statistic.Cooking, amount));
             // добавляем пользователю статистику приготовленного блюда по категории мастерства
-            await _statisticService.AddStatisticToUser(userId, food.Mastery switch
+            await _mediator.Send(new AddStatisticToUserCommand(userId, food.Mastery switch
             {
                 0 => Statistic.CookingBeginner,
                 50 => Statistic.CookingApprentice,
@@ -215,18 +197,18 @@ namespace Hinode.Izumi.Services.BackgroundJobs.MakingJob
                 200 => Statistic.CookingExpert,
                 250 => Statistic.CookingMaster,
                 _ => throw new ArgumentOutOfRangeException()
-            }, amount);
+            }, amount));
             // проверяем выполнил ли пользователь достижения
-            await _achievementService.CheckAchievement(userId, new[]
+            await _mediator.Send(new CheckAchievementsInUserCommand(userId, new[]
             {
                 Achievement.FirstCook,
                 Achievement.CompleteCollectionFood
-            });
+            }));
 
             var embed = new EmbedBuilder()
                 .WithAuthor(Location.MakingFood.Localize())
                 // баннер приготовления
-                .WithImageUrl(await _imageService.GetImageUrl(Image.Cooking))
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Image.Cooking)))
                 // оповещаем о окончании приготовления
                 .WithDescription(
                     IzumiReplyMessage.CraftingFoodCompleteDesc.Parse() +
@@ -235,10 +217,10 @@ namespace Hinode.Izumi.Services.BackgroundJobs.MakingJob
                 .AddField(IzumiReplyMessage.CraftingFoodReceivedFieldName.Parse(),
                     $"{emotes.GetEmoteOrBlank(food.Name)} {amount} {_local.Localize(food.Name)}");
 
-            await _discordEmbedService.SendEmbed(
-                await _discordGuildService.GetSocketUser(userId), embed);
+            await _mediator.Send(new SendEmbedToUserCommand(
+                await _mediator.Send(new GetDiscordSocketUserQuery(userId)), embed));
             // проверяем нужно ли двинуть прогресс обучения пользователя
-            if (food.Id == 4) await _trainingService.CheckStep(userId, TrainingStep.CookFriedEgg);
+            if (food.Id == 4) await _mediator.Send(new CheckUserTutorialStepCommand(userId, TutorialStep.CookFriedEgg));
             await Task.CompletedTask;
         }
     }

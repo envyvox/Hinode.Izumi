@@ -10,16 +10,19 @@ using Hinode.Izumi.Data.Enums.PropertyEnums;
 using Hinode.Izumi.Data.Enums.ReputationEnums;
 using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Services.BackgroundJobs.DiscordJob;
-using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService;
-using Hinode.Izumi.Services.DiscordServices.DiscordGuildService;
-using Hinode.Izumi.Services.EmoteService;
-using Hinode.Izumi.Services.EmoteService.Impl;
-using Hinode.Izumi.Services.RpgServices.ImageService;
-using Hinode.Izumi.Services.RpgServices.InventoryService;
-using Hinode.Izumi.Services.RpgServices.LocalizationService;
-using Hinode.Izumi.Services.RpgServices.PropertyService;
-using Hinode.Izumi.Services.RpgServices.ReputationService;
-using Hinode.Izumi.Services.RpgServices.StatisticService;
+using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands;
+using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries;
+using Hinode.Izumi.Services.EmoteService.Queries;
+using Hinode.Izumi.Services.Extensions;
+using Hinode.Izumi.Services.GameServices.InventoryService.Commands;
+using Hinode.Izumi.Services.GameServices.LocalizationService;
+using Hinode.Izumi.Services.GameServices.PropertyService.Commands;
+using Hinode.Izumi.Services.GameServices.PropertyService.Queries;
+using Hinode.Izumi.Services.GameServices.ReputationService.Commands;
+using Hinode.Izumi.Services.GameServices.ReputationService.Queries;
+using Hinode.Izumi.Services.GameServices.StatisticService.Commands;
+using Hinode.Izumi.Services.ImageService.Queries;
+using MediatR;
 using Box = Hinode.Izumi.Data.Enums.Box;
 using Image = Hinode.Izumi.Data.Enums.Image;
 
@@ -28,48 +31,29 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
     [InjectableService]
     public class BossJob : IBossJob
     {
-        private readonly IDiscordEmbedService _discordEmbedService;
-        private readonly IDiscordGuildService _discordGuildService;
-        private readonly IEmoteService _emoteService;
-        private readonly IPropertyService _propertyService;
-        private readonly IStatisticService _statisticService;
-        private readonly IInventoryService _inventoryService;
-        private readonly IReputationService _reputationService;
-        private readonly IImageService _imageService;
+        private readonly IMediator _mediator;
         private readonly ILocalizationService _local;
-
         private readonly Random _random = new();
+        private const string AttackEmote = "⚔️";
 
         private readonly Location[] _spawnLocations =
             {Location.Capital, Location.Garden, Location.Seaport, Location.Castle, Location.Village};
 
-        private const string AttackEmote = "⚔️";
-
-        public BossJob(IDiscordEmbedService discordEmbedService, IDiscordGuildService discordGuildService,
-            IEmoteService emoteService, IPropertyService propertyService, IStatisticService statisticService,
-            IInventoryService inventoryService, IReputationService reputationService,
-            IImageService imageService, ILocalizationService local)
+        public BossJob(IMediator mediator, ILocalizationService local)
         {
-            _discordEmbedService = discordEmbedService;
-            _discordGuildService = discordGuildService;
-            _emoteService = emoteService;
-            _propertyService = propertyService;
-            _statisticService = statisticService;
-            _inventoryService = inventoryService;
-            _reputationService = reputationService;
-            _imageService = imageService;
+            _mediator = mediator;
             _local = local;
         }
 
         public async Task Anons()
         {
             // получаем текущее событие
-            var currentEvent = (Event) await _propertyService.GetPropertyValue(Property.CurrentEvent);
+            var currentEvent = (Event) await _mediator.Send(new GetPropertyValueQuery(Property.CurrentEvent));
             // если текущее событие это майское событие - то босс не должен появляться
             if (currentEvent == Event.May) return;
 
             // получаем роли сервера
-            var roles = await _discordGuildService.GetRoles();
+            var roles = await _mediator.Send(new GetDiscordRolesQuery());
             // получаем случайную локацию
             var randomLocation = (Location) _spawnLocations.GetValue(_random.Next(_spawnLocations.Length));
 
@@ -79,28 +63,27 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                 .WithDescription(IzumiEventMessage.BossNotify.Parse(
                     randomLocation.Localize(true)));
 
-            await _discordEmbedService.SendEmbed(DiscordChannel.Diary, embed,
+            await _mediator.Send(new SendEmbedToChannelCommand(DiscordChannel.Diary, embed,
                 // упоминаем роли события
-                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>");
+                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>"));
 
             BackgroundJob.Schedule<IBossJob>(
                 x => x.Spawn(randomLocation),
                 TimeSpan.FromMinutes(
                     // получаем время оповещения о вторжении босса
-                    await _propertyService.GetPropertyValue(Property.BossNotifyTime)));
+                    await _mediator.Send(new GetPropertyValueQuery(Property.BossNotifyTime))));
         }
-
 
         public async Task Spawn(Location location)
         {
             // получаем иконки из базы
-            var emotes = await _emoteService.GetEmotes();
+            var emotes = await _mediator.Send(new GetEmotesQuery());
             // получаем роли сервера
-            var roles = await _discordGuildService.GetRoles();
+            var roles = await _mediator.Send(new GetDiscordRolesQuery());
             // получаем репутацию этой локации
-            var reputation = _reputationService.GetReputationByLocation(location);
+            var reputation = await _mediator.Send(new GetReputationByLocationQuery(location));
             // получаем количество получаемой репутации за убийство босса
-            var reputationReward = await _propertyService.GetPropertyValue(Property.BossReputationReward);
+            var reputationReward = await _mediator.Send(new GetPropertyValueQuery(Property.BossReputationReward));
 
             // заполняем канал
             DiscordChannel channel;
@@ -162,7 +145,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                 // имя нпс
                 .WithAuthor(npc.Name())
                 // изображение нпс
-                .WithThumbnailUrl(await _imageService.GetImageUrl(npc.Image()))
+                .WithThumbnailUrl(await _mediator.Send(new GetImageUrlQuery(npc.Image())))
                 // описание вторжения ежедневного босса
                 .WithDescription(
                     IzumiEventMessage.BossHere.Parse(
@@ -175,16 +158,16 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                         location.Localize(true)) +
                     $"{emotes.GetEmoteOrBlank(box.Emote())} {_local.Localize(box.ToString())}")
                 // изображение босса
-                .WithImageUrl(await _imageService.GetImageUrl(bossImage))
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(bossImage)))
                 // сколько времени дается на убийство ежедневного босса
                 .WithFooter(IzumiEventMessage.BossHereFooter.Parse(
                     // получаем длительность боя с ежедневным боссом
-                    await _propertyService.GetPropertyValue(Property.BossKillTime)));
+                    await _mediator.Send(new GetPropertyValueQuery(Property.BossKillTime))));
 
             // отправляем сообщение
-            var message = await _discordEmbedService.SendEmbed(channel, embed,
+            var message = await _mediator.Send(new SendEmbedToChannelCommand(channel, embed,
                 // упоминаем роли события
-                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>");
+                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.DailyEvents].Id}>"));
             // добавляем реакцию для атаки
             await message.AddReactionAsync(new Emoji(AttackEmote));
 
@@ -193,16 +176,15 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                     (long) message.Channel.Id, (long) message.Id, reputation, npc, bossImage, box),
                 TimeSpan.FromMinutes(
                     // получаем длительность боя с ежедневным боссом
-                    await _propertyService.GetPropertyValue(Property.BossKillTime)));
+                    await _mediator.Send(new GetPropertyValueQuery(Property.BossKillTime))));
         }
-
 
         public async Task Kill(long channelId, long messageId, Reputation reputation, Npc npc, Image bossImage, Box box)
         {
             // получаем иконки из базы
-            var emotes = await _emoteService.GetEmotes();
+            var emotes = await _mediator.Send(new GetEmotesQuery());
             // получаем сообщение
-            var message = await _discordGuildService.GetIUserMessage(channelId, messageId);
+            var message = await _mediator.Send(new GetDiscordUserMessageQuery(channelId, messageId));
             // получаем пользователей нажавших на реакцию
             var reactionUsers = await message
                 .GetReactionUsersAsync(new Emoji(AttackEmote), int.MaxValue)
@@ -210,7 +192,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
             // получаем из всех пользователей только людей (без ботов)
             var users = reactionUsers.Where(x => x.IsBot == false).ToArray();
             // получаем необходимое количество пользователей для убийства ежедневного босса
-            var requiredUsersLength = await _propertyService.GetPropertyValue(Property.BossRequiredUsers);
+            var requiredUsersLength = await _mediator.Send(new GetPropertyValueQuery(Property.BossRequiredUsers));
 
             // снимаем все реакции с сообщения
             await message.RemoveAllReactionsAsync();
@@ -219,9 +201,9 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                 // имя нпс
                 .WithAuthor(npc.Name())
                 // изображение нпс
-                .WithThumbnailUrl(await _imageService.GetImageUrl(npc.Image()))
+                .WithThumbnailUrl(await _mediator.Send(new GetImageUrlQuery(npc.Image())))
                 // изображение босса
-                .WithImageUrl(await _imageService.GetImageUrl(bossImage));
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(bossImage)));
 
             if (users.Length < requiredUsersLength)
             {
@@ -241,27 +223,29 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                     debuff.Localize()));
 
                 // обновляем свойство мира на новый дебаф
-                await _propertyService.UpdateProperty(Property.BossDebuff, debuff.GetHashCode());
+                await _mediator.Send(new UpdatePropertyCommand(Property.BossDebuff, debuff.GetHashCode()));
 
                 // добавляем джобу для сброса дебафа
                 BackgroundJob.Schedule<IBossJob>(x => x.ResetDebuff(),
                     TimeSpan.FromHours(
                         // получаем длительность эффекта дебаффа от вторжения ежедневного босса
-                        await _propertyService.GetPropertyValue(Property.BossDebuffExpiration)));
+                        await _mediator.Send(new GetPropertyValueQuery(Property.BossDebuffExpiration))));
             }
             else
             {
                 // получаем id пользователей
                 var usersId = users.Select(x => (long) x.Id).ToArray();
                 // получаем получаемую репутацию за убийство ежедневного босса
-                var reputationReward = await _propertyService.GetPropertyValue(Property.BossReputationReward);
+                var reputationReward = await _mediator.Send(new GetPropertyValueQuery(
+                    Property.BossReputationReward));
 
                 // добавляем пользователям коробки
-                await _inventoryService.AddItemToUser(usersId, InventoryCategory.Box, box.GetHashCode());
+                await _mediator.Send(new AddItemToUsersByInventoryCategoryCommand(
+                    usersId, InventoryCategory.Box, box.GetHashCode()));
                 // добавляем пользователям репутацию
-                await _reputationService.AddReputationToUser(usersId, reputation, reputationReward);
+                await _mediator.Send(new AddReputationToUsersCommand(usersId, reputation, reputationReward));
                 // добавляем пользователям статистику
-                await _statisticService.AddStatisticToUser(usersId, Statistic.BossKilled);
+                await _mediator.Send(new AddStatisticToUsersCommand(usersId, Statistic.BossKilled));
 
                 // подтверждаем убийтство босса
                 embed.WithDescription(IzumiEventMessage.BossKilled.Parse());
@@ -279,19 +263,18 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                     .WithDescription(IzumiEventMessage.BossRewardNotify.Parse(
                         reputation.Location().Localize(true), rewardString));
 
-                await _discordEmbedService.SendEmbed(DiscordChannel.Diary, embedReward);
+                await _mediator.Send(new SendEmbedToChannelCommand(DiscordChannel.Diary, embedReward));
             }
 
             // изменяем сообщение
-            await _discordEmbedService.ModifyEmbed(message, embed);
+            await _mediator.Send(new ModifyEmbedCommand(message, embed));
             // запускаем джобу с удалением сообщения
             BackgroundJob.Schedule<IDiscordJob>(x =>
                     x.DeleteMessage(channelId, messageId),
                 TimeSpan.FromHours(24));
         }
 
-
         public async Task ResetDebuff() =>
-            await _propertyService.UpdateProperty(Property.BossDebuff, BossDebuff.None.GetHashCode());
+            await _mediator.Send(new UpdatePropertyCommand(Property.BossDebuff, BossDebuff.None.GetHashCode()));
     }
 }

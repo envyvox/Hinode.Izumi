@@ -29,7 +29,8 @@ using Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnService
 using Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnServices.UserLeft;
 using Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnServices.UserVoiceStateUpdated;
 using Hinode.Izumi.Services.DiscordServices.DiscordClientService.Options;
-using Hinode.Izumi.Services.RpgServices.ImageService;
+using Hinode.Izumi.Services.ImageService.Queries;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -47,13 +48,13 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.Impl
         private readonly CommandService _commands;
         private readonly IHostApplicationLifetime _lifetime;
         private readonly ILogger<DiscordClientService> _logger;
-        private readonly IImageService _imageService;
+        private readonly IMediator _mediator;
 
         private DiscordSocketClient _socketClient;
 
         public DiscordClientService(IOptions<DiscordOptions> options, IServiceProvider serviceProvider,
             TimeZoneInfo timeZoneInfo, CommandService commands, IHostApplicationLifetime lifetime,
-            ILogger<DiscordClientService> logger, IImageService imageService)
+            ILogger<DiscordClientService> logger, IMediator mediator)
         {
             _options = options;
             _serviceProvider = serviceProvider;
@@ -61,7 +62,7 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.Impl
             _commands = commands;
             _lifetime = lifetime;
             _logger = logger;
-            _imageService = imageService;
+            _mediator = mediator;
             _socketClient = new DiscordSocketClient(new DiscordSocketConfig
             {
                 LogLevel = LogSeverity.Info,
@@ -79,7 +80,9 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.Impl
 
         public async Task Start()
         {
-            await _commands.AddModulesAsync(Assembly.GetExecutingAssembly(), _serviceProvider);
+            await _commands.AddModulesAsync(
+                Assembly.Load("Hinode.Izumi.Commands, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"),
+                _serviceProvider);
             await _socketClient.LoginAsync(TokenType.Bot, _options.Value.BotToken);
             await _socketClient.StartAsync();
 
@@ -104,7 +107,7 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.Impl
             {
                 var embed = new EmbedBuilder()
                     .WithColor(new Color(uint.Parse("36393F", NumberStyles.HexNumber)))
-                    .WithImageUrl(await _imageService.GetImageUrl(Image.CommandError))
+                    .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Image.CommandError)))
                     .WithAuthor(IzumiErrorReasonMessage.SomethingGoneWrong.Localize())
                     .WithDescription(
                         // определяем текст ошибки в зависимости от ее типа
