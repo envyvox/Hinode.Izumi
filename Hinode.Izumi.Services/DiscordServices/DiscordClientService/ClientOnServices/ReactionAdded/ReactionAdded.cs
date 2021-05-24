@@ -63,6 +63,11 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
                     "Dota" => DiscordRole.Dota,
                     "Osu" => DiscordRole.Osu,
                     "AmongUs" => DiscordRole.AmongUs,
+                    "Rust" => DiscordRole.Rust,
+                    "CSGO" => DiscordRole.CsGo,
+                    "HotS" => DiscordRole.HotS,
+                    "WildRift" => DiscordRole.WildRift,
+                    "MobileLegends" => DiscordRole.MobileLegends,
                     _ => throw new ArgumentOutOfRangeException()
                 };
 

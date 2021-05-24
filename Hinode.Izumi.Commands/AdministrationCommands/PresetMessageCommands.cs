@@ -15,7 +15,7 @@ using Image = Hinode.Izumi.Data.Enums.Image;
 namespace Hinode.Izumi.Commands.AdministrationCommands
 {
     [Group("preset")]
-    [IzumiRequireContext(DiscordContext.Guild)]
+    [IzumiRequireRole(DiscordRole.Administration)]
     public class PresetMessageCommands : ModuleBase<SocketCommandContext>
     {
         private readonly IMediator _mediator;
@@ -45,7 +45,12 @@ namespace Hinode.Izumi.Commands.AdministrationCommands
                         emotes.GetEmoteOrBlank("LostArk"), roles[DiscordRole.LostArk].Id,
                         emotes.GetEmoteOrBlank("Dota"), roles[DiscordRole.Dota].Id,
                         emotes.GetEmoteOrBlank("AmongUs"), roles[DiscordRole.AmongUs].Id,
-                        emotes.GetEmoteOrBlank("Osu"), roles[DiscordRole.Osu].Id))
+                        emotes.GetEmoteOrBlank("Osu"), roles[DiscordRole.Osu].Id,
+                        emotes.GetEmoteOrBlank("Rust"), roles[DiscordRole.Rust].Id,
+                        emotes.GetEmoteOrBlank("CSGO"), roles[DiscordRole.CsGo].Id,
+                        emotes.GetEmoteOrBlank("HotS"), roles[DiscordRole.HotS].Id,
+                        emotes.GetEmoteOrBlank("WildRift"), roles[DiscordRole.WildRift].Id,
+                        emotes.GetEmoteOrBlank("MobileLegends"), roles[DiscordRole.MobileLegends].Id))
                 .WithFooter(IzumiReplyMessage.PresetRolesFooter.Parse());
 
             var message = await _mediator.Send(new SendEmbedToChannelCommand(DiscordChannel.GetRoles, embed));
@@ -59,7 +64,12 @@ namespace Hinode.Izumi.Commands.AdministrationCommands
                 Emote.Parse(emotes.GetEmoteOrBlank("LostArk")),
                 Emote.Parse(emotes.GetEmoteOrBlank("Dota")),
                 Emote.Parse(emotes.GetEmoteOrBlank("AmongUs")),
-                Emote.Parse(emotes.GetEmoteOrBlank("Osu"))
+                Emote.Parse(emotes.GetEmoteOrBlank("Osu")),
+                Emote.Parse(emotes.GetEmoteOrBlank("Rust")),
+                Emote.Parse(emotes.GetEmoteOrBlank("CSGO")),
+                Emote.Parse(emotes.GetEmoteOrBlank("HotS")),
+                Emote.Parse(emotes.GetEmoteOrBlank("WildRift")),
+                Emote.Parse(emotes.GetEmoteOrBlank("MobileLegends"))
             });
         }
 
@@ -98,7 +108,8 @@ namespace Hinode.Izumi.Commands.AdministrationCommands
                 .WithFooter(IzumiReplyMessage.PresetRolesFooter.Parse())
                 .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Image.RegistryGetAnonsRoles)));
 
-            var message = await _mediator.Send(new SendEmbedToChannelCommand(DiscordChannel.Registration, anonsRolesEmbed));
+            var message =
+                await _mediator.Send(new SendEmbedToChannelCommand(DiscordChannel.Registration, anonsRolesEmbed));
             await message.AddReactionsAsync(new IEmote[]
             {
                 Emote.Parse(emotes.GetEmoteOrBlank("NumOne")),

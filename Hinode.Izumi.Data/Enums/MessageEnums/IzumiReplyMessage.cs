@@ -1428,7 +1428,20 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Доступные для получения роли",
 
             IzumiReplyMessage.PresetGameRolesFieldDesc =>
-                "{0} <@&{1}>\n{2} <@&{3}>\n{4} <@&{5}>\n{6} <@&{7}>\n{8} <@&{9}>\n{10} <@&{11}>\n{12} <@&{13}>\n{14} <@&{15}>\n{16} <@&{17}>",
+                "{0} <@&{1}>\n" +
+                "{2} <@&{3}>\n" +
+                "{4} <@&{5}>\n" +
+                "{6} <@&{7}>\n" +
+                "{8} <@&{9}>\n" +
+                "{10} <@&{11}>\n" +
+                "{12} <@&{13}>\n" +
+                "{14} <@&{15}>\n" +
+                "{16} <@&{17}>\n" +
+                "{18} <@&{19}>\n" +
+                "{20} <@&{21}>\n" +
+                "{22} <@&{23}>\n" +
+                "{24} <@&{25}>\n" +
+                "{26} <@&{27}>",
 
             IzumiReplyMessage.PresetRolesFooter =>
                 "При нажатии на реакцию, она будет снята и вы получите соответствующую роль. При необходимости роли можно снять, нажав на реакцию повторно.",
@@ -2085,7 +2098,8 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.ShopProjectSoldFieldName => "У вас уже все есть",
 
-            IzumiReplyMessage.ShopProjectSoldFieldDesc => "На полках этого магазина в данный момент нет ничего, что могло бы вас заинтересовать.",
+            IzumiReplyMessage.ShopProjectSoldFieldDesc =>
+                "На полках этого магазина в данный момент нет ничего, что могло бы вас заинтересовать.",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };

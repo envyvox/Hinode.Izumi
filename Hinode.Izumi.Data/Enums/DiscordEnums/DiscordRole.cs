@@ -38,7 +38,12 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
         LostArk = 205,
         Dota = 206,
         Osu = 207,
-        AmongUs = 208
+        AmongUs = 208,
+        Rust = 209,
+        CsGo = 210,
+        HotS = 211,
+        WildRift = 212,
+        MobileLegends = 213
     }
 
     public static class DiscordRoleHelper
@@ -79,6 +84,11 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
             DiscordRole.Mute => "Блокировка чата",
             DiscordRole.ContentProvider => "❤️ Поставщик контента",
             DiscordRole.InVoice => "🎙️",
+            DiscordRole.Rust => "Rust",
+            DiscordRole.CsGo => "CSGO",
+            DiscordRole.HotS => "HotS",
+            DiscordRole.WildRift => "Wild Rift",
+            DiscordRole.MobileLegends => "Mobile Legends",
             _ => throw new ArgumentOutOfRangeException(nameof(role), role, null)
         };
 
