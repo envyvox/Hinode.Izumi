@@ -24,7 +24,7 @@ using Hinode.Izumi.Services.GameServices.PropertyService.Queries;
 using Hinode.Izumi.Services.GameServices.StatisticService.Commands;
 using Hinode.Izumi.Services.GameServices.TutorialService.Commands;
 using Hinode.Izumi.Services.ImageService.Queries;
-using Hinode.Izumi.Services.TimeService;
+using Hinode.Izumi.Services.TimeService.Queries;
 using MediatR;
 using Image = Hinode.Izumi.Data.Enums.Image;
 
@@ -35,13 +35,11 @@ namespace Hinode.Izumi.Services.BackgroundJobs.ExploreJob
     {
         private readonly IMediator _mediator;
         private readonly ILocalizationService _local;
-        private readonly ITimeService _timeService;
 
-        public ExploreJob(IMediator mediator, ILocalizationService local, ITimeService timeService)
+        public ExploreJob(IMediator mediator, ILocalizationService local)
         {
             _mediator = mediator;
             _local = local;
-            _timeService = timeService;
         }
 
         public async Task CompleteExploreGarden(long userId, long userGatheringMastery)
@@ -239,7 +237,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.ExploreJob
             // получаем иконки из базы
             var emotes = await _mediator.Send(new GetEmotesQuery());
             // получаем текущее время суток в мире
-            var timesDay = _timeService.GetCurrentTimesDay();
+            var timesDay = await _mediator.Send(new GetCurrentTimesDayQuery());
             // получаем текущий сезон
             var season = (Season) await _mediator.Send(new GetPropertyValueQuery(Property.CurrentSeason));
             // получаем текущую погоду

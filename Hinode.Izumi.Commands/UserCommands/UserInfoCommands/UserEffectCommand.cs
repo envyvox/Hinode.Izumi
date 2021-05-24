@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord;
@@ -14,7 +15,7 @@ using Hinode.Izumi.Services.Extensions;
 using Hinode.Izumi.Services.GameServices.EffectService.Queries;
 using Hinode.Izumi.Services.GameServices.TutorialService.Commands;
 using Hinode.Izumi.Services.ImageService.Queries;
-using Hinode.Izumi.Services.TimeService;
+using Humanizer;
 using MediatR;
 using Image = Hinode.Izumi.Data.Enums.Image;
 
@@ -25,12 +26,10 @@ namespace Hinode.Izumi.Commands.UserCommands.UserInfoCommands
     public class UserEffectCommand : ModuleBase<SocketCommandContext>
     {
         private readonly IMediator _mediator;
-        private readonly ITimeService _timeService;
 
-        public UserEffectCommand(IMediator mediator, ITimeService timeService)
+        public UserEffectCommand(IMediator mediator)
         {
             _mediator = mediator;
-            _timeService = timeService;
         }
 
         [Command("эффекты"), Alias("effects")]
@@ -69,7 +68,7 @@ namespace Hinode.Izumi.Commands.UserCommands.UserInfoCommands
                         $"{emotes.GetEmoteOrBlank("CardDeck")} {effect.Effect.Localize()}" +
                         (effect.Expiration is not null
                             // если эффект имеет время действия, выводим сколько осталось времени до окончания
-                            ? _timeService.TimeLeft((DateTimeOffset) effect.Expiration)
+                            ? $", еще {((TimeSpan) (DateTimeOffset.Now - effect.Expiration)).TotalMinutes.Minutes().Humanize(2, new CultureInfo("ru-RU"))}"
                             : "") + "\n"));
             }
 

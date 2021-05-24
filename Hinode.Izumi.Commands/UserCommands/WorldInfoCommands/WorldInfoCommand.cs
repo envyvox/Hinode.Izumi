@@ -13,7 +13,7 @@ using Hinode.Izumi.Services.Extensions;
 using Hinode.Izumi.Services.GameServices.PropertyService.Queries;
 using Hinode.Izumi.Services.GameServices.TutorialService.Commands;
 using Hinode.Izumi.Services.ImageService.Queries;
-using Hinode.Izumi.Services.TimeService;
+using Hinode.Izumi.Services.TimeService.Queries;
 using MediatR;
 using Image = Hinode.Izumi.Data.Enums.Image;
 
@@ -25,13 +25,11 @@ namespace Hinode.Izumi.Commands.UserCommands.WorldInfoCommands
     {
         private readonly IMediator _mediator;
         private readonly TimeZoneInfo _timeZoneInfo;
-        private readonly ITimeService _timeService;
 
-        public WorldInfoCommand(IMediator mediator, TimeZoneInfo timeZoneInfo, ITimeService timeService)
+        public WorldInfoCommand(IMediator mediator, TimeZoneInfo timeZoneInfo)
         {
             _mediator = mediator;
             _timeZoneInfo = timeZoneInfo;
-            _timeService = timeService;
         }
 
         [Command("мир"), Alias("world")]
@@ -43,7 +41,7 @@ namespace Hinode.Izumi.Commands.UserCommands.WorldInfoCommands
             // получаем текущее время
             var timeNow = TimeZoneInfo.ConvertTime(DateTimeOffset.Now, _timeZoneInfo);
             // получаем текущее время суток
-            var timesDay = _timeService.GetCurrentTimesDay();
+            var timesDay = await _mediator.Send(new GetCurrentTimesDayQuery());
             // получаем погоду сегодня
             var weatherToday = (Weather) await _mediator.Send(new GetPropertyValueQuery(Property.WeatherToday));
             // получаем погоду завтра
