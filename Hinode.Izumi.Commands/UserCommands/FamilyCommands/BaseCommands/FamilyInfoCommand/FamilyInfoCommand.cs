@@ -5,7 +5,6 @@ using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands;
-using Hinode.Izumi.Services.GameServices.FamilyService.Handlers;
 using Hinode.Izumi.Services.GameServices.FamilyService.Queries;
 using MediatR;
 

@@ -6,7 +6,6 @@ using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands;
 using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries;
 using Hinode.Izumi.Services.GameServices.FieldService.Commands;
-using Hinode.Izumi.Services.GameServices.FieldService.Handlers;
 using Hinode.Izumi.Services.GameServices.LocationService.Commands;
 using MediatR;
 

@@ -10,7 +10,6 @@ using Hinode.Izumi.Services.EmoteService.Queries;
 using Hinode.Izumi.Services.Extensions;
 using Hinode.Izumi.Services.GameServices.AlcoholService.Queries;
 using Hinode.Izumi.Services.GameServices.CalculationService.Queries;
-using Hinode.Izumi.Services.GameServices.IngredientService.Handlers;
 using Hinode.Izumi.Services.GameServices.IngredientService.Queries;
 using Hinode.Izumi.Services.GameServices.LocalizationService;
 using Hinode.Izumi.Services.ImageService.Queries;

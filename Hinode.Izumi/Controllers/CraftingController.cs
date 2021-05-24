@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Services.GameServices.AlcoholService.Queries;
 using Hinode.Izumi.Services.GameServices.CalculationService.Queries;
-using Hinode.Izumi.Services.GameServices.CraftingService.Queries;
 using Hinode.Izumi.Services.WebServices.CraftingWebService;
 using Hinode.Izumi.Services.WebServices.CraftingWebService.Models;
 using MediatR;

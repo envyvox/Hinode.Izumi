@@ -4,7 +4,6 @@ using Discord.WebSocket;
 using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Services.DiscordServices.CommunityDescService.Commands;
 using Hinode.Izumi.Services.DiscordServices.CommunityDescService.Queries;
-using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries;
 using MediatR;
 
 namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnServices.MessageDeleted

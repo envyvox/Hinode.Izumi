@@ -11,7 +11,6 @@ using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands;
 using Hinode.Izumi.Services.EmoteService.Queries;
 using Hinode.Izumi.Services.Extensions;
 using Hinode.Izumi.Services.GameServices.MasteryService.Queries;
-using Hinode.Izumi.Services.GameServices.ReputationService.Queries;
 using Hinode.Izumi.Services.ImageService.Queries;
 using MediatR;
 using Image = Hinode.Izumi.Data.Enums.Image;
