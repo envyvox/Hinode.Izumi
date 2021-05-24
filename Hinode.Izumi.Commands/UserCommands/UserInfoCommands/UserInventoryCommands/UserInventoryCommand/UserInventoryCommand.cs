@@ -128,6 +128,9 @@ namespace Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserInventoryComma
                             current +
                             $"{emotes.GetEmoteOrBlank(box.Emote())} {userBox[box].Amount} {_local.Localize(box.ToString(), userBox[box].Amount)}, "),
 
+                    // TODO ADD SEAFOOD DISPLAY
+                    InventoryCategory.Seafood => "",
+
                     _ => throw new ArgumentOutOfRangeException()
                 };
 
