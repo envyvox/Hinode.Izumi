@@ -10,7 +10,7 @@ using Hinode.Izumi.Data.Enums.ReputationEnums;
 namespace Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserReputationCommands
 {
     [CommandCategory(CommandCategory.UserInfo)]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     public class UserReputationCommands : ModuleBase<SocketCommandContext>
     {
         private readonly IUserReputationListCommand _userReputationListCommand;

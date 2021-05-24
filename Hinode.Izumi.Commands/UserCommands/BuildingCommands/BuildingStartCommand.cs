@@ -32,7 +32,7 @@ using MediatR;
 namespace Hinode.Izumi.Commands.UserCommands.BuildingCommands
 {
     [CommandCategory(CommandCategory.Building)]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     public class BuildingStartCommand : ModuleBase<SocketCommandContext>
     {
         private readonly IMediator _mediator;

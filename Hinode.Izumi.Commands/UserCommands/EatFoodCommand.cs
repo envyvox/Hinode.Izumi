@@ -21,7 +21,7 @@ using MediatR;
 namespace Hinode.Izumi.Commands.UserCommands
 {
     [CommandCategory(CommandCategory.Cooking)]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     public class EatFoodCommand : ModuleBase<SocketCommandContext>
     {
         private readonly IMediator _mediator;

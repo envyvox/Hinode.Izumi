@@ -20,7 +20,7 @@ using Microsoft.Extensions.Options;
 namespace Hinode.Izumi.Commands.UserCommands.ReferralCommands
 {
     [CommandCategory(CommandCategory.Referral)]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     public class ReferralSetCommand : ModuleBase<SocketCommandContext>
     {
         private readonly IMediator _mediator;

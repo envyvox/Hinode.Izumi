@@ -14,7 +14,7 @@ namespace Hinode.Izumi.Commands.UserCommands.FieldCommands
 {
     [CommandCategory(CommandCategory.Field)]
     [Group("участок"), Alias("field")]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     [IzumiRequireLocation(Location.Village), IzumiRequireNoDebuff(BossDebuff.VillageStop)]
     public class FieldCommands : ModuleBase<SocketCommandContext>
     {

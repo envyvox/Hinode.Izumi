@@ -24,7 +24,7 @@ namespace Hinode.Izumi.Commands.UserCommands.FamilyCommands
 {
     [CommandCategory(CommandCategory.Family)]
     [Group("семья"), Alias("family")]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     public class FamilyCommands : ModuleBase<SocketCommandContext>
     {
         private readonly IFamilyInfoCommand _familyInfoCommand;

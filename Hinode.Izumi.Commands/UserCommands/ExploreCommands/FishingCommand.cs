@@ -28,7 +28,7 @@ using Image = Hinode.Izumi.Data.Enums.Image;
 namespace Hinode.Izumi.Commands.UserCommands.ExploreCommands
 {
     [CommandCategory(CommandCategory.Explore)]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     [IzumiRequireLocation(Location.Seaport), IzumiRequireNoDebuff(BossDebuff.SeaportStop)]
     public class FishingCommand : ModuleBase<SocketCommandContext>
     {

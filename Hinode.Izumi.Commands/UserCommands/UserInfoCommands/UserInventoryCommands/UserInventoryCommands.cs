@@ -13,7 +13,7 @@ namespace Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserInventoryComma
 {
     [CommandCategory(CommandCategory.UserInfo, CommandCategory.Inventory)]
     [Group("инвентарь"), Alias("inventory")]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     public class UserInventoryCommands : ModuleBase<SocketCommandContext>
     {
         private readonly IUserInventoryCommand _userInventoryCommand;

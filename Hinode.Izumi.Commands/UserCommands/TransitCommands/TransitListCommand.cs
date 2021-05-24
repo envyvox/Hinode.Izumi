@@ -28,7 +28,7 @@ using Image = Hinode.Izumi.Data.Enums.Image;
 namespace Hinode.Izumi.Commands.UserCommands.TransitCommands
 {
     [CommandCategory(CommandCategory.Transit)]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     public class TransitListCommand : ModuleBase<SocketCommandContext>
     {
         private readonly IMediator _mediator;

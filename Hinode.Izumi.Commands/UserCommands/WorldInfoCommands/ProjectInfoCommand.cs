@@ -21,7 +21,7 @@ using MediatR;
 namespace Hinode.Izumi.Commands.UserCommands.WorldInfoCommands
 {
     [CommandCategory(CommandCategory.Building, CommandCategory.WorldInfo)]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     public class ProjectInfoCommand : ModuleBase<SocketCommandContext>
     {
         private readonly IMediator _mediator;

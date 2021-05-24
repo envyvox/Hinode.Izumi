@@ -10,7 +10,7 @@ namespace Hinode.Izumi.Commands.UserCommands.ContractCommands
 {
     [CommandCategory(CommandCategory.Contract)]
     [Group("контракт"), Alias("контракты", "contract", "contracts")]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     public class ContractCommands : ModuleBase<SocketCommandContext>
     {
         private readonly IContractListCommand _contractListCommand;

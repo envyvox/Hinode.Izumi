@@ -11,7 +11,7 @@ namespace Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserAchievementsCo
 {
     [CommandCategory(CommandCategory.UserInfo, CommandCategory.Achievements)]
     [Group("достижения"), Alias("achievements")]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     public class UserAchievementsCommands : ModuleBase<SocketCommandContext>
     {
         private readonly IUserAchievementsCommand _userAchievementsCommand;

@@ -10,7 +10,7 @@ namespace Hinode.Izumi.Commands.UserCommands.MakingCommands.CraftingCommands
 {
     [Group("изготовить")]
     [CommandCategory(CommandCategory.Crafting)]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     public class CraftingStartCommands : ModuleBase<SocketCommandContext>
     {
         private readonly ICraftingItemCommand _craftingItemCommand;

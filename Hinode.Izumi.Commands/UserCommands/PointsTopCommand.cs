@@ -16,7 +16,7 @@ using MediatR;
 namespace Hinode.Izumi.Commands.UserCommands
 {
     [CommandCategory(CommandCategory.Rating)]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     public class PointsTopCommand : ModuleBase<SocketCommandContext>
     {
         private readonly IMediator _mediator;

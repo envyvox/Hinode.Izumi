@@ -16,7 +16,7 @@ using MediatR;
 namespace Hinode.Izumi.Commands.UserCommands.UserInfoCommands
 {
     [CommandCategory(CommandCategory.UserInfo)]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     public class UserTitleCommand : ModuleBase<SocketCommandContext>
     {
         private readonly IMediator _mediator;

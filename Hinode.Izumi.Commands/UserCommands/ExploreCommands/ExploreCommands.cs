@@ -10,7 +10,7 @@ namespace Hinode.Izumi.Commands.UserCommands.ExploreCommands
 {
     [CommandCategory(CommandCategory.Explore)]
     [Group("исследовать"), Alias("explore")]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     public class ExploreCommands : ModuleBase<SocketCommandContext>
     {
         private readonly IExploreGardenCommand _exploreGardenCommand;

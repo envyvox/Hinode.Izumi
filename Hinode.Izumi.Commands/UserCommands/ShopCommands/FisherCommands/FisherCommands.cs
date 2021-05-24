@@ -10,7 +10,7 @@ namespace Hinode.Izumi.Commands.UserCommands.ShopCommands.FisherCommands
 {
     [CommandCategory(CommandCategory.Shop)]
     [Group("рыбак"), Alias("fisher")]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     [IzumiRequireLocation(Location.Seaport), IzumiRequireNoDebuff(BossDebuff.SeaportStop)]
     public class FisherCommands : ModuleBase<SocketCommandContext>
     {

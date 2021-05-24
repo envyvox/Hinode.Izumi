@@ -11,7 +11,7 @@ namespace Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserDeckCommands
 {
     [CommandCategory(CommandCategory.Cards, CommandCategory.UserInfo)]
     [Group("колода"), Alias("deck")]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     public class UserDeckCommands : ModuleBase<SocketCommandContext>
     {
         private readonly IUserDeckListCommand _userDeckListCommand;

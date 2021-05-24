@@ -10,7 +10,7 @@ namespace Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserCollectionComm
 {
     [CommandCategory(CommandCategory.UserInfo, CommandCategory.Collection)]
     [Group("коллекция"), Alias("collection")]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     public class UserCollectionCommands : ModuleBase<SocketCommandContext>
     {
         private readonly IUserCollectionCommand _userCollectionCommand;

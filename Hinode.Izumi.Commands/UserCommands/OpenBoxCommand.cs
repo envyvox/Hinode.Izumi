@@ -28,7 +28,7 @@ using MediatR;
 namespace Hinode.Izumi.Commands.UserCommands
 {
     [CommandCategory(CommandCategory.Box)]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     public class OpenBoxCommand : ModuleBase<SocketCommandContext>
     {
         private readonly IMediator _mediator;

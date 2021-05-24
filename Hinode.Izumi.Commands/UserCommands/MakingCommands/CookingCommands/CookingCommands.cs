@@ -10,7 +10,7 @@ using Hinode.Izumi.Services.GameServices.LocalizationService;
 namespace Hinode.Izumi.Commands.UserCommands.MakingCommands.CookingCommands
 {
     [CommandCategory(CommandCategory.Cooking)]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     public class CookingCommands : ModuleBase<SocketCommandContext>
     {
         private readonly ICookingListCommand _cookingListCommand;

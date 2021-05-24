@@ -17,7 +17,7 @@ namespace Hinode.Izumi.Commands.UserCommands.MarketCommands
 {
     [CommandCategory(CommandCategory.Market)]
     [Group("рынок"), Alias("group")]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     [IzumiRequireLocation(Location.CapitalMarket), IzumiRequireNoDebuff(BossDebuff.CapitalStop)]
     public class MarketCommands : ModuleBase<SocketCommandContext>
     {

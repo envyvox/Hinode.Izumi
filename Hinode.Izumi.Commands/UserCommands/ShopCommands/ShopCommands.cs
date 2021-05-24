@@ -10,7 +10,7 @@ namespace Hinode.Izumi.Commands.UserCommands.ShopCommands
 {
     [CommandCategory(CommandCategory.Shop)]
     [Group("магазин"), Alias("shop")]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     public class ShopCommands : ModuleBase<SocketCommandContext>
     {
         private readonly IShopBannerCommand _shopBannerCommand;

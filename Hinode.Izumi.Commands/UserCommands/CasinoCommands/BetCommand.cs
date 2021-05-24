@@ -26,9 +26,8 @@ using MediatR;
 namespace Hinode.Izumi.Commands.UserCommands.CasinoCommands
 {
     [CommandCategory(CommandCategory.Casino)]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry, IzumiRequireCasinoOpen]
     [IzumiRequireLocation(Location.CapitalCasino), IzumiRequireNoDebuff(BossDebuff.CapitalStop)]
-    [IzumiRequireCasinoOpen]
     public class BetCommand : ModuleBase<SocketCommandContext>
     {
         private readonly IMediator _mediator;

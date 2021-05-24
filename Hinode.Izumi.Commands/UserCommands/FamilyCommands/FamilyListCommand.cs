@@ -15,7 +15,7 @@ using MediatR;
 namespace Hinode.Izumi.Commands.UserCommands.FamilyCommands
 {
     [CommandCategory(CommandCategory.Family)]
-    [IzumiRequireContext(DiscordContext.DirectMessage), IzumiRequireRegistry]
+    [IzumiRequireRegistry]
     public class FamilyListCommand : ModuleBase<SocketCommandContext>
     {
         private readonly IMediator _mediator;
