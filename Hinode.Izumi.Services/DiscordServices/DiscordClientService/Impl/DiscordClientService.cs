@@ -163,19 +163,19 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.Impl
                 RecurringJob.AddOrUpdate<ISeasonJob>(
                     x => x.SpringComing(),
                     // 22 февраля
-                    "0 * 22 2 *", _timeZoneInfo);
+                    "0 0 22 2 *", _timeZoneInfo);
                 RecurringJob.AddOrUpdate<ISeasonJob>(
                     x => x.SummerComing(),
                     // 25 мая
-                    "0 * 25 5 *", _timeZoneInfo);
+                    "0 0 25 5 *", _timeZoneInfo);
                 RecurringJob.AddOrUpdate<ISeasonJob>(
                     x => x.AutumnComing(),
                     // 25 августа
-                    "0 * 22 8 *", _timeZoneInfo);
+                    "0 0 22 8 *", _timeZoneInfo);
                 RecurringJob.AddOrUpdate<ISeasonJob>(
                     x => x.WinterComing(),
                     // 24 ноября
-                    "0 * 24 11 *", _timeZoneInfo);
+                    "0 0 24 11 *", _timeZoneInfo);
 
                 // начало события
                 RecurringJob.AddOrUpdate<IEventMayJob>(
