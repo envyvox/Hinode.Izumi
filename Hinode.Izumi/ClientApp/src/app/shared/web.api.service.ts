@@ -6659,6 +6659,7 @@ export enum AchievementCategory {
     Alchemy = 8,
     Casino = 9,
     Collection = 10,
+    Event = 11,
 }
 
 export enum Achievement {
@@ -6711,6 +6712,7 @@ export enum Achievement {
     Market50Buy = 72,
     Market333Buy = 73,
     CompleteCollectionDrink = 74,
+    MeetSummer = 75,
 }
 
 export enum AchievementReward {
@@ -7687,6 +7689,7 @@ export class GatheringWebModel extends EntityBaseModel implements IGatheringWebM
     name?: string | null;
     price?: number;
     location?: Location;
+    event?: Event;
 
     constructor(data?: IGatheringWebModel) {
         super(data);
@@ -7698,6 +7701,7 @@ export class GatheringWebModel extends EntityBaseModel implements IGatheringWebM
             this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
             this.price = _data["price"] !== undefined ? _data["price"] : <any>null;
             this.location = _data["location"] !== undefined ? _data["location"] : <any>null;
+            this.event = _data["event"] !== undefined ? _data["event"] : <any>null;
         }
     }
 
@@ -7713,6 +7717,7 @@ export class GatheringWebModel extends EntityBaseModel implements IGatheringWebM
         data["name"] = this.name !== undefined ? this.name : <any>null;
         data["price"] = this.price !== undefined ? this.price : <any>null;
         data["location"] = this.location !== undefined ? this.location : <any>null;
+        data["event"] = this.event !== undefined ? this.event : <any>null;
         super.toJSON(data);
         return data; 
     }
@@ -7722,6 +7727,23 @@ export interface IGatheringWebModel extends IEntityBaseModel {
     name?: string | null;
     price?: number;
     location?: Location;
+    event?: Event;
+}
+
+export enum Event {
+    None = 0,
+    January = 1,
+    February = 2,
+    March = 3,
+    April = 4,
+    May = 5,
+    June = 6,
+    July = 7,
+    August = 8,
+    September = 9,
+    October = 10,
+    November = 11,
+    December = 12,
 }
 
 export class GatheringPropertyWebModel extends EntityBaseModel implements IGatheringPropertyWebModel {
@@ -8212,6 +8234,7 @@ export enum Title {
     BelievingInLuck = 17,
     FirstSamurai = 18,
     Yatagarasu = 19,
+    HarbingerOfSummer = 20,
     Wanderer = 777,
 }
 

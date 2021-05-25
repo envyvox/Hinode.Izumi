@@ -9,7 +9,10 @@ using MediatR;
 
 namespace Hinode.Izumi.Services.GameServices.GatheringService.Queries
 {
-    public record GetGatheringsInLocationQuery(Location Location) : IRequest<GatheringRecord[]>;
+    public record GetGatheringsInLocationQuery(
+            Location Location,
+            Event CurrentEvent = Event.None)
+        : IRequest<GatheringRecord[]>;
 
     public class GetGatheringsInLocationHandler : IRequestHandler<GetGatheringsInLocationQuery, GatheringRecord[]>
     {
@@ -23,11 +26,14 @@ namespace Hinode.Izumi.Services.GameServices.GatheringService.Queries
         public async Task<GatheringRecord[]> Handle(GetGatheringsInLocationQuery request,
             CancellationToken cancellationToken)
         {
+            var (location, currentEvent) = request;
             return (await _con.GetConnection()
                     .QueryAsync<GatheringRecord>(@"
                         select * from gatherings
-                        where location = @location",
-                        new {location = request.Location}))
+                        where location = @location
+                          and (event = @currentEvent
+                           or event = @eventNone)",
+                        new {location, currentEvent, eventNone = Event.None}))
                 .ToArray();
         }
     }

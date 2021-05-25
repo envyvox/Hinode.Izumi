@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { GatheringService, GatheringWebModel, Location } from '../../shared/web.api.service';
+import { GatheringService, GatheringWebModel, Location, Event } from '../../shared/web.api.service';
 import { MenuItem, MessageService, SelectItem } from 'primeng/api';
 import { Router } from '@angular/router';
 import { EnumEx } from '../../shared/enum.extensions';
@@ -13,6 +13,8 @@ export class ListComponent implements OnInit {
 
   location = Location;
   locations: SelectItem[];
+  event = Event;
+  events: SelectItem[];
   data: GatheringWebModel[];
   selectedItem: GatheringWebModel;
   menuItems: MenuItem[];
@@ -21,6 +23,7 @@ export class ListComponent implements OnInit {
               private _router: Router,
               private _gatheringService: GatheringService) {
     this.locations = EnumEx.getNamesAndValues(Location);
+    this.events = EnumEx.getNamesAndValues(Event);
   }
 
   ngOnInit(): void {

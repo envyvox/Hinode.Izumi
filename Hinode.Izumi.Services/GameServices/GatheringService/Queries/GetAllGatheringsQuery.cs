@@ -2,13 +2,14 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
+using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Framework.Database;
 using Hinode.Izumi.Services.GameServices.GatheringService.Records;
 using MediatR;
 
 namespace Hinode.Izumi.Services.GameServices.GatheringService.Queries
 {
-    public record GetAllGatheringsQuery : IRequest<GatheringRecord[]>;
+    public record GetAllGatheringsQuery(Event CurrentEvent = Event.None) : IRequest<GatheringRecord[]>;
 
     public class GetAllGatheringsHandler : IRequestHandler<GetAllGatheringsQuery, GatheringRecord[]>
     {
@@ -23,7 +24,10 @@ namespace Hinode.Izumi.Services.GameServices.GatheringService.Queries
         {
             return (await _con.GetConnection()
                     .QueryAsync<GatheringRecord>(@"
-                        select * from gatherings"))
+                        select * from gatherings
+                        where event = @currentEvent
+                           or event = @eventNone",
+                        new {currentEvent = request.CurrentEvent, eventNone = Event.None}))
                 .ToArray();
         }
     }

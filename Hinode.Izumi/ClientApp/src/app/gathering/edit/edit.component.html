@@ -1,6 +1,6 @@
 <div class="p-fluid p-grid" [formGroup]="form" (ngSubmit)="save()">
     <div class="p-col-6 p-md-4">
-        <p-fieldset legend="1. Название собирательского предмета">
+        <p-fieldset legend="1. Название собирательского ресурса">
             <input type="text" pInputText placeholder="Введите название" formControlName="name">
         </p-fieldset>
         <p-fieldset legend="2. Цена">
@@ -11,6 +11,10 @@
         <p-fieldset legend="3. Локация для сбора">
             <p-dropdown [options]="locations" [scrollHeight]="'300px'"  formControlName="location" optionLabel="name" optionValue="value"
                         placeholder="Выберите локацию"></p-dropdown>
+        </p-fieldset>
+        <p-fieldset legend="4. Событие в котором выпадает этот ресурс">
+            <p-dropdown [options]="events" [scrollHeight]="'300px'" formControlName="event" optionLabel="name" optionValue="value"
+                        placeholder="Выберите событие"></p-dropdown>
         </p-fieldset>
         <p-fieldset legend="4. Подтверждение">
         <span class="p-buttonset">

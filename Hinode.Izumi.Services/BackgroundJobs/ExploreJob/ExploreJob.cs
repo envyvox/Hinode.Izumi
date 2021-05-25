@@ -46,6 +46,8 @@ namespace Hinode.Izumi.Services.BackgroundJobs.ExploreJob
         {
             // получаем иконки из базы
             var emotes = await _mediator.Send(new GetEmotesQuery());
+            // получаем текущее событие
+            var currentEvent = (Event) await _mediator.Send(new GetPropertyValueQuery(Property.CurrentEvent));
             // обновляем текущую локацию пользователя
             await _mediator.Send(new UpdateUserLocationCommand(userId, Location.Garden));
             // удаляем информацию о перемещении
@@ -61,7 +63,9 @@ namespace Hinode.Izumi.Services.BackgroundJobs.ExploreJob
             }));
 
             // получаем все собирательские ресурсы этой локации
-            var gatherings = await _mediator.Send(new GetGatheringsInLocationQuery(Location.Garden));
+            var gatherings = await _mediator.Send(new GetGatheringsInLocationQuery(Location.Garden,
+                // добавляя в пул предметы события, если такие есть
+                currentEvent));
             var gatheringsString = string.Empty;
             long itemsCount = 0;
 
@@ -135,6 +139,9 @@ namespace Hinode.Izumi.Services.BackgroundJobs.ExploreJob
             await _mediator.Send(new CheckUserTutorialStepCommand(userId, TutorialStep.CompleteExploreGarden));
             // проверяем выполнил ли пользователь достижение
             await _mediator.Send(new CheckAchievementInUserCommand(userId, Achievement.CompleteCollectionGathering));
+            // проверяем выполнил ли пользователь достижение события
+            if (currentEvent == Event.June)
+                await _mediator.Send(new CheckAchievementInUserCommand(userId, Achievement.MeetSummer));
         }
 
         public async Task CompleteExploreCastle(long userId, long userGatheringMastery)
@@ -156,7 +163,9 @@ namespace Hinode.Izumi.Services.BackgroundJobs.ExploreJob
             }));
 
             // получаем все собирательские ресурсы этой локации
-            var gatherings = await _mediator.Send(new GetGatheringsInLocationQuery(Location.Castle));
+            var gatherings = await _mediator.Send(new GetGatheringsInLocationQuery(Location.Castle,
+                // добавляя в пул предметы события, если такие есть
+                (Event) await _mediator.Send(new GetPropertyValueQuery(Property.CurrentEvent))));
             var gatheringsString = string.Empty;
             long itemsCount = 0;
 

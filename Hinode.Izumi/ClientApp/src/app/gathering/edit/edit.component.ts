@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MessageService, SelectItem } from 'primeng/api';
 import { ActivatedRoute, Router } from '@angular/router';
-import {  GatheringService, GatheringWebModel, Location } from '../../shared/web.api.service';
+import { Event, GatheringService, GatheringWebModel, Location } from '../../shared/web.api.service';
 import { EnumEx } from '../../shared/enum.extensions';
 
 @Component({
@@ -18,6 +18,7 @@ export class EditComponent implements OnInit, OnDestroy {
   isSaving: boolean;
 
   locations: SelectItem[];
+  events: SelectItem[];
 
   constructor(private _route: ActivatedRoute,
               private _router: Router,
@@ -26,6 +27,7 @@ export class EditComponent implements OnInit, OnDestroy {
               private _gatheringService: GatheringService) {
     this._destroyed = new Subject();
     this.locations = EnumEx.getNamesAndValues(Location);
+    this.events = EnumEx.getNamesAndValues(Event);
   }
 
   ngOnInit(): void {
@@ -34,6 +36,7 @@ export class EditComponent implements OnInit, OnDestroy {
       name: [null, Validators.required],
       price: [0, Validators.required],
       location: [0, Validators.required],
+      event: [0, Validators.required],
       createdAt: [null],
       updatedAt: [null]
     };

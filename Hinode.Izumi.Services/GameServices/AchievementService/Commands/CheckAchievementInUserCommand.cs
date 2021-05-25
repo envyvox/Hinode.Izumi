@@ -64,6 +64,7 @@ namespace Hinode.Izumi.Services.GameServices.AchievementService.Commands
                 case Achievement.CatchLegendaryFish:
                 case Achievement.CatchKoi:
                 case Achievement.FirstCraftAlcohol:
+                case Achievement.MeetSummer:
 
                     await _mediator.Send(
                         new AddAchievementToUserCommand(userId, achievement.Id), cancellationToken);

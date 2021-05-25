@@ -47,6 +47,25 @@
                     </p-columnFilter>
                 </div>
             </th>
+            <th pSortableColumn="event">
+                <div class="p-d-flex p-jc-between p-ai-center">
+                    Event
+                    <p-sortIcon field="event"></p-sortIcon>
+                    <p-columnFilter field="event" matchMode="equals" display="menu" [showMatchModes]="false"
+                                    [showOperator]="false" [showAddButton]="false" class="p-ml-auto">
+                        <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                            <p-dropdown [ngModel]="value" [options]="events" [scrollHeight]="'300px'"
+                                        placeholder="All" (onChange)="filter($event.value)">
+                                <ng-template let-option pTemplate="item">
+                                    <div class="p-multiselect-representative-option">
+                                        <span class="p-ml-1">{{option.name}}</span>
+                                    </div>
+                                </ng-template>
+                            </p-dropdown>
+                        </ng-template>
+                    </p-columnFilter>
+                </div>
+            </th>
             <th pSortableColumn="createdAt">
                 <div class="p-d-flex p-jc-between p-ai-center">
                     Created At
@@ -66,6 +85,7 @@
             <td>{{d.name}}</td>
             <td>{{d.price}}</td>
             <td>{{d.location | enumToString:location}}</td>
+            <td>{{d.event | enumToString:event}}</td>
             <td>{{d.createdAt | date:"dd/MM/yy HH:mm"}}</td>
             <td>{{d.updatedAt | date:"dd/MM/yy HH:mm"}}</td>
         </tr>

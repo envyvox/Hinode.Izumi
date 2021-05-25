@@ -55,7 +55,8 @@ namespace Hinode.Izumi.Data.Enums.AchievementEnums
         CompleteCollectionCrop = 57,
         CompleteCollectionFish = 58,
         CompleteCollectionFood = 59,
-        CompleteCollectionDrink = 74
+        CompleteCollectionDrink = 74,
+        MeetSummer = 75
     }
 
     public static class AchievementHelper
@@ -116,6 +117,7 @@ namespace Hinode.Izumi.Data.Enums.AchievementEnums
             Achievement.CompleteCollectionFish => "Собрать полную коллекцию рыбы",
             Achievement.CompleteCollectionFood => "Собрать полную коллекцию блюд",
             Achievement.CompleteCollectionDrink => "Собрать полную коллекцию напитков",
+            Achievement.MeetSummer => "Встретить лето",
             _ => throw new ArgumentOutOfRangeException(nameof(achievement), achievement, null)
         };
 
@@ -175,6 +177,7 @@ namespace Hinode.Izumi.Data.Enums.AchievementEnums
             Achievement.CompleteCollectionFish => AchievementCategory.Collection,
             Achievement.CompleteCollectionFood => AchievementCategory.Collection,
             Achievement.CompleteCollectionDrink => AchievementCategory.Collection,
+            Achievement.MeetSummer => AchievementCategory.Event,
             _ => throw new ArgumentOutOfRangeException(nameof(achievement), achievement, null)
         };
     }

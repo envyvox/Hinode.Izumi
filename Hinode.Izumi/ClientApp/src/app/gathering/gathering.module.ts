@@ -13,6 +13,7 @@ import { SharedModule } from '../shared/shared.module';
 import { Route, RouterModule } from '@angular/router';
 import { GatheringResolverService } from './gathering-resolver/gathering-resolver.service';
 import { FieldsetModule } from 'primeng/fieldset';
+import { MultiSelectModule } from "primeng/multiselect";
 
 const routes: Array<Route> = [
     {
@@ -44,7 +45,7 @@ const routes: Array<Route> = [
 
 @NgModule({
   declarations: [ListComponent, EditComponent],
-    imports:[
+    imports: [
         CommonModule,
         RouterModule.forChild(routes),
         ContextMenuModule,
@@ -56,7 +57,8 @@ const routes: Array<Route> = [
         FormsModule,
         SharedModule,
         ReactiveFormsModule,
-        FieldsetModule
+        FieldsetModule,
+        MultiSelectModule
     ]
 })
 export class GatheringModule { }

@@ -14,6 +14,7 @@ using Hinode.Izumi.Services.BackgroundJobs.CurrencyJob;
 using Hinode.Izumi.Services.BackgroundJobs.DiscordJob;
 using Hinode.Izumi.Services.BackgroundJobs.EmoteJob;
 using Hinode.Izumi.Services.BackgroundJobs.EnergyJob;
+using Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventJuneJob;
 using Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventMayJob;
 using Hinode.Izumi.Services.BackgroundJobs.MarketJob;
 using Hinode.Izumi.Services.BackgroundJobs.NewDayJob;
@@ -166,30 +167,37 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.Impl
                 RecurringJob.AddOrUpdate<ISeasonJob>(
                     x => x.SpringComing(),
                     // 22 февраля
-                    "0 * 22 2 *", _timeZoneInfo);
+                    "0 0 22 2 *", _timeZoneInfo);
                 RecurringJob.AddOrUpdate<ISeasonJob>(
                     x => x.SummerComing(),
                     // 25 мая
-                    "0 * 25 5 *", _timeZoneInfo);
+                    "0 0 25 5 *", _timeZoneInfo);
                 RecurringJob.AddOrUpdate<ISeasonJob>(
                     x => x.AutumnComing(),
                     // 25 августа
-                    "0 * 22 8 *", _timeZoneInfo);
+                    "0 0 22 8 *", _timeZoneInfo);
                 RecurringJob.AddOrUpdate<ISeasonJob>(
                     x => x.WinterComing(),
                     // 24 ноября
-                    "0 * 24 11 *", _timeZoneInfo);
+                    "0 0 24 11 *", _timeZoneInfo);
 
-                // начало события
+                // события
                 RecurringJob.AddOrUpdate<IEventMayJob>(
                     x => x.Start(),
                     // в 18:00, 1 мая
                     "0 18 1 5 *", _timeZoneInfo);
-                // конец события
                 RecurringJob.AddOrUpdate<IEventMayJob>(
                     x => x.End(),
                     // в 00:00, 10 мая
                     "0 0 10 5 *", _timeZoneInfo);
+                RecurringJob.AddOrUpdate<IEventJuneJob>(
+                    x => x.Start(),
+                    // в 00:00, 1 июня
+                    "0 0 1 6 *", _timeZoneInfo);
+                RecurringJob.AddOrUpdate<IEventJuneJob>(
+                    x => x.End(),
+                    // в 00:00, 8 июня
+                    "0 0 8 6 *", _timeZoneInfo);
 
                 // ежедневные джобы
                 RecurringJob.AddOrUpdate<INewDayJob>(
