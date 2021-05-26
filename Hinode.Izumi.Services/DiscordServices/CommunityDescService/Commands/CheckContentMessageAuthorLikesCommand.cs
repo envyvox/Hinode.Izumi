@@ -34,7 +34,7 @@ namespace Hinode.Izumi.Services.DiscordServices.CommunityDescService.Commands
             var contentMessage = await _mediator.Send(new GetContentMessageByIdQuery(
                 request.ContentMessageId), cancellationToken);
             // получаем количество собранных автором лайков
-            var authorLikes = await _mediator.Send(new GetContentAuthorVotesQuery(
+            var authorLikes = await _mediator.Send(new GetContentAuthorVotesCountQuery(
                 contentMessage.UserId, Vote.Like), cancellationToken);
 
             // если автор собрал количество кратное 500

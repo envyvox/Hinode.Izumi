@@ -1,15 +1,16 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
-using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Framework.Database;
+using Hinode.Izumi.Services.DiscordServices.CommunityDescService.Records;
 using MediatR;
 
 namespace Hinode.Izumi.Services.DiscordServices.CommunityDescService.Queries
 {
-    public record GetContentAuthorVotesQuery(long UserId, Vote Vote) : IRequest<long>;
+    public record GetContentAuthorVotesQuery(long UserId) : IRequest<ContentVoteRecord[]>;
 
-    public class GetContentAuthorVotesHandler : IRequestHandler<GetContentAuthorVotesQuery, long>
+    public class GetContentAuthorVotesHandler : IRequestHandler<GetContentAuthorVotesQuery, ContentVoteRecord[]>
     {
         private readonly IConnectionManager _con;
 
@@ -18,18 +19,18 @@ namespace Hinode.Izumi.Services.DiscordServices.CommunityDescService.Queries
             _con = con;
         }
 
-        public async Task<long> Handle(GetContentAuthorVotesQuery request, CancellationToken cancellationToken)
+        public async Task<ContentVoteRecord[]> Handle(GetContentAuthorVotesQuery request,
+            CancellationToken cancellationToken)
         {
-            var (userId, vote) = request;
-            return await _con.GetConnection()
-                .QueryFirstOrDefaultAsync<long>(@"
-                    select count(*) from content_votes
-                    where message_id in (
-                        select id from content_messages cm where cm.user_id = @userId
-                        )
-                      and vote = @vote
-                      and active = true",
-                    new {userId, vote});
+            return (await _con.GetConnection()
+                    .QueryAsync<ContentVoteRecord>(@"
+                        select * from content_votes
+                        where message_id in (
+                            select id from content_messages cm where cm.user_id = @userId
+                            )
+                          and active = true",
+                        new {userId = request.UserId}))
+                .ToArray();
         }
     }
 }

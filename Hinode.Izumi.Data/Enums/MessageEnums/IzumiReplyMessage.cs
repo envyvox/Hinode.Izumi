@@ -518,7 +518,10 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         LotteryGiftInfoFieldDesc,
         LotteryInfoCurrentMembersNull,
         ShopProjectSoldFieldName,
-        ShopProjectSoldFieldDesc
+        ShopProjectSoldFieldDesc,
+        CommunityDescInfoDesc,
+        CommunityDescInfoRoleFieldName,
+        CommunityDescInfoRoleFieldDesc
     }
 
     public static class IzumiReplyMessageHelper
@@ -2100,6 +2103,21 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.ShopProjectSoldFieldDesc =>
                 "На полках этого магазина в данный момент нет ничего, что могло бы вас заинтересовать.",
+
+            IzumiReplyMessage.CommunityDescInfoDesc =>
+                "Тут собрана информация о вашем участии в **доске сообщества**:\n\n" +
+                "{0} {1} публикаций в <#{2}>, {3} {4} лайков и {5} {6} дизлайков.\n" +
+                "{0} {7} публикаций в <#{8}>, {3} {9} лайков и {5} {10} дизлайков.\n" +
+                "{0} {11} публикаций в <#{12}>, {3} {13} лайков и {5} {14} дизлайков.\n" +
+                "{0} {15} публикаций в <#{16}>, {3} {17} лайков и {5} {18} дизлайков.\n" +
+                "{0} {19} публикаций в <#{20}>, {3} {21} лайков и {5} {22} дизлайков.\n" +
+                "Всего {3} {23} лайков.",
+
+            IzumiReplyMessage.CommunityDescInfoRoleFieldName =>
+                "Поставщик контента",
+
+            IzumiReplyMessage.CommunityDescInfoRoleFieldDesc =>
+                "Роль будет снята через {0}.",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };
