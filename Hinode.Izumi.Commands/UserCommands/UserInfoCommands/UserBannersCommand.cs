@@ -1,15 +1,14 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Hinode.Izumi.Commands.Attributes;
 using Hinode.Izumi.Data.Enums;
-using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Data.Enums.RarityEnums;
 using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands;
 using Hinode.Izumi.Services.EmoteService.Queries;
 using Hinode.Izumi.Services.Extensions;
 using Hinode.Izumi.Services.GameServices.BannerService.Queries;
+using Hinode.Izumi.Services.WebServices.CommandWebService.Attributes;
 using MediatR;
 
 namespace Hinode.Izumi.Commands.UserCommands.UserInfoCommands

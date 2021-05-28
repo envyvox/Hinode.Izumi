@@ -10,13 +10,6 @@ namespace Hinode.Izumi.Services.GameServices.CalculationService.Queries
 
     public class GetActionTimeHandler : IRequestHandler<GetActionTimeQuery, long>
     {
-        private readonly IMediator _mediator;
-
-        public GetActionTimeHandler(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
-
         public async Task<long> Handle(GetActionTimeQuery request, CancellationToken cancellationToken)
         {
             var (defaultTime, userEnergy) = request;

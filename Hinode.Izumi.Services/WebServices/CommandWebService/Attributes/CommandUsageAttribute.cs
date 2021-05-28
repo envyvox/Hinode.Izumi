@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Hinode.Izumi.Commands.Attributes
+namespace Hinode.Izumi.Services.WebServices.CommandWebService.Attributes
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class CommandUsageAttribute : Attribute

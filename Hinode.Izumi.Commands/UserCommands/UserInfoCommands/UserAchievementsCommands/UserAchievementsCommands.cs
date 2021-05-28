@@ -1,11 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
-using Hinode.Izumi.Commands.Attributes;
 using Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserAchievementsCommands.UserAchievementsCategoryCommand;
 using Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserAchievementsCommands.UserAchievementsCommand;
 using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.AchievementEnums;
-using Hinode.Izumi.Data.Enums.DiscordEnums;
+using Hinode.Izumi.Services.WebServices.CommandWebService.Attributes;
 
 namespace Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserAchievementsCommands
 {

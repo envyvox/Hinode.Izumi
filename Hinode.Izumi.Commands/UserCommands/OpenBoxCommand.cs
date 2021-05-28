@@ -4,9 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Hinode.Izumi.Commands.Attributes;
 using Hinode.Izumi.Data.Enums;
-using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Data.Enums.PropertyEnums;
 using Hinode.Izumi.Data.Enums.RarityEnums;
@@ -23,6 +21,7 @@ using Hinode.Izumi.Services.GameServices.InventoryService.Queries;
 using Hinode.Izumi.Services.GameServices.LocalizationService;
 using Hinode.Izumi.Services.GameServices.ProductService.Queries;
 using Hinode.Izumi.Services.GameServices.PropertyService.Queries;
+using Hinode.Izumi.Services.WebServices.CommandWebService.Attributes;
 using MediatR;
 
 namespace Hinode.Izumi.Commands.UserCommands

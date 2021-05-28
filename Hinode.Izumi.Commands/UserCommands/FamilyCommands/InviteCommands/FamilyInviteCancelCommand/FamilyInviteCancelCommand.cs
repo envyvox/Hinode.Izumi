@@ -9,7 +9,6 @@ using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands;
 using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries;
 using Hinode.Izumi.Services.GameServices.FamilyService.Commands;
 using Hinode.Izumi.Services.GameServices.FamilyService.Queries;
-using Hinode.Izumi.Services.GameServices.LocalizationService;
 using MediatR;
 
 namespace Hinode.Izumi.Commands.UserCommands.FamilyCommands.InviteCommands.FamilyInviteCancelCommand
@@ -18,12 +17,10 @@ namespace Hinode.Izumi.Commands.UserCommands.FamilyCommands.InviteCommands.Famil
     public class FamilyInviteCancelCommand : IFamilyInviteCancelCommand
     {
         private readonly IMediator _mediator;
-        private readonly ILocalizationService _local;
 
-        public FamilyInviteCancelCommand(IMediator mediator, ILocalizationService local)
+        public FamilyInviteCancelCommand(IMediator mediator)
         {
             _mediator = mediator;
-            _local = local;
         }
 
         public async Task Execute(SocketCommandContext context, long inviteId)

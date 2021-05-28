@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
-using Hinode.Izumi.Commands.Attributes;
 using Hinode.Izumi.Commands.UserCommands.FamilyCommands.BaseCommands.FamilyCheckInfoCommand;
 using Hinode.Izumi.Commands.UserCommands.FamilyCommands.BaseCommands.FamilyInfoCommand;
 using Hinode.Izumi.Commands.UserCommands.FamilyCommands.BaseCommands.FamilyRegisterCommand;
@@ -17,8 +16,8 @@ using Hinode.Izumi.Commands.UserCommands.FamilyCommands.ManageCommands.FamilyDel
 using Hinode.Izumi.Commands.UserCommands.FamilyCommands.ManageCommands.FamilyRenameCommand;
 using Hinode.Izumi.Commands.UserCommands.FamilyCommands.ManageCommands.FamilyUpdateDescriptionCommand;
 using Hinode.Izumi.Data.Enums;
-using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.FamilyEnums;
+using Hinode.Izumi.Services.WebServices.CommandWebService.Attributes;
 
 namespace Hinode.Izumi.Commands.UserCommands.FamilyCommands
 {

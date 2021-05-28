@@ -4,9 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Hinode.Izumi.Commands.Attributes;
 using Hinode.Izumi.Data.Enums;
-using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.FamilyEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Data.Enums.ReputationEnums;
@@ -24,6 +22,7 @@ using Hinode.Izumi.Services.GameServices.ReputationService.Queries;
 using Hinode.Izumi.Services.GameServices.TutorialService.Commands;
 using Hinode.Izumi.Services.GameServices.UserService.Queries;
 using Hinode.Izumi.Services.GameServices.UserService.Records;
+using Hinode.Izumi.Services.WebServices.CommandWebService.Attributes;
 using Humanizer;
 using MediatR;
 

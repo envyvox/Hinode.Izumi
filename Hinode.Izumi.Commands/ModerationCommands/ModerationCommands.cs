@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Hinode.Izumi.Commands.Attributes;
 using Hinode.Izumi.Commands.ModerationCommands.MuteCommand;
 using Hinode.Izumi.Commands.ModerationCommands.UpdateGenderCommand;
 using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
+using Hinode.Izumi.Services.WebServices.CommandWebService.Attributes;
 
 namespace Hinode.Izumi.Commands.ModerationCommands
 {

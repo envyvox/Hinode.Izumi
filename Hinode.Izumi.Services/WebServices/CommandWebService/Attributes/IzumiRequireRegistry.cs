@@ -6,7 +6,7 @@ using Hinode.Izumi.Services.GameServices.UserService.Queries;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Hinode.Izumi.Commands.Attributes
+namespace Hinode.Izumi.Services.WebServices.CommandWebService.Attributes
 {
     public class IzumiRequireRegistry : PreconditionAttribute
     {

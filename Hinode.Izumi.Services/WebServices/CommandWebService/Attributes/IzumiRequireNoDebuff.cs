@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Hinode.Izumi.Commands.Attributes
+namespace Hinode.Izumi.Services.WebServices.CommandWebService.Attributes
 {
     public class IzumiRequireNoDebuff : PreconditionAttribute
     {

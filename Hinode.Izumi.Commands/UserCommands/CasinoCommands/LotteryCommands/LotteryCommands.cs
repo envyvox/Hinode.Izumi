@@ -1,11 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
-using Hinode.Izumi.Commands.Attributes;
 using Hinode.Izumi.Commands.UserCommands.CasinoCommands.LotteryCommands.LotteryBuyCommand;
 using Hinode.Izumi.Commands.UserCommands.CasinoCommands.LotteryCommands.LotteryGiftCommand;
 using Hinode.Izumi.Commands.UserCommands.CasinoCommands.LotteryCommands.LotteryInfoCommand;
 using Hinode.Izumi.Data.Enums;
-using Hinode.Izumi.Data.Enums.DiscordEnums;
+using Hinode.Izumi.Services.WebServices.CommandWebService.Attributes;
 
 namespace Hinode.Izumi.Commands.UserCommands.CasinoCommands.LotteryCommands
 {

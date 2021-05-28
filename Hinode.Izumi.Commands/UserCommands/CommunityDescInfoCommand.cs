@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Hinode.Izumi.Commands.Attributes;
 using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
@@ -16,6 +15,7 @@ using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries;
 using Hinode.Izumi.Services.DiscordServices.DiscordRoleService.Queries;
 using Hinode.Izumi.Services.EmoteService.Queries;
 using Hinode.Izumi.Services.Extensions;
+using Hinode.Izumi.Services.WebServices.CommandWebService.Attributes;
 using Humanizer;
 using MediatR;
 
@@ -44,11 +44,21 @@ namespace Hinode.Izumi.Commands.UserCommands
             var userRole = await _mediator.Send(new GetDiscordUserRoleQuery(
                 (long) Context.User.Id, roles[DiscordRole.ContentProvider].Id));
 
-            var screenshotMessages = userMessages.Where(x => x.ChannelId == channels[DiscordChannel.Screenshots].Id);
-            var memesMessages = userMessages.Where(x => x.ChannelId == channels[DiscordChannel.Memes].Id);
-            var artMessages = userMessages.Where(x => x.ChannelId == channels[DiscordChannel.Arts].Id);
-            var eroticMessages = userMessages.Where(x => x.ChannelId == channels[DiscordChannel.Erotic].Id);
-            var nsfwMessages = userMessages.Where(x => x.ChannelId == channels[DiscordChannel.Nsfw].Id);
+            var screenshotMessages = userMessages
+                .Where(x => x.ChannelId == channels[DiscordChannel.Screenshots].Id)
+                .ToArray();
+            var memesMessages = userMessages
+                .Where(x => x.ChannelId == channels[DiscordChannel.Memes].Id)
+                .ToArray();
+            var artMessages = userMessages
+                .Where(x => x.ChannelId == channels[DiscordChannel.Arts].Id)
+                .ToArray();
+            var eroticMessages = userMessages
+                .Where(x => x.ChannelId == channels[DiscordChannel.Erotic].Id)
+                .ToArray();
+            var nsfwMessages = userMessages
+                .Where(x => x.ChannelId == channels[DiscordChannel.Nsfw].Id)
+                .ToArray();
 
             var screenshotMessagesLikes = ChannelMessagesVotes(userVotes, screenshotMessages, Vote.Like);
             var screenshotMessagesDislikes = ChannelMessagesVotes(userVotes, screenshotMessages, Vote.Dislike);
@@ -65,12 +75,12 @@ namespace Hinode.Izumi.Commands.UserCommands
 
             var embed = new EmbedBuilder()
                 .WithDescription(IzumiReplyMessage.CommunityDescInfoDesc.Parse(
-                    emotes.GetEmoteOrBlank("List"), screenshotMessages.Count(), channels[DiscordChannel.Screenshots].Id,
+                    emotes.GetEmoteOrBlank("List"), screenshotMessages.Length, channels[DiscordChannel.Screenshots].Id,
                     emotes.GetEmoteOrBlank("Like"), screenshotMessagesLikes, emotes.GetEmoteOrBlank("Dislike"),
-                    screenshotMessagesDislikes, memesMessages.Count(), channels[DiscordChannel.Memes].Id,
-                    memesMessagesLikes, memesMessagesDislikes, artMessages.Count(), channels[DiscordChannel.Arts].Id,
-                    artMessagesLikes, artMessagesDislikes, eroticMessages.Count(), channels[DiscordChannel.Erotic].Id,
-                    eroticMessagesLikes, eroticMessagesDislikes, nsfwMessages.Count(), channels[DiscordChannel.Nsfw].Id,
+                    screenshotMessagesDislikes, memesMessages.Length, channels[DiscordChannel.Memes].Id,
+                    memesMessagesLikes, memesMessagesDislikes, artMessages.Length, channels[DiscordChannel.Arts].Id,
+                    artMessagesLikes, artMessagesDislikes, eroticMessages.Length, channels[DiscordChannel.Erotic].Id,
+                    eroticMessagesLikes, eroticMessagesDislikes, nsfwMessages.Length, channels[DiscordChannel.Nsfw].Id,
                     nsfwMessagesLikes, nsfwMessagesDislikes, userTotalLikes));
 
             if (userRole is not null)

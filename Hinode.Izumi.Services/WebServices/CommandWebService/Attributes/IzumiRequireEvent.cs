@@ -8,7 +8,7 @@ using Hinode.Izumi.Services.GameServices.PropertyService.Queries;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Hinode.Izumi.Commands.Attributes
+namespace Hinode.Izumi.Services.WebServices.CommandWebService.Attributes
 {
     public class IzumiRequireEvent : PreconditionAttribute
     {

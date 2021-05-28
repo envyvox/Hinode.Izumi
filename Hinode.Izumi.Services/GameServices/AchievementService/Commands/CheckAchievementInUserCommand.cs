@@ -307,7 +307,7 @@ namespace Hinode.Izumi.Services.GameServices.AchievementService.Commands
                 case Achievement.CompleteCollectionGathering:
 
                     userCollection = await _mediator.Send(
-                        new GetUserCollectionQuery(userId, CollectionCategory.Gathering), cancellationToken);
+                        new GetUserCollectionsQuery(userId, CollectionCategory.Gathering), cancellationToken);
                     collectionLength = (await _mediator.Send(
                         new GetAllGatheringsQuery(), cancellationToken)).Length;
 
@@ -319,7 +319,7 @@ namespace Hinode.Izumi.Services.GameServices.AchievementService.Commands
                 case Achievement.CompleteCollectionCrafting:
 
                     userCollection = await _mediator.Send(
-                        new GetUserCollectionQuery(userId, CollectionCategory.Crafting), cancellationToken);
+                        new GetUserCollectionsQuery(userId, CollectionCategory.Crafting), cancellationToken);
                     collectionLength = (await _mediator.Send(
                         new GetAllCraftingsQuery(), cancellationToken)).Length;
 
@@ -331,7 +331,7 @@ namespace Hinode.Izumi.Services.GameServices.AchievementService.Commands
                 case Achievement.CompleteCollectionAlcohol:
 
                     userCollection = await _mediator.Send(
-                        new GetUserCollectionQuery(userId, CollectionCategory.Alcohol), cancellationToken);
+                        new GetUserCollectionsQuery(userId, CollectionCategory.Alcohol), cancellationToken);
                     collectionLength = (await _mediator.Send(
                         new GetAllAlcoholQuery(), cancellationToken)).Length;
 
@@ -343,7 +343,7 @@ namespace Hinode.Izumi.Services.GameServices.AchievementService.Commands
                 case Achievement.CompleteCollectionCrop:
 
                     userCollection = await _mediator.Send(
-                        new GetUserCollectionQuery(userId, CollectionCategory.Crop), cancellationToken);
+                        new GetUserCollectionsQuery(userId, CollectionCategory.Crop), cancellationToken);
                     collectionLength = (await _mediator.Send(
                         new GetAllCropsQuery(), cancellationToken)).Length;
 
@@ -355,7 +355,7 @@ namespace Hinode.Izumi.Services.GameServices.AchievementService.Commands
                 case Achievement.CompleteCollectionFish:
 
                     userCollection = await _mediator.Send(
-                        new GetUserCollectionQuery(userId, CollectionCategory.Fish), cancellationToken);
+                        new GetUserCollectionsQuery(userId, CollectionCategory.Fish), cancellationToken);
                     collectionLength = (await _mediator.Send(
                         new GetAllFishQuery(), cancellationToken)).Length;
 
@@ -367,7 +367,7 @@ namespace Hinode.Izumi.Services.GameServices.AchievementService.Commands
                 case Achievement.CompleteCollectionFood:
 
                     userCollection = await _mediator.Send(
-                        new GetUserCollectionQuery(userId, CollectionCategory.Food), cancellationToken);
+                        new GetUserCollectionsQuery(userId, CollectionCategory.Food), cancellationToken);
                     collectionLength = (await _mediator.Send(
                         new GetAllFishQuery(), cancellationToken)).Length;
 
@@ -380,7 +380,7 @@ namespace Hinode.Izumi.Services.GameServices.AchievementService.Commands
                 case Achievement.CompleteCollectionDrink:
 
                     userCollection = await _mediator.Send(
-                        new GetUserCollectionQuery(userId, CollectionCategory.Drink), cancellationToken);
+                        new GetUserCollectionsQuery(userId, CollectionCategory.Drink), cancellationToken);
                     collectionLength = (await _mediator.Send(
                         new GetAllDrinksQuery(), cancellationToken)).Length;
 

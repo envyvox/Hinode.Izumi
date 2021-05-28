@@ -1,13 +1,12 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
-using Hinode.Izumi.Commands.Attributes;
 using Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserInventoryCommands.UserInventoryCommand;
 using Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserInventoryCommands.UserInventoryCropCommand;
 using Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserInventoryCommands.UserInventoryFishCommand;
 using Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserInventoryCommands.UserInventoryFoodCommand;
 using Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserInventoryCommands.UserInventorySeedCommand;
 using Hinode.Izumi.Data.Enums;
-using Hinode.Izumi.Data.Enums.DiscordEnums;
+using Hinode.Izumi.Services.WebServices.CommandWebService.Attributes;
 
 namespace Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserInventoryCommands
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Hinode.Izumi.Data.Enums;
 
-namespace Hinode.Izumi.Commands.Attributes
+namespace Hinode.Izumi.Services.WebServices.CommandWebService.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class CommandCategoryAttribute : Attribute

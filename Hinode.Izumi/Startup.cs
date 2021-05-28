@@ -63,7 +63,7 @@ namespace Hinode.Izumi
             services.AddHttpClient();
             services.AddControllers().AddNewtonsoftJson();
             // add timezone info
-            services.AddSingleton(x =>
+            services.AddSingleton(_ =>
                 TimeZoneInfo.FindSystemTimeZoneById(_config.GetValue<string>("CronTimezoneId")));
             // add db context
             services.AddDbContextPool<DbContext, AppDbContext>(o =>

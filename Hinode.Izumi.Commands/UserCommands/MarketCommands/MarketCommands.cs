@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
-using Hinode.Izumi.Commands.Attributes;
 using Hinode.Izumi.Commands.UserCommands.MarketCommands.MarketBuyCommands.MarketCheckTopSellingRequestsCommand;
 using Hinode.Izumi.Commands.UserCommands.MarketCommands.MarketBuyCommands.MarketCreateBuyRequestCommand;
 using Hinode.Izumi.Commands.UserCommands.MarketCommands.MarketBuyCommands.MarketDirectBuyCommand;
@@ -11,7 +10,7 @@ using Hinode.Izumi.Commands.UserCommands.MarketCommands.MarketSellCommands.Marke
 using Hinode.Izumi.Commands.UserCommands.MarketCommands.MarketSellCommands.MarketCreateSellRequestCommand;
 using Hinode.Izumi.Commands.UserCommands.MarketCommands.MarketSellCommands.MarketDirectSellCommand;
 using Hinode.Izumi.Data.Enums;
-using Hinode.Izumi.Data.Enums.DiscordEnums;
+using Hinode.Izumi.Services.WebServices.CommandWebService.Attributes;
 
 namespace Hinode.Izumi.Commands.UserCommands.MarketCommands
 {

@@ -1,11 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
-using Hinode.Izumi.Commands.Attributes;
 using Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserReputationCommands.UserReputationInfoCommand;
 using Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserReputationCommands.UserReputationListCommand;
 using Hinode.Izumi.Data.Enums;
-using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.ReputationEnums;
+using Hinode.Izumi.Services.WebServices.CommandWebService.Attributes;
 
 namespace Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserReputationCommands
 {

@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
-using Hinode.Izumi.Commands.Attributes;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands;
@@ -9,6 +8,7 @@ using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries;
 using Hinode.Izumi.Services.EmoteService.Queries;
 using Hinode.Izumi.Services.Extensions;
 using Hinode.Izumi.Services.ImageService.Queries;
+using Hinode.Izumi.Services.WebServices.CommandWebService.Attributes;
 using MediatR;
 using Image = Hinode.Izumi.Data.Enums.Image;
 
