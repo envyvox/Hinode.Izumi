@@ -7974,6 +7974,7 @@ export enum LocalizationCategory {
     Box = 12,
     Points = 13,
     Seafood = 14,
+    Event = 15,
 }
 
 export class MasteryPropertyWebModel extends EntityBaseModel implements IMasteryPropertyWebModel {
@@ -8386,6 +8387,7 @@ export enum Property {
     ReputationCastleTitleNumber = 86,
     ReputationVillageTitleNumber = 87,
     CasinoState = 88,
+    EventJuneBambooToyPrice = 89,
 }
 
 export class SwaggerException extends Error {

@@ -32,19 +32,19 @@ namespace Hinode.Izumi.Data.Enums
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static string Localize(this Event @event) => @event switch
         {
-            Event.None => "",
-            Event.January => "",
-            Event.February => "",
-            Event.March => "",
-            Event.April => "",
-            Event.May => "",
-            Event.June => "",
-            Event.July => "",
-            Event.August => "",
-            Event.September => "",
-            Event.October => "",
-            Event.November => "",
-            Event.December => "",
+            Event.None => "...",
+            Event.January => "Январь месяц",
+            Event.February => "Февраль месяц",
+            Event.March => "Март месяц",
+            Event.April => "Апрель месяц",
+            Event.May => "Май месяц",
+            Event.June => "Июнь месяц",
+            Event.July => "Июль месяц",
+            Event.August => "Август месяц",
+            Event.September => "Сентабрь месяц",
+            Event.October => "Октабрь месяц",
+            Event.November => "Ноябрь месяц",
+            Event.December => "Декабрь месяц",
             _ => throw new ArgumentOutOfRangeException(nameof(@event), @event, null)
         };
     }

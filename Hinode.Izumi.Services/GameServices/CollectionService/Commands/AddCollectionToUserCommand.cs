@@ -7,7 +7,12 @@ using MediatR;
 
 namespace Hinode.Izumi.Services.GameServices.CollectionService.Commands
 {
-    public record AddCollectionToUserCommand(long UserId, CollectionCategory Category, long ItemId) : IRequest;
+    public record AddCollectionToUserCommand(
+            long UserId,
+            CollectionCategory Category,
+            long ItemId,
+            Event Event = Event.None)
+        : IRequest;
 
     public class AddCollectionToUserHandler : IRequestHandler<AddCollectionToUserCommand>
     {
@@ -20,14 +25,14 @@ namespace Hinode.Izumi.Services.GameServices.CollectionService.Commands
 
         public async Task<Unit> Handle(AddCollectionToUserCommand request, CancellationToken cancellationToken)
         {
-            var (userId, category, itemId) = request;
+            var (userId, category, itemId, @event) = request;
 
             await _con.GetConnection()
                 .ExecuteAsync(@"
-                    insert into user_collections(user_id, category, item_id)
-                    values (@userId, @category, @itemId)
+                    insert into user_collections(user_id, category, item_id, event)
+                    values (@userId, @category, @itemId, @event)
                     on conflict (user_id, category, item_id) do nothing",
-                    new {userId, category, itemId});
+                    new {userId, category, itemId, @event});
 
             return new Unit();
         }

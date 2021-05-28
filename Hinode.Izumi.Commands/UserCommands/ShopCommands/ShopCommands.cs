@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
-using Hinode.Izumi.Commands.Attributes;
 using Hinode.Izumi.Commands.UserCommands.ShopCommands.BuyCommands;
 using Hinode.Izumi.Commands.UserCommands.ShopCommands.ListCommands;
 using Hinode.Izumi.Data.Enums;
-using Hinode.Izumi.Data.Enums.DiscordEnums;
+using Hinode.Izumi.Services.WebServices.CommandWebService.Attributes;
 
 namespace Hinode.Izumi.Commands.UserCommands.ShopCommands
 {
@@ -140,6 +139,32 @@ namespace Hinode.Izumi.Commands.UserCommands.ShopCommands
             public async Task ShopBuyProjectTask(
                 [Summary("Номер чертежа")] long projectId) =>
                 await _shopBuyProjectCommand.Execute(Context, projectId);
+        }
+
+        [Group("события"), Alias("event")]
+        public class ShopEventCommands : ModuleBase<SocketCommandContext>
+        {
+            private readonly IShopEventCommand _shopEventCommand;
+            private readonly IShopBuyEventCommand _shopBuyEventCommand;
+
+            public ShopEventCommands(IShopEventCommand shopEventCommand, IShopBuyEventCommand shopBuyEventCommand)
+            {
+                _shopEventCommand = shopEventCommand;
+                _shopBuyEventCommand = shopBuyEventCommand;
+            }
+
+            [Command]
+            [Summary("Посмотреть ассортимент магазина события")]
+            public async Task ShopEventTask() =>
+                await _shopEventCommand.Execute(Context);
+
+            [Command("купить"), Alias("buy")]
+            [Summary("Приобрести указанный товар")]
+            [CommandUsage("!магазин события купить 1", "!магазин события купить 2 Холли")]
+            public async Task ShopEventBuyTask(
+                [Summary("Номер предмета")] long itemId,
+                [Summary("Игровое имя")] string namePattern = null) =>
+                await _shopBuyEventCommand.Execute(Context, itemId, namePattern);
         }
     }
 }

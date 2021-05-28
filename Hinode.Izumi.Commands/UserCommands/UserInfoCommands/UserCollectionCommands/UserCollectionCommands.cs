@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
-using Hinode.Izumi.Commands.Attributes;
 using Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserCollectionCommands.UserCollectionCategoryCommand;
 using Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserCollectionCommands.UserCollectionCommand;
 using Hinode.Izumi.Data.Enums;
-using Hinode.Izumi.Data.Enums.DiscordEnums;
+using Hinode.Izumi.Services.WebServices.CommandWebService.Attributes;
 
 namespace Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserCollectionCommands
 {

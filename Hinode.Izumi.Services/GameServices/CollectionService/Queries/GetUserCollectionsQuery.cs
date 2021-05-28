@@ -9,27 +9,32 @@ using MediatR;
 
 namespace Hinode.Izumi.Services.GameServices.CollectionService.Queries
 {
-    public record GetUserCollectionQuery(long UserId, CollectionCategory Category) : IRequest<UserCollectionRecord[]>;
+    public record GetUserCollectionsQuery(
+            long UserId,
+            CollectionCategory Category,
+            Event Event = Event.None)
+        : IRequest<UserCollectionRecord[]>;
 
-    public class GetUserCollectionHandler : IRequestHandler<GetUserCollectionQuery, UserCollectionRecord[]>
+    public class GetUserCollectionsHandler : IRequestHandler<GetUserCollectionsQuery, UserCollectionRecord[]>
     {
         private readonly IConnectionManager _con;
 
-        public GetUserCollectionHandler(IConnectionManager con)
+        public GetUserCollectionsHandler(IConnectionManager con)
         {
             _con = con;
         }
 
-        public async Task<UserCollectionRecord[]> Handle(GetUserCollectionQuery request,
+        public async Task<UserCollectionRecord[]> Handle(GetUserCollectionsQuery request,
             CancellationToken cancellationToken)
         {
-            var (userId, category) = request;
+            var (userId, category, @event) = request;
             return (await _con.GetConnection()
                     .QueryAsync<UserCollectionRecord>(@"
                         select * from user_collections
                         where user_id = @userId
-                          and category = @category",
-                        new {userId, category}))
+                          and category = @category
+                          and event = @event",
+                        new {userId, category, @event}))
                 .ToArray();
         }
     }

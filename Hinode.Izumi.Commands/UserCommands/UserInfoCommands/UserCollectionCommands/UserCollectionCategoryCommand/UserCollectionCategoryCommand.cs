@@ -43,7 +43,7 @@ namespace Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserCollectionComm
             // получаем все иконки из базы
             var emotes = await _mediator.Send(new GetEmotesQuery());
             // получаем собранную пользователем коллекцию по этой категории
-            var userCollection = await _mediator.Send(new GetUserCollectionQuery((long) context.User.Id, category));
+            var userCollection = await _mediator.Send(new GetUserCollectionsQuery((long) context.User.Id, category));
 
             var embed = new EmbedBuilder()
                 // баннер коллекции
@@ -296,6 +296,31 @@ namespace Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserCollectionComm
                         // блюда мастера-повара
                         .AddField(IzumiReplyMessage.UserFoodMastery250.Parse(),
                             foodMastery250CollectionString.Remove(foodMastery250CollectionString.Length - 2));
+
+                    break;
+                case CollectionCategory.Event:
+
+                    // TODO Решить как сделать коллекции событий и убрать это времененное решение
+                    foreach (var @event in Enum.GetValues(typeof(Event))
+                        .Cast<Event>()
+                        .Where(x => x is Event.June))
+                    {
+                        var userEventCollection = await _mediator.Send(new GetUserCollectionsQuery(
+                            (long) context.User.Id, category, @event));
+                        var collectionString = string.Empty;
+
+                        foreach (var bambooToy in Enum.GetValues(typeof(BambooToy))
+                            .Cast<BambooToy>())
+                        {
+                            var collection = userEventCollection
+                                .FirstOrDefault(x => x.ItemId == bambooToy.GetHashCode());
+                            collectionString +=
+                                $"{emotes.GetEmoteOrBlank(collection is null ? bambooToy.Emote() + "BW" : bambooToy.Emote())} {_local.Localize(bambooToy.ToString())}, ";
+                        }
+
+                        embed.AddField(@event.Localize(),
+                            collectionString.Remove(collectionString.Length - 2));
+                    }
 
                     break;
                 default:

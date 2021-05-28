@@ -35,9 +35,8 @@ namespace Hinode.Izumi.Services.WebServices.LocalizationWebService.Impl
 
         public LocalizationWebService(IConnectionManager con, IGatheringWebService gatheringWebService,
             IProductWebService productWebService, ICraftingWebService craftingWebService,
-            ISeedWebService seedWebService,
-            ICropWebService cropWebService, IAlcoholWebService alcoholWebService, IDrinkWebService drinkWebService,
-            IFishWebService fishWebService, IFoodWebService foodWebService)
+            ISeedWebService seedWebService, ICropWebService cropWebService, IAlcoholWebService alcoholWebService,
+            IDrinkWebService drinkWebService, IFishWebService fishWebService, IFoodWebService foodWebService)
         {
             _con = con;
             _gatheringWebService = gatheringWebService;
@@ -85,6 +84,7 @@ namespace Hinode.Izumi.Services.WebServices.LocalizationWebService.Impl
         public async Task Upload()
         {
             var categories = new List<long>();
+            var itemsId = new List<long>();
             var names = new List<string>();
 
             foreach (var category in Enum
@@ -99,6 +99,7 @@ namespace Hinode.Izumi.Services.WebServices.LocalizationWebService.Impl
                         foreach (var gathering in gatherings)
                         {
                             categories.Add(LocalizationCategory.Gathering.GetHashCode());
+                            itemsId.Add(gathering.Id);
                             names.Add(gathering.Name);
                         }
 
@@ -109,6 +110,7 @@ namespace Hinode.Izumi.Services.WebServices.LocalizationWebService.Impl
                         foreach (var product in products)
                         {
                             categories.Add(LocalizationCategory.Product.GetHashCode());
+                            itemsId.Add(product.Id);
                             names.Add(product.Name);
                         }
 
@@ -119,6 +121,7 @@ namespace Hinode.Izumi.Services.WebServices.LocalizationWebService.Impl
                         foreach (var crafting in craftings)
                         {
                             categories.Add(LocalizationCategory.Crafting.GetHashCode());
+                            itemsId.Add(crafting.Id);
                             names.Add(crafting.Name);
                         }
 
@@ -129,6 +132,7 @@ namespace Hinode.Izumi.Services.WebServices.LocalizationWebService.Impl
                         foreach (var alcohol in alcohols)
                         {
                             categories.Add(LocalizationCategory.Alcohol.GetHashCode());
+                            itemsId.Add(alcohol.Id);
                             names.Add(alcohol.Name);
                         }
 
@@ -139,6 +143,7 @@ namespace Hinode.Izumi.Services.WebServices.LocalizationWebService.Impl
                         foreach (var drink in drinks)
                         {
                             categories.Add(LocalizationCategory.Drink.GetHashCode());
+                            itemsId.Add(drink.Id);
                             names.Add(drink.Name);
                         }
 
@@ -149,6 +154,7 @@ namespace Hinode.Izumi.Services.WebServices.LocalizationWebService.Impl
                         foreach (var seed in seeds)
                         {
                             categories.Add(LocalizationCategory.Seed.GetHashCode());
+                            itemsId.Add(seed.Id);
                             names.Add(seed.Name);
                         }
 
@@ -159,6 +165,7 @@ namespace Hinode.Izumi.Services.WebServices.LocalizationWebService.Impl
                         foreach (var crop in crops)
                         {
                             categories.Add(LocalizationCategory.Crop.GetHashCode());
+                            itemsId.Add(crop.Id);
                             names.Add(crop.Name);
                         }
 
@@ -169,6 +176,7 @@ namespace Hinode.Izumi.Services.WebServices.LocalizationWebService.Impl
                         foreach (var fish in fishes)
                         {
                             categories.Add(LocalizationCategory.Fish.GetHashCode());
+                            itemsId.Add(fish.Id);
                             names.Add(fish.Name);
                         }
 
@@ -179,6 +187,7 @@ namespace Hinode.Izumi.Services.WebServices.LocalizationWebService.Impl
                         foreach (var food in foods)
                         {
                             categories.Add(LocalizationCategory.Food.GetHashCode());
+                            itemsId.Add(food.Id);
                             names.Add(food.Name);
                         }
 
@@ -189,6 +198,7 @@ namespace Hinode.Izumi.Services.WebServices.LocalizationWebService.Impl
                         foreach (var currency in currencies)
                         {
                             categories.Add(LocalizationCategory.Currency.GetHashCode());
+                            itemsId.Add(currency.GetHashCode());
                             names.Add(currency.ToString());
                         }
 
@@ -196,6 +206,7 @@ namespace Hinode.Izumi.Services.WebServices.LocalizationWebService.Impl
                     case LocalizationCategory.Bar:
 
                         categories.Add(LocalizationCategory.Bar.GetHashCode());
+                        itemsId.Add(1);
                         names.Add("Energy");
 
                         break;
@@ -205,6 +216,7 @@ namespace Hinode.Izumi.Services.WebServices.LocalizationWebService.Impl
                         foreach (var box in boxes)
                         {
                             categories.Add(LocalizationCategory.Box.GetHashCode());
+                            itemsId.Add(box.GetHashCode());
                             names.Add(box.ToString());
                         }
 
@@ -212,7 +224,22 @@ namespace Hinode.Izumi.Services.WebServices.LocalizationWebService.Impl
                     case LocalizationCategory.Points:
 
                         categories.Add(LocalizationCategory.Points.GetHashCode());
+                        itemsId.Add(1);
                         names.Add("AdventurePoints");
+
+                        break;
+                    case LocalizationCategory.Seafood:
+                        // TODO UPLOAD SEAFOOD LOCALIZATION
+                        break;
+                    case LocalizationCategory.Event:
+
+                        var bambooToys = Enum.GetValues(typeof(BambooToy)).Cast<BambooToy>();
+                        foreach (var bambooToy in bambooToys)
+                        {
+                            categories.Add(LocalizationCategory.Event.GetHashCode());
+                            itemsId.Add(bambooToy.GetHashCode());
+                            names.Add(bambooToy.ToString());
+                        }
 
                         break;
                     default:
@@ -222,15 +249,16 @@ namespace Hinode.Izumi.Services.WebServices.LocalizationWebService.Impl
 
             await _con.GetConnection()
                 .ExecuteAsync(@"
-                    insert into localizations(category, name, single, double, multiply)
+                    insert into localizations(category, item_id, name, single, double, multiply)
                     values (
                             unnest(array[@categories]),
+                            unnest(array[@itemsId]),
                             unnest(array[@names]),
                             unnest(array[@names]),
                             unnest(array[@names]),
                             unnest(array[@names]))
-                    on conflict (name) do nothing",
-                    new {categories, names});
+                    on conflict (category, item_id) do nothing",
+                    new {categories, itemsId, names});
         }
     }
 }
