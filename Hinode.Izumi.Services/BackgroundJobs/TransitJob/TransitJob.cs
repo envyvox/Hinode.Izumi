@@ -6,15 +6,18 @@ using Hinode.Izumi.Data.Enums.AchievementEnums;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Framework.Autofac;
-using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService;
-using Hinode.Izumi.Services.DiscordServices.DiscordGuildService;
-using Hinode.Izumi.Services.EmoteService;
-using Hinode.Izumi.Services.EmoteService.Impl;
-using Hinode.Izumi.Services.RpgServices.AchievementService;
-using Hinode.Izumi.Services.RpgServices.ImageService;
-using Hinode.Izumi.Services.RpgServices.LocationService;
-using Hinode.Izumi.Services.RpgServices.StatisticService;
-using Hinode.Izumi.Services.RpgServices.TrainingService;
+using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands;
+using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Commands;
+using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries;
+using Hinode.Izumi.Services.EmoteService.Queries;
+using Hinode.Izumi.Services.Extensions;
+using Hinode.Izumi.Services.GameServices.AchievementService.Commands;
+using Hinode.Izumi.Services.GameServices.LocationService.Commands;
+using Hinode.Izumi.Services.GameServices.LocationService.Queries;
+using Hinode.Izumi.Services.GameServices.StatisticService.Commands;
+using Hinode.Izumi.Services.GameServices.TutorialService.Commands;
+using Hinode.Izumi.Services.ImageService.Queries;
+using MediatR;
 using Image = Hinode.Izumi.Data.Enums.Image;
 
 namespace Hinode.Izumi.Services.BackgroundJobs.TransitJob
@@ -22,48 +25,32 @@ namespace Hinode.Izumi.Services.BackgroundJobs.TransitJob
     [InjectableService]
     public class TransitJob : ITransitJob
     {
-        private readonly ILocationService _locationService;
-        private readonly IDiscordGuildService _discordGuildService;
-        private readonly IDiscordEmbedService _discordEmbedService;
-        private readonly ITrainingService _trainingService;
-        private readonly IEmoteService _emoteService;
-        private readonly IStatisticService _statisticService;
-        private readonly IAchievementService _achievementService;
-        private readonly IImageService _imageService;
+        private readonly IMediator _mediator;
 
-        public TransitJob(ILocationService locationService, IDiscordGuildService discordGuildService,
-            IDiscordEmbedService discordEmbedService, ITrainingService trainingService, IEmoteService emoteService,
-            IStatisticService statisticService, IAchievementService achievementService, IImageService imageService)
+        public TransitJob(IMediator mediator)
         {
-            _locationService = locationService;
-            _discordGuildService = discordGuildService;
-            _discordEmbedService = discordEmbedService;
-            _trainingService = trainingService;
-            _emoteService = emoteService;
-            _statisticService = statisticService;
-            _achievementService = achievementService;
-            _imageService = imageService;
+            _mediator = mediator;
         }
 
         public async Task CompleteTransit(long userId, Location destination)
         {
             // получаем иконки из базы
-            var emotes = await _emoteService.GetEmotes();
+            var emotes = await _mediator.Send(new GetEmotesQuery());
 
             // обновляем текущую локацию пользователя
-            await _locationService.UpdateUserLocation(userId, destination);
+            await _mediator.Send(new UpdateUserLocationCommand(userId, destination));
             // удаляем информацию о перемещении
-            await _locationService.RemoveUserMovement(userId);
+            await _mediator.Send(new DeleteUserMovementCommand(userId));
             // снимаем с пользователя роль "в пути" в дискорде
-            await _discordGuildService.ToggleRoleInUser(userId, DiscordRole.LocationInTransit, false);
+            await _mediator.Send(new RemoveDiscordRoleFromUserCommand(userId, DiscordRole.LocationInTransit));
             // добавляем пользователю роль новой локации в дискорде
-            await _discordGuildService.ToggleRoleInUser(userId,
+            await _mediator.Send(new AddDiscordRoleToUserCommand(userId,
                 // определяем роль дискорда по локации
-                _locationService.GetLocationRole(destination), true);
+                await _mediator.Send(new GetLocationRoleQuery(destination))));
 
             var embed = new EmbedBuilder()
                 // баннер перемещения
-                .WithImageUrl(await _imageService.GetImageUrl(Image.InTransit))
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Image.InTransit)))
                 .WithDescription(
                     // оповещаем о завершении перемещения
                     IzumiReplyMessage.TransitCompleteNotify.Parse(
@@ -74,12 +61,12 @@ namespace Hinode.Izumi.Services.BackgroundJobs.TransitJob
             if (!destination.SubLocation())
             {
                 // добавляем пользователю статистику перемещений
-                await _statisticService.AddStatisticToUser(userId, Statistic.Transit);
+                await _mediator.Send(new AddStatisticToUserCommand(userId, Statistic.Transit));
                 // проверяем выполнил ли пользователь достижение
-                await _achievementService.CheckAchievement(userId, Achievement.FirstTransit);
+                await _mediator.Send(new CheckAchievementInUserCommand(userId, Achievement.FirstTransit));
 
                 // получаем список каналов дискорда из базы
-                var channels = await _discordGuildService.GetChannels();
+                var channels = await _mediator.Send(new GetDiscordChannelsQuery());
                 DiscordChannel descChannel;
                 DiscordChannel whatToDoChannel;
                 DiscordChannel eventsChannel;
@@ -123,39 +110,66 @@ namespace Hinode.Izumi.Services.BackgroundJobs.TransitJob
                     $"<#{channels[descChannel].Id}>, <#{channels[whatToDoChannel].Id}>, <#{channels[eventsChannel].Id}>");
             }
 
-            await _discordEmbedService.SendEmbed(
-                await _discordGuildService.GetSocketUser(userId), embed);
+            await _mediator.Send(new SendEmbedToUserCommand(
+                await _mediator.Send(new GetDiscordSocketUserQuery(userId)), embed));
 
             // проверяем нужно ли двинуть прогресс обучения пользователя
             // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
             switch (destination)
             {
                 case Location.Seaport:
-                    await _trainingService.CheckStep(userId, TrainingStep.TransitToSeaport);
+
+                    await _mediator.Send(new CheckUserTutorialStepCommand(
+                        userId, TutorialStep.TransitToSeaport));
+
                     break;
                 case Location.Garden:
-                    await _trainingService.CheckStep(userId, TrainingStep.TransitToGarden);
+
+                    await _mediator.Send(new CheckUserTutorialStepCommand(
+                        userId, TutorialStep.TransitToGarden));
+
                     break;
                 case Location.Castle:
-                    await _trainingService.CheckStep(userId, TrainingStep.TransitToCastle);
+
+                    await _mediator.Send(new CheckUserTutorialStepCommand(
+                        userId, TutorialStep.TransitToCastle));
+
                     break;
                 case Location.Village:
-                    await _trainingService.CheckStep(userId, TrainingStep.TransitToVillage);
+
+                    await _mediator.Send(new CheckUserTutorialStepCommand(
+                        userId, TutorialStep.TransitToVillage));
+
                     break;
                 case Location.Capital:
-                    await _trainingService.CheckStep(userId, TrainingStep.TransitToCapital);
-                    await _trainingService.CheckStep(userId, TrainingStep.TransitToCapitalAfterSeedShop);
-                    await _trainingService.CheckStep(userId, TrainingStep.TransitToCapitalAfterMarket);
-                    await _trainingService.CheckStep(userId, TrainingStep.TransitToCapitalAfterCasino);
+
+                    await _mediator.Send(new CheckUserTutorialStepCommand(
+                        userId, TutorialStep.TransitToCapital));
+                    await _mediator.Send(new CheckUserTutorialStepCommand(
+                        userId, TutorialStep.TransitToCapitalAfterSeedShop));
+                    await _mediator.Send(new CheckUserTutorialStepCommand(
+                        userId, TutorialStep.TransitToCapitalAfterMarket));
+                    await _mediator.Send(new CheckUserTutorialStepCommand
+                        (userId, TutorialStep.TransitToCapitalAfterCasino));
+
                     break;
                 case Location.CapitalShop:
-                    await _trainingService.CheckStep(userId, TrainingStep.TransitToCapitalShop);
+
+                    await _mediator.Send(new CheckUserTutorialStepCommand(
+                        userId, TutorialStep.TransitToCapitalShop));
+
                     break;
                 case Location.CapitalMarket:
-                    await _trainingService.CheckStep(userId, TrainingStep.TransitToCapitalMarket);
+
+                    await _mediator.Send(new CheckUserTutorialStepCommand(
+                        userId, TutorialStep.TransitToCapitalMarket));
+
                     break;
                 case Location.CapitalCasino:
-                    await _trainingService.CheckStep(userId, TrainingStep.TransitToCapitalCasino);
+
+                    await _mediator.Send(new CheckUserTutorialStepCommand(
+                        userId, TutorialStep.TransitToCapitalCasino));
+
                     break;
             }
         }

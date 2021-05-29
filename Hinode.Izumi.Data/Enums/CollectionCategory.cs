@@ -13,7 +13,8 @@ namespace Hinode.Izumi.Data.Enums
         Drink = 4,
         Crop = 5,
         Fish = 6,
-        Food = 7
+        Food = 7,
+        Event = 8
     }
 
     public static class CollectionCategoryHelper
@@ -32,6 +33,7 @@ namespace Hinode.Izumi.Data.Enums
             CollectionCategory.Crop => "Урожай",
             CollectionCategory.Fish => "Рыба",
             CollectionCategory.Food => "Блюда",
+            CollectionCategory.Event => "События",
             _ => throw new ArgumentOutOfRangeException(nameof(category), category, null)
         };
     }

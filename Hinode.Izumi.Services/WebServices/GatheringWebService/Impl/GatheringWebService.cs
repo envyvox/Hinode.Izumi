@@ -41,14 +41,15 @@ namespace Hinode.Izumi.Services.WebServices.GatheringWebService.Impl
 
             var query = model.Id == 0
                 ? @"
-                    insert into gatherings(name, price, location)
-                    values (@name, @price, @location)
+                    insert into gatherings(name, price, location, event)
+                    values (@name, @price, @location, @event)
                     returning *"
                 : @"
                     update gatherings
                     set name = @name,
                         price = @price,
                         location = @location,
+                        event = @event,
                         updated_at = now()
                     where id = @id
                     returning *";
@@ -61,7 +62,8 @@ namespace Hinode.Izumi.Services.WebServices.GatheringWebService.Impl
                         id = model.Id,
                         name = model.Name,
                         price = model.Price,
-                        location = model.Location
+                        location = model.Location,
+                        @event = model.Event
                     });
         }
 

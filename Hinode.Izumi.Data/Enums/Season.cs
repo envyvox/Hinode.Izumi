@@ -30,5 +30,14 @@ namespace Hinode.Izumi.Data.Enums
             Season.Winter => "Зима",
             _ => throw new ArgumentOutOfRangeException(nameof(season), season, null)
         };
+
+        public static Image Image(this Season season) => season switch
+        {
+            Season.Spring => Enums.Image.Spring,
+            Season.Summer => Enums.Image.Summer,
+            Season.Autumn => Enums.Image.Autumn,
+            Season.Winter => Enums.Image.Winter,
+            _ => throw new ArgumentOutOfRangeException(nameof(season), season, null)
+        };
     }
 }

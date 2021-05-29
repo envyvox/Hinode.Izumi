@@ -7,29 +7,25 @@ using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Data.Enums.PropertyEnums;
 using Hinode.Izumi.Framework.Autofac;
-using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService;
-using Hinode.Izumi.Services.DiscordServices.DiscordGuildService;
-using Hinode.Izumi.Services.EmoteService;
-using Hinode.Izumi.Services.RpgServices.FieldService;
-using Hinode.Izumi.Services.RpgServices.PropertyService;
+using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands;
+using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries;
+using Hinode.Izumi.Services.EmoteService.Queries;
+using Hinode.Izumi.Services.Extensions;
+using Hinode.Izumi.Services.GameServices.FieldService.Commands;
+using Hinode.Izumi.Services.GameServices.PropertyService.Commands;
+using Hinode.Izumi.Services.ImageService.Queries;
+using MediatR;
 
 namespace Hinode.Izumi.Services.BackgroundJobs.SeasonJob
 {
     [InjectableService]
     public class SeasonJob : ISeasonJob
     {
-        private readonly IPropertyService _propertyService;
-        private readonly IDiscordEmbedService _discordEmbedService;
-        private readonly IEmoteService _emoteService;
-        private readonly IFieldService _fieldService;
+        private readonly IMediator _mediator;
 
-        public SeasonJob(IPropertyService propertyService, IDiscordEmbedService discordEmbedService,
-            IEmoteService emoteService, IFieldService fieldService)
+        public SeasonJob(IMediator mediator)
         {
-            _propertyService = propertyService;
-            _discordEmbedService = discordEmbedService;
-            _emoteService = emoteService;
-            _fieldService = fieldService;
+            _mediator = mediator;
         }
 
         public async Task SpringComing() => await NewSeasonComing(Season.Spring);
@@ -43,9 +39,9 @@ namespace Hinode.Izumi.Services.BackgroundJobs.SeasonJob
         public async Task UpdateSeason(Season season)
         {
             // сбрасываем все ячейки участков
-            await _fieldService.ResetField();
+            await _mediator.Send(new ResetAllFieldsCommand());
             // обновляем текущий сезон в мире
-            await _propertyService.UpdateProperty(Property.CurrentSeason, season.GetHashCode());
+            await _mediator.Send(new UpdatePropertyCommand(Property.CurrentSeason, season.GetHashCode()));
         }
 
         /// <summary>
@@ -55,7 +51,9 @@ namespace Hinode.Izumi.Services.BackgroundJobs.SeasonJob
         private async Task NewSeasonComing(Season season)
         {
             // получаем иконки из базы
-            var emotes = await _emoteService.GetEmotes();
+            var emotes = await _mediator.Send(new GetEmotesQuery());
+            // получаем роли сервера
+            var roles = await _mediator.Send(new GetDiscordRolesQuery());
             // получаем текущее время
             var timeNow = DateTimeOffset.Now;
 
@@ -66,19 +64,19 @@ namespace Hinode.Izumi.Services.BackgroundJobs.SeasonJob
 
             var embed = new EmbedBuilder()
                 .WithAuthor(IzumiEventMessage.DiaryAuthorField.Parse())
-                .WithDescription(
-                    // определяем текст в зависимости от сезона
-                    season switch
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(season.Image())))
+                .WithDescription(season switch
                     {
                         Season.Spring => IzumiEventMessage.SpringComing.Parse(),
-                        Season.Summer => IzumiEventMessage.SummerComing.Parse(),
+                        Season.Summer => IzumiEventMessage.SummerComing.Parse(emotes.GetEmoteOrBlank("Rice")),
                         Season.Autumn => IzumiEventMessage.AutumnComing.Parse(),
                         Season.Winter => IzumiEventMessage.WinterComing.Parse(),
-                        Season.Any => throw new ArgumentOutOfRangeException(nameof(season), season, null),
                         _ => throw new ArgumentOutOfRangeException(nameof(season), season, null)
                     });
 
-            await _discordEmbedService.SendEmbed(DiscordChannel.Diary, embed);
+            await _mediator.Send(new SendEmbedToChannelCommand(DiscordChannel.Diary, embed,
+                // упоминаем роли событий
+                $"<@&{roles[DiscordRole.AllEvents].Id}> <@&{roles[DiscordRole.YearlyEvents].Id}>"));
         }
     }
 }

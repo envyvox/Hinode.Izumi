@@ -3,21 +3,20 @@ using Discord;
 using Discord.WebSocket;
 using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Framework.Autofac;
-using Hinode.Izumi.Services.DiscordServices.CommunityDescService;
-using Hinode.Izumi.Services.DiscordServices.DiscordGuildService;
+using Hinode.Izumi.Services.DiscordServices.CommunityDescService.Commands;
+using Hinode.Izumi.Services.DiscordServices.CommunityDescService.Queries;
+using MediatR;
 
 namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnServices.ReactionRemoved
 {
     [InjectableService]
     public class ReactionRemoved : IReactionRemoved
     {
-        private readonly IDiscordGuildService _discordGuildService;
-        private readonly ICommunityDescService _communityDescService;
+        private readonly IMediator _mediator;
 
-        public ReactionRemoved(IDiscordGuildService discordGuildService, ICommunityDescService communityDescService)
+        public ReactionRemoved(IMediator mediator)
         {
-            _discordGuildService = discordGuildService;
-            _communityDescService = communityDescService;
+            _mediator = mediator;
         }
 
         public async Task Execute(Cacheable<IUserMessage, ulong> message,
@@ -26,10 +25,8 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
             // игнорируем реакции поставленные ботом
             if (socketReaction.User.Value.IsBot) return;
 
-            // получаем каналы сервера
-            var channels = await _discordGuildService.GetChannels();
             // получаем каналы доски сообщества
-            var communityDescChannels = _communityDescService.CommunityDescChannels(channels);
+            var communityDescChannels = await _mediator.Send(new GetCommunityDescChannelsQuery());
 
             // если сообщение реакции находится в канале доски сообщества
             if (communityDescChannels.Contains(socketMessageChannel.Id))
@@ -39,12 +36,12 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
                     socketReaction.Emote.Name != "Dislike") return;
 
                 // получаем сообщение из базы
-                var contentMessage = await _communityDescService.GetContentMessage(
-                    (long) socketMessageChannel.Id, (long) socketReaction.MessageId);
+                var contentMessage = await _mediator.Send(new GetContentMessageQuery(
+                    (long) socketMessageChannel.Id, (long) socketReaction.MessageId));
                 // отключаем реакцию пользователя в базе
-                await _communityDescService.DeactivateUserVote(
+                await _mediator.Send(new DeactivateUserVoteCommand(
                     (long) socketReaction.UserId, contentMessage.Id,
-                    socketReaction.Emote.Name == "Like" ? Vote.Like : Vote.Dislike);
+                    socketReaction.Emote.Name == "Like" ? Vote.Like : Vote.Dislike));
             }
         }
     }

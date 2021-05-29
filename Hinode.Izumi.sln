@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hinode.Izumi", "Hinode.Izum
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hinode.Izumi.Services", "Hinode.Izumi.Services\Hinode.Izumi.Services.csproj", "{2B0D292E-60C4-4082-85A4-EE3ECF230C49}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hinode.Izumi.Commands", "Hinode.Izumi.Commands\Hinode.Izumi.Commands.csproj", "{365DFCF0-37E1-41B7-8FE0-C1C96F3DAA43}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{2B0D292E-60C4-4082-85A4-EE3ECF230C49}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B0D292E-60C4-4082-85A4-EE3ECF230C49}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B0D292E-60C4-4082-85A4-EE3ECF230C49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{365DFCF0-37E1-41B7-8FE0-C1C96F3DAA43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{365DFCF0-37E1-41B7-8FE0-C1C96F3DAA43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{365DFCF0-37E1-41B7-8FE0-C1C96F3DAA43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{365DFCF0-37E1-41B7-8FE0-C1C96F3DAA43}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

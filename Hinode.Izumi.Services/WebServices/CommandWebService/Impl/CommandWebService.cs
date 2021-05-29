@@ -2,7 +2,7 @@
 using System.Linq;
 using Discord.Commands;
 using Hinode.Izumi.Framework.Autofac;
-using Hinode.Izumi.Services.Commands.Attributes;
+using Hinode.Izumi.Services.WebServices.CommandWebService.Attributes;
 using CommandInfo = Hinode.Izumi.Services.WebServices.CommandWebService.Models.CommandInfo;
 
 namespace Hinode.Izumi.Services.WebServices.CommandWebService.Impl

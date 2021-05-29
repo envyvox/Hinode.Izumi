@@ -5,76 +5,60 @@ using Hinode.Izumi.Data.Enums.AchievementEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Data.Enums.ReputationEnums;
 using Hinode.Izumi.Framework.Autofac;
-using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService;
-using Hinode.Izumi.Services.DiscordServices.DiscordGuildService;
-using Hinode.Izumi.Services.EmoteService;
-using Hinode.Izumi.Services.EmoteService.Impl;
-using Hinode.Izumi.Services.RpgServices.AchievementService;
-using Hinode.Izumi.Services.RpgServices.ContractService;
-using Hinode.Izumi.Services.RpgServices.InventoryService;
-using Hinode.Izumi.Services.RpgServices.LocalizationService;
-using Hinode.Izumi.Services.RpgServices.LocationService;
-using Hinode.Izumi.Services.RpgServices.ReputationService;
-using Hinode.Izumi.Services.RpgServices.StatisticService;
+using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands;
+using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries;
+using Hinode.Izumi.Services.EmoteService.Queries;
+using Hinode.Izumi.Services.Extensions;
+using Hinode.Izumi.Services.GameServices.AchievementService.Commands;
+using Hinode.Izumi.Services.GameServices.ContractService.Commands;
+using Hinode.Izumi.Services.GameServices.ContractService.Queries;
+using Hinode.Izumi.Services.GameServices.InventoryService.Commands;
+using Hinode.Izumi.Services.GameServices.LocalizationService;
+using Hinode.Izumi.Services.GameServices.LocationService.Commands;
+using Hinode.Izumi.Services.GameServices.ReputationService.Commands;
+using Hinode.Izumi.Services.GameServices.ReputationService.Queries;
+using Hinode.Izumi.Services.GameServices.StatisticService.Commands;
+using MediatR;
 
 namespace Hinode.Izumi.Services.BackgroundJobs.ContractJob
 {
     [InjectableService]
     public class ContractJob : IContractJob
     {
-        private readonly IDiscordEmbedService _discordEmbedService;
-        private readonly IDiscordGuildService _discordGuildService;
-        private readonly IEmoteService _emoteService;
-        private readonly IReputationService _reputationService;
-        private readonly ILocationService _locationService;
+        private readonly IMediator _mediator;
         private readonly ILocalizationService _local;
-        private readonly IContractService _contractService;
-        private readonly IInventoryService _inventoryService;
-        private readonly IStatisticService _statisticService;
-        private readonly IAchievementService _achievementService;
 
-        public ContractJob(IDiscordEmbedService discordEmbedService, IDiscordGuildService discordGuildService,
-            IEmoteService emoteService, IReputationService reputationService, ILocationService locationService,
-            ILocalizationService local, IContractService contractService, IInventoryService inventoryService,
-            IStatisticService statisticService, IAchievementService achievementService)
+        public ContractJob(IMediator mediator, ILocalizationService local)
         {
-            _discordEmbedService = discordEmbedService;
-            _discordGuildService = discordGuildService;
-            _emoteService = emoteService;
-            _reputationService = reputationService;
-            _locationService = locationService;
+            _mediator = mediator;
             _local = local;
-            _contractService = contractService;
-            _inventoryService = inventoryService;
-            _statisticService = statisticService;
-            _achievementService = achievementService;
         }
 
         public async Task Execute(long userId, long contractId)
         {
             // получаем информацию о контракте
-            var contract = await _contractService.GetContract(contractId);
+            var contract = await _mediator.Send(new GetContractQuery(contractId));
             // получаем иконки из базы
-            var emotes = await _emoteService.GetEmotes();
+            var emotes = await _mediator.Send(new GetEmotesQuery());
             // определяем репутацию в этой локации
-            var reputationType = _reputationService.GetReputationByLocation(contract.Location);
+            var reputationType = await _mediator.Send(new GetReputationByLocationQuery(contract.Location));
 
             // удаляем информацию о том, что пользователь работает по контракту
-            await _contractService.RemoveContractFromUser(userId);
+            await _mediator.Send(new RemoveContractFromUserCommand(userId));
             // обновляем текущую локацию пользователя
-            await _locationService.UpdateUserLocation(userId, contract.Location);
+            await _mediator.Send(new UpdateUserLocationCommand(userId, contract.Location));
             // удаляем информацию о перемещении
-            await _locationService.RemoveUserMovement(userId);
+            await _mediator.Send(new DeleteUserMovementCommand(userId));
 
             // добавляем пользователю валюту за выполнение контракта
-            await _inventoryService.AddItemToUser(
-                userId, InventoryCategory.Currency, Currency.Ien.GetHashCode(), contract.Currency);
+            await _mediator.Send(new AddItemToUserByInventoryCategoryCommand(
+                userId, InventoryCategory.Currency, Currency.Ien.GetHashCode(), contract.Currency));
             // добавляем пользователю репутацию за выполнение контракта
-            await _reputationService.AddReputationToUser(userId, reputationType, contract.Reputation);
+            await _mediator.Send(new AddReputationToUserCommand(userId, reputationType, contract.Reputation));
             // добавляем пользователю статистику выполненных контрактов
-            await _statisticService.AddStatisticToUser(userId, Statistic.Contracts);
+            await _mediator.Send(new AddStatisticToUserCommand(userId, Statistic.Contracts));
             // проверяем выполнил ли пользователь достижение
-            await _achievementService.CheckAchievement(userId, Achievement.FirstContract);
+            await _mediator.Send(new CheckAchievementInUserCommand(userId, Achievement.FirstContract));
 
             var embed = new EmbedBuilder()
                 // название контракта
@@ -90,7 +74,8 @@ namespace Hinode.Izumi.Services.BackgroundJobs.ContractJob
                         emotes.GetEmoteOrBlank(reputationType.Emote(long.MaxValue)), contract.Reputation,
                         contract.Location.Localize(true)));
 
-            await _discordEmbedService.SendEmbed(await _discordGuildService.GetSocketUser(userId), embed);
+            await _mediator.Send(new SendEmbedToUserCommand(
+                await _mediator.Send(new GetDiscordSocketUserQuery(userId)), embed));
             await Task.CompletedTask;
         }
     }

@@ -26,6 +26,7 @@ namespace Hinode.Izumi.Data.Enums
         BelievingInLuck = 17,
         FirstSamurai = 18,
         Yatagarasu = 19, // титул реферальной системы
+        HarbingerOfSummer = 20,
         Wanderer = 777 // титул для Изуми
     }
 
@@ -58,6 +59,7 @@ namespace Hinode.Izumi.Data.Enums
             Title.Wanderer => "Странница",
             Title.FirstSamurai => "Первый самурай",
             Title.Yatagarasu => "Ятагарасу",
+            Title.HarbingerOfSummer => "Предвестник лета",
             _ => throw new ArgumentOutOfRangeException(nameof(title), title, null)
         };
 

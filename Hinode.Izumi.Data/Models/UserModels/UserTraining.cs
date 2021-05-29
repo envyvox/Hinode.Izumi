@@ -15,7 +15,7 @@ namespace Hinode.Izumi.Data.Models.UserModels
         /// <summary>
         /// Шаг обучения.
         /// </summary>
-        public TrainingStep Step { get; set; }
+        public TutorialStep Step { get; set; }
 
         /// <summary>
         /// Пользователь.

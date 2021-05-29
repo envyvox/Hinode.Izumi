@@ -22,5 +22,7 @@ namespace Hinode.Izumi.Services.WebServices.GatheringWebService.Models
         /// Локация, в которой его можно получить.
         /// </summary>
         public Location Location { get; set; }
+
+        public Event Event { get; set; }
     }
 }

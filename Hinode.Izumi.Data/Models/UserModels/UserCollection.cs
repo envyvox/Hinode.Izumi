@@ -23,6 +23,11 @@ namespace Hinode.Izumi.Data.Models.UserModels
         public long ItemId { get; set; }
 
         /// <summary>
+        /// Событие на котором получается этот предмет.
+        /// </summary>
+        public Event Event { get; set; }
+
+        /// <summary>
         /// Пользователь.
         /// </summary>
         public virtual User User { get; set; }

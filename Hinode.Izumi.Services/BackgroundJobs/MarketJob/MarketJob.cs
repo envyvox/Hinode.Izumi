@@ -6,13 +6,13 @@ using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Framework.Database;
 using Hinode.Izumi.Services.DiscordServices.DiscordClientService.Options;
-using Hinode.Izumi.Services.RpgServices.AlcoholService;
-using Hinode.Izumi.Services.RpgServices.CalculationService;
-using Hinode.Izumi.Services.RpgServices.CraftingService;
-using Hinode.Izumi.Services.RpgServices.DrinkService;
-using Hinode.Izumi.Services.RpgServices.FoodService;
-using Hinode.Izumi.Services.RpgServices.IngredientService;
-using Hinode.Izumi.Services.RpgServices.MarketService;
+using Hinode.Izumi.Services.GameServices.AlcoholService.Queries;
+using Hinode.Izumi.Services.GameServices.CalculationService.Queries;
+using Hinode.Izumi.Services.GameServices.CraftingService.Queries;
+using Hinode.Izumi.Services.GameServices.DrinkService.Queries;
+using Hinode.Izumi.Services.GameServices.FoodService.Queries;
+using Hinode.Izumi.Services.GameServices.MarketService.Commands;
+using MediatR;
 using Microsoft.Extensions.Options;
 
 namespace Hinode.Izumi.Services.BackgroundJobs.MarketJob
@@ -22,27 +22,13 @@ namespace Hinode.Izumi.Services.BackgroundJobs.MarketJob
     {
         private readonly IOptions<DiscordOptions> _options;
         private readonly IConnectionManager _con;
-        private readonly ICraftingService _craftingService;
-        private readonly ICalculationService _calc;
-        private readonly IIngredientService _ingredientService;
-        private readonly IAlcoholService _alcoholService;
-        private readonly IDrinkService _drinkService;
-        private readonly IFoodService _foodService;
-        private readonly IMarketService _marketService;
+        private readonly IMediator _mediator;
 
-        public MarketJob(IOptions<DiscordOptions> options, IConnectionManager con, ICraftingService craftingService,
-            ICalculationService calc, IIngredientService ingredientService, IAlcoholService alcoholService,
-            IDrinkService drinkService, IFoodService foodService, IMarketService marketService)
+        public MarketJob(IOptions<DiscordOptions> options, IConnectionManager con, IMediator mediator)
         {
             _options = options;
             _con = con;
-            _craftingService = craftingService;
-            _calc = calc;
-            _ingredientService = ingredientService;
-            _alcoholService = alcoholService;
-            _drinkService = drinkService;
-            _foodService = foodService;
-            _marketService = marketService;
+            _mediator = mediator;
         }
 
         public async Task DailyMarketReset()
@@ -74,68 +60,68 @@ namespace Hinode.Izumi.Services.BackgroundJobs.MarketJob
                     case MarketCategory.Crafting:
 
                         // получаем все изготавливаемые предметы
-                        var craftings = await _craftingService.GetAllCraftings();
+                        var craftings = await _mediator.Send(new GetAllCraftingsQuery());
                         // теперь нужно добавить или обновить каждый из них
                         foreach (var crafting in craftings)
                         {
                             // получаем цену NPC изготавливаемого предмета
-                            var price = await _calc.NpcPrice(category,
+                            var price = await _mediator.Send(new GetNpcPriceQuery(category,
                                 // получаем себестоимость изготавливаемого предмета
-                                await _ingredientService.GetCraftingCostPrice(crafting.Id));
+                                await _mediator.Send(new GetCraftingCostPriceQuery(crafting.Id))));
                             // добавляем или обновляем изготавливаемый предмет на рынок
-                            await _marketService.AddOrUpdateMarketRequest(
-                                izumiId, category, crafting.Id, price, 9999, false);
+                            await _mediator.Send(new CreateOrUpdateMarketRequestCommand(
+                                izumiId, category, crafting.Id, price, 9999, false));
                         }
 
                         break;
                     case MarketCategory.Alcohol:
 
                         // получаем весь алкоголь
-                        var alcohols = await _alcoholService.GetAllAlcohol();
+                        var alcohols = await _mediator.Send(new GetAllAlcoholQuery());
                         // теперь нужно добавить или обновить каждый из них
                         foreach (var alcohol in alcohols)
                         {
                             // получаем цену NPC алкоголя
-                            var price = await _calc.NpcPrice(category,
+                            var price = await _mediator.Send(new GetNpcPriceQuery(category,
                                 // получаем себестоимость алкоголя
-                                await _ingredientService.GetAlcoholCostPrice(alcohol.Id));
+                                await _mediator.Send(new GetAlcoholCostPriceQuery(alcohol.Id))));
                             // добавляем или обновляем алкоголь на рынок
-                            await _marketService.AddOrUpdateMarketRequest(
-                                izumiId, category, alcohol.Id, price, 9999, false);
+                            await _mediator.Send(new CreateOrUpdateMarketRequestCommand(
+                                izumiId, category, alcohol.Id, price, 9999, false));
                         }
 
                         break;
                     case MarketCategory.Drink:
 
                         // получаем все напитки
-                        var drinks = await _drinkService.GetAllDrinks();
+                        var drinks = await _mediator.Send(new GetAllDrinksQuery());
                         // теперь нужно добавить или обновить каждый из них
                         foreach (var drink in drinks)
                         {
                             // получаем цену NPC напитка
-                            var price = await _calc.NpcPrice(category,
+                            var price = await _mediator.Send(new GetNpcPriceQuery(category,
                                 // получаем себестоимость напитка
-                                await _ingredientService.GetDrinkCostPrice(drink.Id));
+                                await _mediator.Send(new GetDrinkCostPriceQuery(drink.Id))));
                             // добавляем или обновляем напиток на рынок
-                            await _marketService.AddOrUpdateMarketRequest(
-                                izumiId, category, drink.Id, price, 9999, false);
+                            await _mediator.Send(new CreateOrUpdateMarketRequestCommand(
+                                izumiId, category, drink.Id, price, 9999, false));
                         }
 
                         break;
                     case MarketCategory.Food:
 
                         // получаем все блюда
-                        var foods = await _foodService.GetAllFood();
+                        var foods = await _mediator.Send(new GetAllFoodQuery());
                         // теперь нужно добавить или обновить каждое из них
                         foreach (var food in foods)
                         {
                             // получаем цену NPC блюда
-                            var price = await _calc.NpcPrice(category,
+                            var price = await _mediator.Send(new GetNpcPriceQuery(category,
                                 // получаем себестоимость блюда
-                                await _ingredientService.GetFoodCostPrice(food.Id));
+                                await _mediator.Send(new GetFoodCostPriceQuery(food.Id))));
                             // добавляем или обновляем блюдо на рынок
-                            await _marketService.AddOrUpdateMarketRequest(
-                                izumiId, category, food.Id, price, 9999, false);
+                            await _mediator.Send(new CreateOrUpdateMarketRequestCommand(
+                                izumiId, category, food.Id, price, 9999, false));
                         }
 
                         break;

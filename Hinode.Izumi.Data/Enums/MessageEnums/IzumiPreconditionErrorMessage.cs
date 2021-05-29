@@ -3,7 +3,7 @@
 namespace Hinode.Izumi.Data.Enums.MessageEnums
 {
     /// <summary>
-    /// Сообщением с ошибкой о том что не выполнены необходимые требования.
+    /// Сообщение с ошибкой о том что не выполнены необходимые требования.
     /// </summary>
     public enum IzumiPreconditionErrorMessage
     {
@@ -18,9 +18,8 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         RequireLocationButYouFishing = 9,
         RequireLocationButYouFieldWatering = 10,
         RequireCasinoOpen = 11,
-        RequireContext = 12,
-        RequireNoDebuff = 13,
-        RequireEvent
+        RequireNoDebuff = 12,
+        RequireEvent = 13
     }
 
     public static class IzumiPreconditionErrorMessageHelper
@@ -94,9 +93,6 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
                 IzumiPreconditionErrorMessage.RequireCasinoOpen =>
                     "Казино работает только с `18:00` до `06:00`, приходите в это время чтобы испытать свою удачу!",
-
-                IzumiPreconditionErrorMessage.RequireContext =>
-                    "Кажется вы пытаетесь использоваться команду в неподходящем месте. Лучше попробовать в **{0}**.",
 
                 IzumiPreconditionErrorMessage.RequireNoDebuff =>
                     "Вы не можете это сделать, ведь из-за последствий вторжения ежедневного босса {0}",

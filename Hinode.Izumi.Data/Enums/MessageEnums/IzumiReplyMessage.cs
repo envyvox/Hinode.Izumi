@@ -517,7 +517,22 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         LotteryGiftInfoFieldName,
         LotteryGiftInfoFieldDesc,
         LotteryInfoCurrentMembersNull,
-        CasinoClosed
+        ShopProjectSoldFieldName,
+        ShopProjectSoldFieldDesc,
+        CommunityDescInfoDesc,
+        CommunityDescInfoRoleFieldName,
+        CommunityDescInfoRoleFieldDesc,
+        ShopEventRequireEvent,
+        ShopEventJuneAuthor,
+        ShopEventJuneDesc,
+        ShopEventJuneToyFieldName,
+        ShopEventJuneToyFieldDesc,
+        ShopEventJuneBuyYouHaveToy,
+        ShopEventJuneBuyUserHasToy,
+        ShopEventJuneBuySuccessYourself,
+        ShopEventJuneBuySuccessForUser,
+        ShopEventJuneBuySuccessNotify,
+        ShopEventEmpty
     }
 
     public static class IzumiReplyMessageHelper
@@ -1427,7 +1442,20 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Доступные для получения роли",
 
             IzumiReplyMessage.PresetGameRolesFieldDesc =>
-                "{0} <@&{1}>\n{2} <@&{3}>\n{4} <@&{5}>\n{6} <@&{7}>\n{8} <@&{9}>\n{10} <@&{11}>\n{12} <@&{13}>\n{14} <@&{15}>\n{16} <@&{17}>",
+                "{0} <@&{1}>\n" +
+                "{2} <@&{3}>\n" +
+                "{4} <@&{5}>\n" +
+                "{6} <@&{7}>\n" +
+                "{8} <@&{9}>\n" +
+                "{10} <@&{11}>\n" +
+                "{12} <@&{13}>\n" +
+                "{14} <@&{15}>\n" +
+                "{16} <@&{17}>\n" +
+                "{18} <@&{19}>\n" +
+                "{20} <@&{21}>\n" +
+                "{22} <@&{23}>\n" +
+                "{24} <@&{25}>\n" +
+                "{26} <@&{27}>",
 
             IzumiReplyMessage.PresetRolesFooter =>
                 "При нажатии на реакцию, она будет снята и вы получите соответствующую роль. При необходимости роли можно снять, нажав на реакцию повторно.",
@@ -2081,6 +2109,57 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.LotteryInfoCurrentMembersNull =>
                 "На данный момент нет пользователей с {0} лотерейным билетом.",
+
+            IzumiReplyMessage.ShopProjectSoldFieldName => "У вас уже все есть",
+
+            IzumiReplyMessage.ShopProjectSoldFieldDesc =>
+                "На полках этого магазина в данный момент нет ничего, что могло бы вас заинтересовать.",
+
+            IzumiReplyMessage.CommunityDescInfoDesc =>
+                "Тут собрана информация о вашем участии в **доске сообщества**:\n\n" +
+                "{0}{1}{2}{3}{4}" +
+                "Всего {5} {6} {7}.",
+
+            IzumiReplyMessage.CommunityDescInfoRoleFieldName =>
+                "Поставщик контента",
+
+            IzumiReplyMessage.CommunityDescInfoRoleFieldDesc =>
+                "Роль будет снята через {0}.",
+
+            IzumiReplyMessage.ShopEventRequireEvent =>
+                "Двери магазина события сейчас закрыты. Возвращайтесь когда будет проходить событие.",
+
+            IzumiReplyMessage.ShopEventJuneAuthor =>
+                "Магазин события - Июнь месяц",
+
+            IzumiReplyMessage.ShopEventJuneDesc =>
+                "Тут вы можете приобрести коллекционую игрушку, сделанную жителями сада. Им не нужны деньги, они просто хотят возместить потраченный материал.\n\n" +
+                "Напишите `!магазин события купить [номер предмета]`, чтобы приобрести игрушку для себя или `!магазин события купить [номер предмета] [игровое имя]`, если вы хотите приобрести ее в подарок для другого пользователя.\n\n" +
+                "*Пользователь может обладать только одной игрушкой одного типа одновременно. Вы не можете купить игрушку, которой уже обладаете. И не можете подарить игрушку пользователю, у которого она уже есть.*",
+
+            IzumiReplyMessage.ShopEventJuneToyFieldName =>
+                "{0} `{1}` Коллекционная игрушка {2} {3}",
+
+            IzumiReplyMessage.ShopEventJuneToyFieldDesc =>
+                "Стоимость: {0} {1} {2}",
+
+            IzumiReplyMessage.ShopEventJuneBuyYouHaveToy =>
+                "У вас уже есть коллекционная игрушка {0} {1}.",
+
+            IzumiReplyMessage.ShopEventJuneBuyUserHasToy =>
+                "У {0} {1} **{2}** уже есть коллекционная игрушка {3} {4}.",
+
+            IzumiReplyMessage.ShopEventJuneBuySuccessNotify =>
+                "{0} {1} **{2}** приобрел для вас коллекционную игрушку {3} {4}.\nТеперь она будет храниться в вашей `!коллекция`.",
+
+            IzumiReplyMessage.ShopEventJuneBuySuccessYourself =>
+                "Вы успешно приобрели коллекционную игрушку {0} {1} за {2} {3} {4}.\nТеперь она будет храниться в вашей `!коллекция`.",
+
+            IzumiReplyMessage.ShopEventJuneBuySuccessForUser =>
+                "Вы успешно приобрели коллекционную игрушку {0} {1} за {2} {3} {4} для {5} {6} **{7}**.",
+
+            IzumiReplyMessage.ShopEventEmpty =>
+                "Не смотря на то, что сейчас проходит событие, прилавки магазина события пустуют. Возвращайтесь на следующее событие.",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };

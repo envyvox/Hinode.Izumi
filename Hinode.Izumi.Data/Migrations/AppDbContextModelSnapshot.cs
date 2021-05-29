@@ -1377,6 +1377,12 @@ namespace Hinode.Izumi.Data.Migrations
                         .HasColumnName("created_at")
                         .HasDefaultValueSql("now()");
 
+                    b.Property<int>("Event")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("event");
+
                     b.Property<int>("Location")
                         .HasColumnType("integer")
                         .HasColumnName("location");
@@ -2412,6 +2418,12 @@ namespace Hinode.Izumi.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at")
                         .HasDefaultValueSql("now()");
+
+                    b.Property<int>("Event")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("event");
 
                     b.Property<long>("ItemId")
                         .HasColumnType("bigint")

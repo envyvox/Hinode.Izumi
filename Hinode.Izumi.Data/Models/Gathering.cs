@@ -21,5 +21,10 @@ namespace Hinode.Izumi.Data.Models
         /// Локация, в которой его можно получить.
         /// </summary>
         public Location Location { get; set; }
+
+        /// <summary>
+        /// Событие в которые можно получить этот предмет.
+        /// </summary>
+        public Event Event { get; set; }
     }
 }

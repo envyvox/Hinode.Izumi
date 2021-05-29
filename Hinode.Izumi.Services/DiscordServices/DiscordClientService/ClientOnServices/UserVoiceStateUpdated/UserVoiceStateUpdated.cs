@@ -3,26 +3,28 @@ using Discord;
 using Discord.WebSocket;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Framework.Autofac;
-using Hinode.Izumi.Services.DiscordServices.DiscordGuildService;
+using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Commands;
+using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries;
+using MediatR;
 
 namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnServices.UserVoiceStateUpdated
 {
     [InjectableService]
     public class UserVoiceStateUpdated : IUserVoiceStateUpdated
     {
-        private readonly IDiscordGuildService _discordGuildService;
+        private readonly IMediator _mediator;
 
-        public UserVoiceStateUpdated(IDiscordGuildService discordGuildService)
+        public UserVoiceStateUpdated(IMediator mediator)
         {
-            _discordGuildService = discordGuildService;
+            _mediator = mediator;
         }
 
         public async Task Execute(SocketUser user, SocketVoiceState userOldState, SocketVoiceState userNewState)
         {
             // получаем каналы сервера
-            var channels = await _discordGuildService.GetChannels();
+            var channels = await _mediator.Send(new GetDiscordChannelsQuery());
             // получаем роли сервера
-            var roles = await _discordGuildService.GetRoles();
+            var roles = await _mediator.Send(new GetDiscordRolesQuery());
 
             // категория для создания каналов
             var createRoomParent = (ulong) channels[DiscordChannel.CreateRoomParent].Id;
@@ -37,14 +39,14 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
             var newChannel = userNewState.VoiceChannel;
 
             // когда пользователь заходит в голосовой канал
-            if (oldChannel == null)
+            if (oldChannel is null)
                 // добавляем ему роль
-                await _discordGuildService.ToggleRoleInUser((long) user.Id, roles[DiscordRole.InVoice].Id, true);
+                await _mediator.Send(new AddDiscordRoleToUserCommand((long) user.Id, DiscordRole.InVoice));
 
             // когда пользователь выходит из голосового канала
-            if (newChannel == null)
+            if (newChannel is null)
                 // забираем роль
-                await _discordGuildService.ToggleRoleInUser((long) user.Id, roles[DiscordRole.InVoice].Id, false);
+                await _mediator.Send(new RemoveDiscordRoleFromUserCommand((long) user.Id, DiscordRole.InVoice));
 
             // если новый канал это комната для создания каналов
             if (newChannel?.Id == createRoom)
@@ -59,7 +61,7 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
                 });
 
                 // перемещаем пользователя в созданный канал
-                await _discordGuildService.MoveUserInChannel((long) user.Id, createdChannel);
+                await _mediator.Send(new MoveDiscordUserInChannelCommand((long) user.Id, createdChannel));
                 // добавляем этому каналу разрешения для пользователя
                 await createdChannel.AddPermissionOverwriteAsync(
                     // пользователь

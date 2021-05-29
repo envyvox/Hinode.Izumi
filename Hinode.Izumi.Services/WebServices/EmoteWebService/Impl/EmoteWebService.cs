@@ -3,8 +3,9 @@ using System.Threading.Tasks;
 using Dapper;
 using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Framework.Database;
-using Hinode.Izumi.Services.EmoteService;
+using Hinode.Izumi.Services.EmoteService.Commands;
 using Hinode.Izumi.Services.WebServices.EmoteWebService.Models;
+using MediatR;
 
 namespace Hinode.Izumi.Services.WebServices.EmoteWebService.Impl
 {
@@ -12,12 +13,12 @@ namespace Hinode.Izumi.Services.WebServices.EmoteWebService.Impl
     public class EmoteWebService : IEmoteWebService
     {
         private readonly IConnectionManager _con;
-        private readonly IEmoteService _emoteService;
+        private readonly IMediator _mediator;
 
-        public EmoteWebService(IConnectionManager con, IEmoteService emoteService)
+        public EmoteWebService(IConnectionManager con, IMediator mediator)
         {
             _con = con;
-            _emoteService = emoteService;
+            _mediator = mediator;
         }
 
         public async Task<IEnumerable<EmoteWebModel>> GetAllEmotes() =>
@@ -33,6 +34,6 @@ namespace Hinode.Izumi.Services.WebServices.EmoteWebService.Impl
                     where id = @id",
                     new {id});
 
-        public async Task UploadEmotes() => await _emoteService.UploadEmotes();
+        public async Task UploadEmotes() => await _mediator.Send(new UploadEmotesCommand());
     }
 }
