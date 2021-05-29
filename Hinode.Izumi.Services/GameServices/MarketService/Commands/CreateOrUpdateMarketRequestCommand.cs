@@ -11,8 +11,8 @@ namespace Hinode.Izumi.Services.GameServices.MarketService.Commands
             long UserId,
             MarketCategory Category,
             long ItemId,
-            long Amount,
             long Price,
+            long Amount,
             bool Selling)
         : IRequest;
 
@@ -27,7 +27,7 @@ namespace Hinode.Izumi.Services.GameServices.MarketService.Commands
 
         public async Task<Unit> Handle(CreateOrUpdateMarketRequestCommand request, CancellationToken cancellationToken)
         {
-            var (userId, category, itemId, amount, price, selling) = request;
+            var (userId, category, itemId, price, amount, selling) = request;
 
             await _con.GetConnection()
                 .ExecuteAsync(@"
