@@ -97,9 +97,8 @@ namespace Hinode.Izumi.Commands.UserCommands
         {
             return votes
                 .Where(cv => messages
-                    .Select(cm => cm.Id)
-                    .Contains(cv.Id))
-                .Count(x => x.Vote == vote);
+                    .Any(cm => cv.MessageId == cm.Id))
+                .Count(cv => cv.Vote == vote);
         }
     }
 }
