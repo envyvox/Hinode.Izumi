@@ -7908,6 +7908,7 @@ export enum Image {
     Summer = 51,
     Autumn = 52,
     Winter = 53,
+    EventJuneSkyLantern = 54,
 }
 
 export class LocalizationWebModel extends EntityBaseModel implements ILocalizationWebModel {
@@ -8388,6 +8389,8 @@ export enum Property {
     ReputationVillageTitleNumber = 87,
     CasinoState = 88,
     EventJuneBambooToyPrice = 89,
+    EventJuneSkyLanternFoodId = 90,
+    EventJuneSkyLanternFoodAmount = 91,
 }
 
 export class SwaggerException extends Error {

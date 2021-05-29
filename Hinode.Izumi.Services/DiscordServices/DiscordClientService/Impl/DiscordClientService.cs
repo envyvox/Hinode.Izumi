@@ -192,12 +192,12 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.Impl
                     "0 0 10 5 *", _timeZoneInfo);
                 RecurringJob.AddOrUpdate<IEventJuneJob>(
                     x => x.Start(),
-                    // в 00:00, 1 июня
-                    "0 0 1 6 *", _timeZoneInfo);
+                    // в 12:00, 31 мая
+                    "0 12 31 5 *", _timeZoneInfo);
                 RecurringJob.AddOrUpdate<IEventJuneJob>(
                     x => x.End(),
-                    // в 00:00, 8 июня
-                    "0 0 8 6 *", _timeZoneInfo);
+                    // в 00:00, 7 июня
+                    "0 0 7 6 *", _timeZoneInfo);
 
                 // ежедневные джобы
                 RecurringJob.AddOrUpdate<INewDayJob>(

@@ -57,6 +57,7 @@
         Spring = 50,
         Summer = 51,
         Autumn = 52,
-        Winter = 53
+        Winter = 53,
+        EventJuneSkyLantern = 54
     }
 }

@@ -89,7 +89,9 @@ namespace Hinode.Izumi.Data.Enums.PropertyEnums
         ReputationCastleTitleNumber = 86,
         ReputationVillageTitleNumber = 87,
         CasinoState = 88,
-        EventJuneBambooToyPrice = 89
+        EventJuneBambooToyPrice = 89,
+        EventJuneSkyLanternFoodId = 90,
+        EventJuneSkyLanternFoodAmount = 91
     }
 
     public static class PropertyHelper
@@ -182,6 +184,8 @@ namespace Hinode.Izumi.Data.Enums.PropertyEnums
             Property.ReputationVillageTitleNumber => PropertyCategory.Reputation,
             Property.CasinoState => PropertyCategory.WorldState,
             Property.EventJuneBambooToyPrice => PropertyCategory.Event,
+            Property.EventJuneSkyLanternFoodId => PropertyCategory.Event,
+            Property.EventJuneSkyLanternFoodAmount => PropertyCategory.Event,
             _ => throw new ArgumentOutOfRangeException(nameof(property), property, null)
         };
     }
