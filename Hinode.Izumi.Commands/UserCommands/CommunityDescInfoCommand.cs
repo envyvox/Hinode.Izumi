@@ -80,11 +80,16 @@ namespace Hinode.Izumi.Commands.UserCommands
 
             var embed = new EmbedBuilder()
                 .WithDescription(IzumiReplyMessage.CommunityDescInfoDesc.Parse(
-                    DisplayChannelInfo(screenshotMessages.Length, screenshotMessagesLikes, screenshotMessagesDislikes),
-                    DisplayChannelInfo(memesMessages.Length, memesMessagesLikes, memesMessagesDislikes),
-                    DisplayChannelInfo(artMessages.Length, artMessagesLikes, artMessagesDislikes),
-                    DisplayChannelInfo(eroticMessages.Length, eroticMessagesLikes, eroticMessagesDislikes),
-                    DisplayChannelInfo(nsfwMessages.Length, nsfwMessagesLikes, nsfwMessagesDislikes),
+                    DisplayChannelInfo(screenshotMessages.Length, channels[DiscordChannel.Screenshots].Id,
+                        screenshotMessagesLikes, screenshotMessagesDislikes),
+                    DisplayChannelInfo(memesMessages.Length, channels[DiscordChannel.Memes].Id,
+                        memesMessagesLikes, memesMessagesDislikes),
+                    DisplayChannelInfo(artMessages.Length, channels[DiscordChannel.Arts].Id,
+                        artMessagesLikes, artMessagesDislikes),
+                    DisplayChannelInfo(eroticMessages.Length, channels[DiscordChannel.Erotic].Id,
+                        eroticMessagesLikes, eroticMessagesDislikes),
+                    DisplayChannelInfo(nsfwMessages.Length, channels[DiscordChannel.Nsfw].Id,
+                        nsfwMessagesLikes, nsfwMessagesDislikes),
                     _emotes.GetEmoteOrBlank(Vote.Like.ToString()), userTotalLikes,
                     _local.Localize(Vote.Like.ToString(), userTotalLikes)));
 
@@ -106,10 +111,10 @@ namespace Hinode.Izumi.Commands.UserCommands
                 .Count(cv => cv.Vote == vote);
         }
 
-        private string DisplayChannelInfo(long messages, long likes, long dislikes)
+        private string DisplayChannelInfo(long messages, long channelId, long likes, long dislikes)
         {
             return
-                $"{_emotes.GetEmoteOrBlank("List")} {messages} {_local.Localize("Publication", messages)}, " +
+                $"{_emotes.GetEmoteOrBlank("List")} {messages} {_local.Localize("Publication", messages)} в <#{channelId}>, " +
                 $"{_emotes.GetEmoteOrBlank(Vote.Like.ToString())} {likes} {_local.Localize(Vote.Like.ToString(), likes)} " +
                 $"и {_emotes.GetEmoteOrBlank(Vote.Dislike.ToString())} {dislikes} {_local.Localize(Vote.Dislike.ToString(), dislikes)}.\n";
         }
