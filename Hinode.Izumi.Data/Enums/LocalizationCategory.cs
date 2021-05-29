@@ -16,6 +16,8 @@
         Box = 12,
         Points = 13,
         Seafood = 14,
-        Event = 15
+        Event = 15,
+        Vote = 16,
+        Basic = 17
     }
 }

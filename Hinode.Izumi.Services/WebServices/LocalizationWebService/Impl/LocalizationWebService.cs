@@ -242,6 +242,24 @@ namespace Hinode.Izumi.Services.WebServices.LocalizationWebService.Impl
                         }
 
                         break;
+                    case LocalizationCategory.Vote:
+
+                        var votes = Enum.GetValues(typeof(Vote)).Cast<Vote>();
+                        foreach (var vote in votes)
+                        {
+                            categories.Add(LocalizationCategory.Vote.GetHashCode());
+                            itemsId.Add(vote.GetHashCode());
+                            names.Add(vote.ToString());
+                        }
+
+                        break;
+                    case LocalizationCategory.Basic:
+
+                        categories.Add(LocalizationCategory.Points.GetHashCode());
+                        itemsId.Add(1);
+                        names.Add("Publication");
+
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }

@@ -7976,6 +7976,8 @@ export enum LocalizationCategory {
     Points = 13,
     Seafood = 14,
     Event = 15,
+    Vote = 16,
+    Basic = 17,
 }
 
 export class MasteryPropertyWebModel extends EntityBaseModel implements IMasteryPropertyWebModel {

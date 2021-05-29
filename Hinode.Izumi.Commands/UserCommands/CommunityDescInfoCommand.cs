@@ -14,7 +14,9 @@ using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands;
 using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries;
 using Hinode.Izumi.Services.DiscordServices.DiscordRoleService.Queries;
 using Hinode.Izumi.Services.EmoteService.Queries;
+using Hinode.Izumi.Services.EmoteService.Records;
 using Hinode.Izumi.Services.Extensions;
+using Hinode.Izumi.Services.GameServices.LocalizationService;
 using Hinode.Izumi.Services.WebServices.CommandWebService.Attributes;
 using Humanizer;
 using MediatR;
@@ -26,16 +28,19 @@ namespace Hinode.Izumi.Commands.UserCommands
     public class CommunityDescInfoCommand : ModuleBase<SocketCommandContext>
     {
         private readonly IMediator _mediator;
+        private readonly ILocalizationService _local;
+        private Dictionary<string, EmoteRecord> _emotes;
 
-        public CommunityDescInfoCommand(IMediator mediator)
+        public CommunityDescInfoCommand(IMediator mediator, ILocalizationService local)
         {
             _mediator = mediator;
+            _local = local;
         }
 
         [Command("сообщества")]
         public async Task CommunityDescInfoTask()
         {
-            var emotes = await _mediator.Send(new GetEmotesQuery());
+            _emotes = await _mediator.Send(new GetEmotesQuery());
             var channels = await _mediator.Send(new GetDiscordChannelsQuery());
             var roles = await _mediator.Send(new GetDiscordRolesQuery());
             var userMessages = await _mediator.Send(new GetContentMessagesByAuthorIdQuery(
@@ -75,13 +80,13 @@ namespace Hinode.Izumi.Commands.UserCommands
 
             var embed = new EmbedBuilder()
                 .WithDescription(IzumiReplyMessage.CommunityDescInfoDesc.Parse(
-                    emotes.GetEmoteOrBlank("List"), screenshotMessages.Length, channels[DiscordChannel.Screenshots].Id,
-                    emotes.GetEmoteOrBlank("Like"), screenshotMessagesLikes, emotes.GetEmoteOrBlank("Dislike"),
-                    screenshotMessagesDislikes, memesMessages.Length, channels[DiscordChannel.Memes].Id,
-                    memesMessagesLikes, memesMessagesDislikes, artMessages.Length, channels[DiscordChannel.Arts].Id,
-                    artMessagesLikes, artMessagesDislikes, eroticMessages.Length, channels[DiscordChannel.Erotic].Id,
-                    eroticMessagesLikes, eroticMessagesDislikes, nsfwMessages.Length, channels[DiscordChannel.Nsfw].Id,
-                    nsfwMessagesLikes, nsfwMessagesDislikes, userTotalLikes));
+                    DisplayChannelInfo(screenshotMessages.Length, screenshotMessagesLikes, screenshotMessagesDislikes),
+                    DisplayChannelInfo(memesMessages.Length, memesMessagesLikes, memesMessagesDislikes),
+                    DisplayChannelInfo(artMessages.Length, artMessagesLikes, artMessagesDislikes),
+                    DisplayChannelInfo(eroticMessages.Length, eroticMessagesLikes, eroticMessagesDislikes),
+                    DisplayChannelInfo(nsfwMessages.Length, nsfwMessagesLikes, nsfwMessagesDislikes),
+                    _emotes.GetEmoteOrBlank(Vote.Like.ToString()), userTotalLikes,
+                    _local.Localize(Vote.Like.ToString(), userTotalLikes)));
 
             if (userRole is not null)
                 embed.AddField(IzumiReplyMessage.CommunityDescInfoRoleFieldName.Parse(),
@@ -99,6 +104,14 @@ namespace Hinode.Izumi.Commands.UserCommands
                 .Where(cv => messages
                     .Any(cm => cv.MessageId == cm.Id))
                 .Count(cv => cv.Vote == vote);
+        }
+
+        private string DisplayChannelInfo(long messages, long likes, long dislikes)
+        {
+            return
+                $"{_emotes.GetEmoteOrBlank("List")} {messages} {_local.Localize("Publication", messages)}, " +
+                $"{_emotes.GetEmoteOrBlank(Vote.Like.ToString())} {likes} {_local.Localize(Vote.Like.ToString(), likes)} " +
+                $"и {_emotes.GetEmoteOrBlank(Vote.Dislike.ToString())} {dislikes} {_local.Localize(Vote.Dislike.ToString(), dislikes)}.\n";
         }
     }
 }
