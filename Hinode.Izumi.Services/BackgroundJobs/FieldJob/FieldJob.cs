@@ -7,6 +7,7 @@ using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands;
 using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries;
 using Hinode.Izumi.Services.GameServices.FieldService.Commands;
 using Hinode.Izumi.Services.GameServices.LocationService.Commands;
+using Hinode.Izumi.Services.HangfireJobService.Commands;
 using MediatR;
 
 namespace Hinode.Izumi.Services.BackgroundJobs.FieldJob
@@ -29,6 +30,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.FieldJob
             await _mediator.Send(new DeleteUserMovementCommand(userId));
             // обновляем состояние ячеек участка на политые
             await _mediator.Send(new UpdateUserFieldsStateCommand(fieldOwnerId, FieldState.Watered));
+            await _mediator.Send(new DeleteUserHangfireJobCommand(userId, HangfireAction.FieldWatering));
 
             var embed = new EmbedBuilder()
                 // оповещаем о завершении поливки участка

@@ -24,6 +24,7 @@ using Hinode.Izumi.Services.GameServices.ProjectService.Commands;
 using Hinode.Izumi.Services.GameServices.ProjectService.Queries;
 using Hinode.Izumi.Services.GameServices.ProjectService.Records;
 using Hinode.Izumi.Services.GameServices.PropertyService.Queries;
+using Hinode.Izumi.Services.HangfireJobService.Commands;
 using Hinode.Izumi.Services.WebServices.CommandWebService.Attributes;
 using Humanizer;
 using MediatR;
@@ -93,9 +94,11 @@ namespace Hinode.Izumi.Commands.UserCommands.BuildingCommands
                     await _mediator.Send(new RemoveProjectFromUserCommand((long) Context.User.Id, project.Id));
 
                     // запускаем джобу с окончанием строительства
-                    BackgroundJob.Schedule<IBuildingJob>(
+                    var jobId = BackgroundJob.Schedule<IBuildingJob>(
                         x => x.CompleteBuilding((long) Context.User.Id, project.Id),
                         TimeSpan.FromHours(project.Time));
+                    await _mediator.Send(new CreateUserHangfireJobCommand(
+                        (long) Context.User.Id, HangfireAction.Building, jobId));
 
                     var embed = new EmbedBuilder()
                         // подтверждаем что строительство успешно начато

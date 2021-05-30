@@ -3,15 +3,17 @@ using System;
 using Hinode.Izumi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Hinode.Izumi.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210530070624_UserHangfireJobModelInit")]
+    partial class UserHangfireJobModelInit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3047,10 +3049,6 @@ namespace Hinode.Izumi.Data.Migrations
                         .HasColumnName("id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("Action")
-                        .HasColumnType("integer")
-                        .HasColumnName("action");
-
                     b.Property<DateTimeOffset>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
@@ -3074,9 +3072,9 @@ namespace Hinode.Izumi.Data.Migrations
                     b.HasKey("Id")
                         .HasName("pk_user_hangfire_jobs");
 
-                    b.HasIndex("UserId", "Action", "JobId")
+                    b.HasIndex("UserId", "JobId")
                         .IsUnique()
-                        .HasDatabaseName("ix_user_hangfire_jobs_user_id_action_job_id");
+                        .HasDatabaseName("ix_user_hangfire_jobs_user_id_job_id");
 
                     b.ToTable("user_hangfire_jobs");
                 });

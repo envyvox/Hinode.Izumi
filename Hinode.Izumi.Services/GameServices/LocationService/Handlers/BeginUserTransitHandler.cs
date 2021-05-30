@@ -8,6 +8,7 @@ using Hinode.Izumi.Services.BackgroundJobs.TransitJob;
 using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Commands;
 using Hinode.Izumi.Services.GameServices.LocationService.Commands;
 using Hinode.Izumi.Services.GameServices.LocationService.Queries;
+using Hinode.Izumi.Services.HangfireJobService.Commands;
 using MediatR;
 
 namespace Hinode.Izumi.Services.GameServices.LocationService.Handlers
@@ -38,9 +39,11 @@ namespace Hinode.Izumi.Services.GameServices.LocationService.Handlers
             await _mediator.Send(new AddDiscordRoleToUserCommand(userId, DiscordRole.LocationInTransit),
                 cancellationToken);
 
-            BackgroundJob.Schedule<ITransitJob>(x =>
+            var jobId = BackgroundJob.Schedule<ITransitJob>(x =>
                     x.CompleteTransit(userId, destination),
                 TimeSpan.FromMinutes(time));
+            await _mediator.Send(new CreateUserHangfireJobCommand(
+                    userId, HangfireAction.Transit, jobId), cancellationToken);
 
             return new Unit();
         }

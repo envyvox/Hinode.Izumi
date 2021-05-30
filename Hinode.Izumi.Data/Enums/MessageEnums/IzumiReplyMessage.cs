@@ -532,7 +532,9 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         ShopEventJuneBuySuccessYourself,
         ShopEventJuneBuySuccessForUser,
         ShopEventJuneBuySuccessNotify,
-        ShopEventEmpty
+        ShopEventEmpty,
+        InterruptActionAcceptedList,
+        InterruptActionSuccess
     }
 
     public static class IzumiReplyMessageHelper
@@ -2160,6 +2162,12 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.ShopEventEmpty =>
                 "Не смотря на то, что сейчас проходит событие, прилавки магазина события пустуют. Возвращайтесь на следующее событие.",
+
+            IzumiReplyMessage.InterruptActionAcceptedList =>
+                "Прерваться можно только во время следующих действий:\n{0}",
+
+            IzumiReplyMessage.InterruptActionSuccess =>
+                "Вы прервали текущее действие.",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };

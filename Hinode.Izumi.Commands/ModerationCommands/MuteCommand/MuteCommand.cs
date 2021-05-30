@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Hangfire;
+using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Framework.Autofac;
@@ -11,6 +12,7 @@ using Hinode.Izumi.Services.BackgroundJobs.MuteJob;
 using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands;
 using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Commands;
 using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries;
+using Hinode.Izumi.Services.HangfireJobService.Commands;
 using Humanizer;
 using MediatR;
 
@@ -51,9 +53,10 @@ namespace Hinode.Izumi.Commands.ModerationCommands.MuteCommand
             await _mediator.Send(new SendEmbedToChannelCommand(DiscordChannel.Chat, embed));
             await _mediator.Send(new SendEmbedToChannelCommand(DiscordChannel.LogMute, embed));
 
-            BackgroundJob.Schedule<IMuteJob>(
+            var jobId = BackgroundJob.Schedule<IMuteJob>(
                 x => x.Unmute(userId),
                 TimeSpan.FromMinutes(duration));
+            await _mediator.Send(new CreateUserHangfireJobCommand(userId, HangfireAction.Unmute, jobId));
         }
     }
 }
