@@ -2,9 +2,6 @@
 
 namespace Hinode.Izumi.Data.Enums.MessageEnums
 {
-    /// <summary>
-    /// Сообщения о событиях.
-    /// </summary>
     public enum IzumiEventMessage
     {
         DiaryAuthorField,
@@ -45,7 +42,8 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         EventJuneSkyLanternBeginFooter,
         EventJuneSkyLanternEndDesc,
         EventJuneSkyLanternEndRewardDesc,
-        EventJuneStartDesc
+        EventJuneStartDesc,
+        EventJuneEndDesc
     }
 
     public static class IzumiEventMessageHelper
@@ -64,12 +62,6 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
             }
         }
 
-        /// <summary>
-        /// Возвращает локалазированную строку сообщения.
-        /// </summary>
-        /// <param name="message">Сообщение.</param>
-        /// <returns>Локализированная строка сообщения.</returns>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
         private static string Localize(this IzumiEventMessage message) => message switch
         {
             IzumiEventMessage.DiaryAuthorField =>
@@ -210,6 +202,12 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "После нападения монстров на сад было порушено очень много деревьев, в том числе и ее любимый {0} бамбук (который сейчас под ее надежной защитой).\n" +
                 "И она совместно с жителями **сада** решила делать из него игрушки! Поэтому {0} бамбук, который можно найти исследуя сад, можно обменять на {1} игрушки! Вот же круто, можно собрать целую {2} {3} {4} {5} коллекцию!\n\n" +
                 "Ну, а самое главное - вечером намечается запуск небесных фонариков!\n\nДневник, это считается, что я выполнила просьбу?",
+
+            IzumiEventMessage.EventJuneEndDesc =>
+                "Вот и подошла к концу первая неделя лета... Это было так быстро! Вот бы подольше задержаться в саду, но ноги уже тянут меня в новые путешествия!\n" +
+                "За это время произошло столько-столько всего нового и невероятного, я сама сделала себе игрушку, и даже подарила одну маленькой девочке - Ханако. " +
+                "Она была очень счастлива. Когда я спускалась по лестнице, стук камней в моей сумке был так громок что птицы взлетели ввысь, и устремились в небеса.\n" +
+                "Может и мне уже пора? Ведь летний шелест ветерка такой заманчивый... Ай ладно! Нечего сидеть на месте, Дорогой дневник, до скорых встреч!",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };

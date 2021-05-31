@@ -71,7 +71,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.EventBackgroundJobs.EventJuneJob
             await _mediator.Send(new UpdatePropertyCommand(Property.CurrentEvent, (long) Event.None));
 
             var embed = new EmbedBuilder()
-                .WithDescription("Июньское событие закончилось.");
+                .WithDescription(IzumiEventMessage.EventJuneEndDesc.Parse());
 
             await _mediator.Send(new SendEmbedToChannelCommand(DiscordChannel.Diary, embed));
 
