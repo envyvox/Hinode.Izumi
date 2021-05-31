@@ -97,17 +97,15 @@ namespace Hinode.Izumi.Commands.UserCommands.TransitCommands
                                 : $"{_emotes.GetEmoteOrBlank(Currency.Ien.ToString())} {transitCost} {_local.Localize(Currency.Ien.ToString(), transitCost)}"
                             : $"{_emotes.GetEmoteOrBlank(Currency.Ien.ToString())} бесплатно";
 
-                    // определяем длительность перемещения
                     var transitTime = await _mediator.Send(new GetActionTimeQuery(transit.Time, user.Energy));
-
-                    // получаем текущее событие
                     var currentEvent = (Event) await _mediator.Send(new GetPropertyValueQuery(Property.CurrentEvent));
-                    // если сейчас проходит событие
-                    if (currentEvent != Event.None)
-                        // то нужно ускорить отправление
-                        transitTime -= transitTime *
-                            // получаем % ускорения перемещения во время события
-                            await _mediator.Send(new GetPropertyValueQuery(Property.EventReduceTransitTime)) / 100;
+                    var transitTimeReduceEvent = await _mediator.Send(new GetPropertyValueQuery(
+                        Property.EventReduceTransitTime));
+                    var transitTimeReducePremium = await _mediator.Send(new GetPropertyValueQuery(
+                        Property.TransitTimePercentReducePremium));
+
+                    if (currentEvent != Event.None) transitTime -= transitTime * transitTimeReduceEvent / 100;
+                    if (user.Premium) transitTime -= transitTime * transitTimeReducePremium / 100;
 
                     // заполняем строку длительности перемещения в зависимости от его длительности
                     var transitTimeString = transit.Time == transitTime

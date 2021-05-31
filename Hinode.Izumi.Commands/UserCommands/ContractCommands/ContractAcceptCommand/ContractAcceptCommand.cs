@@ -21,6 +21,7 @@ using Hinode.Izumi.Services.GameServices.LocationService.Queries;
 using Hinode.Izumi.Services.GameServices.ReputationService.Queries;
 using Hinode.Izumi.Services.GameServices.UserService.Commands;
 using Hinode.Izumi.Services.GameServices.UserService.Queries;
+using Hinode.Izumi.Services.HangfireJobService.Commands;
 using Hinode.Izumi.Services.ImageService.Queries;
 using Humanizer;
 using MediatR;
@@ -77,9 +78,11 @@ namespace Hinode.Izumi.Commands.UserCommands.ContractCommands.ContractAcceptComm
                 await _mediator.Send(new RemoveEnergyFromUserCommand((long) context.User.Id, contract.Energy));
 
                 // запускаем джобу для окончания работы по контракту
-                BackgroundJob.Schedule<IContractJob>(x =>
+                var jobId = BackgroundJob.Schedule<IContractJob>(x =>
                         x.Execute((long) context.User.Id, contractId),
                     TimeSpan.FromHours(contractTime));
+                await _mediator.Send(new CreateUserHangfireJobCommand(
+                    (long) context.User.Id, HangfireAction.Contract, jobId));
 
                 var embed = new EmbedBuilder()
                     .WithAuthor(contract.Name)

@@ -47,19 +47,19 @@ namespace Hinode.Izumi.Commands.UserCommands.UserInfoCommands.InfoInteractionCom
                 var embed = new EmbedBuilder()
                     // подверждаем что запрос на смену пола успешно отправлен
                     .WithDescription(IzumiReplyMessage.UpdateGenderDesc.Parse(
-                        DiscordRole.Moderator.Name(), emotes.GetEmoteOrBlank(Gender.None.ToString())));
+                        DiscordRole.Moderator.Name(), emotes.GetEmoteOrBlank(Gender.None.Emote())));
 
                 var notifyModEmbed = new EmbedBuilder()
                     // оповещаем модераторов о том, что пользователь просит подвердить ему пол
                     .WithDescription(
                         IzumiReplyMessage.UpdateGenderNotifyDesc.Parse(
-                            Context.User.Mention, emotes.GetEmoteOrBlank(Gender.None.ToString())) +
+                            Context.User.Mention, emotes.GetEmoteOrBlank(Gender.None.Emote())) +
                         $"\n{emotes.GetEmoteOrBlank("Blank")}")
                     // выводим готовые команды для модераторов
                     .AddField(IzumiReplyMessage.UpdateGenderNotifyFieldName.Parse(),
                         IzumiReplyMessage.UpdateGenderNotifyFieldDesc.Parse(
-                            emotes.GetEmoteOrBlank(Gender.Male.ToString()), Gender.Male.Localize(), Context.User.Id,
-                            emotes.GetEmoteOrBlank(Gender.Female.ToString()), Gender.Female.Localize()));
+                            emotes.GetEmoteOrBlank(Gender.Male.Emote()), Gender.Male.Localize(), Context.User.Id,
+                            emotes.GetEmoteOrBlank(Gender.Female.Emote()), Gender.Female.Localize()));
 
                 await _mediator.Send(new SendEmbedToUserCommand(Context.User, embed));
                 await _mediator.Send(new SendEmbedToChannelCommand(

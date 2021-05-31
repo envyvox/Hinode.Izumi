@@ -2087,6 +2087,12 @@ namespace Hinode.Izumi.Data.Migrations
                         .HasDefaultValue(0L)
                         .HasColumnName("points");
 
+                    b.Property<bool>("Premium")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("premium");
+
                     b.Property<int>("Title")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
@@ -3039,6 +3045,48 @@ namespace Hinode.Izumi.Data.Migrations
                     b.ToTable("user_gatherings");
                 });
 
+            modelBuilder.Entity("Hinode.Izumi.Data.Models.UserModels.UserHangfireJob", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("Action")
+                        .HasColumnType("integer")
+                        .HasColumnName("action");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<string>("JobId")
+                        .HasColumnType("text")
+                        .HasColumnName("job_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_user_hangfire_jobs");
+
+                    b.HasIndex("UserId", "Action", "JobId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_user_hangfire_jobs_user_id_action_job_id");
+
+                    b.ToTable("user_hangfire_jobs");
+                });
+
             modelBuilder.Entity("Hinode.Izumi.Data.Models.UserModels.UserMastery", b =>
                 {
                     b.Property<long>("Id")
@@ -3079,6 +3127,46 @@ namespace Hinode.Izumi.Data.Migrations
                         .HasDatabaseName("ix_user_masteries_user_id_mastery");
 
                     b.ToTable("user_masteries");
+                });
+
+            modelBuilder.Entity("Hinode.Izumi.Data.Models.UserModels.UserPremiumProperties", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("CommandColor")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text")
+                        .HasDefaultValue("36393F")
+                        .HasColumnName("command_color");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_user_premium_propertieses");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_user_premium_propertieses_user_id");
+
+                    b.ToTable("user_premium_propertieses");
                 });
 
             modelBuilder.Entity("Hinode.Izumi.Data.Models.UserModels.UserProduct", b =>
@@ -4162,12 +4250,36 @@ namespace Hinode.Izumi.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Hinode.Izumi.Data.Models.UserModels.UserHangfireJob", b =>
+                {
+                    b.HasOne("Hinode.Izumi.Data.Models.UserModels.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .HasConstraintName("fk_user_hangfire_jobs_users_user_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Hinode.Izumi.Data.Models.UserModels.UserMastery", b =>
                 {
                     b.HasOne("Hinode.Izumi.Data.Models.UserModels.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .HasConstraintName("fk_user_masteries_users_user_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Hinode.Izumi.Data.Models.UserModels.UserPremiumProperties", b =>
+                {
+                    b.HasOne("Hinode.Izumi.Data.Models.UserModels.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .HasConstraintName("fk_user_premium_propertieses_users_user_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

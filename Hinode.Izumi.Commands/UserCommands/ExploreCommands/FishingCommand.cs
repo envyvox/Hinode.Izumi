@@ -18,6 +18,7 @@ using Hinode.Izumi.Services.GameServices.MasteryService.Queries;
 using Hinode.Izumi.Services.GameServices.PropertyService.Queries;
 using Hinode.Izumi.Services.GameServices.UserService.Commands;
 using Hinode.Izumi.Services.GameServices.UserService.Queries;
+using Hinode.Izumi.Services.HangfireJobService.Commands;
 using Hinode.Izumi.Services.ImageService.Queries;
 using Hinode.Izumi.Services.WebServices.CommandWebService.Attributes;
 using Humanizer;
@@ -67,9 +68,11 @@ namespace Hinode.Izumi.Commands.UserCommands.ExploreCommands
                 await _mediator.Send(new GetPropertyValueQuery(Property.EnergyCostExplore))));
 
             // запускаем джобу для окончания рыбалки
-            BackgroundJob.Schedule<IExploreJob>(x =>
+            var jobId = BackgroundJob.Schedule<IExploreJob>(x =>
                     x.CompleteFishing((long) Context.User.Id, (long) Math.Floor(userMastery.Amount)),
                 TimeSpan.FromMinutes(fishingTime));
+            await _mediator.Send(new CreateUserHangfireJobCommand(
+                (long) Context.User.Id, HangfireAction.Explore, jobId));
 
             var embed = new EmbedBuilder()
                 .WithAuthor(Location.Fishing.Localize())

@@ -12,6 +12,7 @@ using Hinode.Izumi.Services.Extensions;
 using Hinode.Izumi.Services.GameServices.AlcoholService.Queries;
 using Hinode.Izumi.Services.GameServices.CalculationService.Queries;
 using Hinode.Izumi.Services.GameServices.CraftingService.Queries;
+using Hinode.Izumi.Services.GameServices.CropService.Queries;
 using Hinode.Izumi.Services.GameServices.DrinkService.Queries;
 using Hinode.Izumi.Services.GameServices.FoodService.Queries;
 using Hinode.Izumi.Services.GameServices.GatheringService.Queries;
@@ -101,6 +102,12 @@ namespace Hinode.Izumi.Commands.UserCommands.MarketCommands.MarketBuyCommands.Ma
 
                         npcPrice = await _mediator.Send(new GetNpcPriceQuery(category,
                             await _mediator.Send(new GetFoodCostPriceQuery(itemId))));
+
+                        break;
+                    case MarketCategory.Crop:
+
+                        var crop = await _mediator.Send(new GetCropByIdQuery(itemId));
+                        npcPrice = crop.Price;
 
                         break;
                     default:

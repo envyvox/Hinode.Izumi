@@ -47,5 +47,7 @@ namespace Hinode.Izumi.Services.Extensions
         public const string UserWithNameCheckKey = "user_name_{0}_check";
         public const string EmotesKey = "emotes";
         public const string BannerKey = "banner_{0}";
+        public const string UserHasPremium = "user_{0}_premium";
+        public const string UserCommandColor = "user_{0}_command_color";
     }
 }

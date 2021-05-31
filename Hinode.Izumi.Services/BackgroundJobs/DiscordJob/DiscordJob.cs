@@ -1,8 +1,11 @@
 ﻿using System.Threading.Tasks;
+using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Commands;
 using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries;
+using Hinode.Izumi.Services.DiscordServices.DiscordRoleService.Commands;
 using Hinode.Izumi.Services.DiscordServices.DiscordRoleService.Queries;
+using Hinode.Izumi.Services.GameServices.PremiumService.Commands;
 using MediatR;
 
 namespace Hinode.Izumi.Services.BackgroundJobs.DiscordJob
@@ -19,24 +22,27 @@ namespace Hinode.Izumi.Services.BackgroundJobs.DiscordJob
 
         public async Task DeleteMessage(long channelId, long messageId)
         {
-            // получаем сообщение
             var message = await _mediator.Send(new GetDiscordUserMessageQuery(channelId, messageId));
-            // удаляем его
             await message.DeleteAsync();
         }
 
         public async Task RemoveExpiredRoleFromUsers()
         {
-            // получаем роли пользователей с истекшим сроком
+            var roles = await _mediator.Send(new GetDiscordRolesQuery());
             var expiredRoles = await _mediator.Send(new GetExpiredDiscordUserRolesQuery());
 
-            // если такое роли есть
             if (expiredRoles.Length > 0)
             {
-                // снимаем каждую из них
                 foreach (var expiredRole in expiredRoles)
+                {
                     await _mediator.Send(new RemoveDiscordRoleFromUserByRoleIdCommand(
                         expiredRole.UserId, expiredRole.RoleId));
+                    await _mediator.Send(new DeleteDiscordUserRoleFromDbCommand(
+                        expiredRole.UserId, expiredRole.RoleId));
+
+                    if (expiredRole.RoleId == roles[DiscordRole.Premium].Id)
+                        await _mediator.Send(new DeactivateUserPremiumCommand(expiredRole.UserId));
+                }
             }
         }
     }

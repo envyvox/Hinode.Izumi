@@ -27,6 +27,7 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
         Anons = 10,
         Giveaways = 11,
         Suggestions = 12,
+        GameMechanics = 56,
         CreateRoomParent = 19,
         CreateRoom = 20,
         FamilyRoomParent = 21,
@@ -61,7 +62,7 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
         Test = 50,
         LogWelcome = 51,
         LogMute = 52,
-        LogAudit = 53
+        LogAudit = 53,
     }
 
     public static class DiscordChannelHelper
@@ -97,6 +98,7 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
             DiscordChannel.Anons => "объявления🔔",
             DiscordChannel.Giveaways => "розыгрыши🔔",
             DiscordChannel.Suggestions => "предложения",
+            DiscordChannel.GameMechanics => "игровые-механики",
             DiscordChannel.CreateRoomParent => "пригородные лагеря",
             DiscordChannel.CreateRoom => "Разжечь костер",
             DiscordChannel.FamilyRoomParent => "семейные беседки",
@@ -197,6 +199,7 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
             DiscordChannel.LogAudit => DiscordChannelCategory.TextChannel,
             DiscordChannel.HowDescWork => DiscordChannelCategory.TextChannel,
             DiscordChannel.Screenshots => DiscordChannelCategory.TextChannel,
+            DiscordChannel.GameMechanics => DiscordChannelCategory.TextChannel,
             _ => throw new ArgumentOutOfRangeException(nameof(channel), channel, null)
         };
 
@@ -221,6 +224,7 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
             DiscordChannel.Erotic => DiscordChannel.CommunityDescParent,
             DiscordChannel.Nsfw => DiscordChannel.CommunityDescParent,
             DiscordChannel.Rules => DiscordChannel.LibraryParent,
+            DiscordChannel.GameMechanics => DiscordChannel.LibraryParent,
             DiscordChannel.CreateRoom => DiscordChannel.CreateRoomParent,
             DiscordChannel.FamilyRoomParent => DiscordChannel.CreateRoomParent,
             DiscordChannel.CapitalDesc => DiscordChannel.CapitalParent,

@@ -19,7 +19,8 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         RequireLocationButYouFieldWatering = 10,
         RequireCasinoOpen = 11,
         RequireNoDebuff = 12,
-        RequireEvent = 13
+        RequireEvent = 13,
+        RequirePremium = 14
     }
 
     public static class IzumiPreconditionErrorMessageHelper
@@ -99,6 +100,9 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
                 IzumiPreconditionErrorMessage.RequireEvent =>
                     "Эта команда доступна только во время события **«{0}»**.",
+
+                IzumiPreconditionErrorMessage.RequirePremium =>
+                    "Эта команда доступна только пользователям с премиум-статусом.",
 
                 _ => throw new ArgumentOutOfRangeException(nameof(ibPreconditionErrorMessage),
                     ibPreconditionErrorMessage, null)

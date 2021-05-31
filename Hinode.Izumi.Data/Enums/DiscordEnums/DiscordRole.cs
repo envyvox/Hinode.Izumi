@@ -15,6 +15,7 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
         Mute = 6,
         ContentProvider = 7,
         InVoice = 8,
+        Premium = 9,
 
         LocationInTransit = 50,
         LocationCapital = 51,
@@ -89,6 +90,7 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
             DiscordRole.HotS => "HotS",
             DiscordRole.WildRift => "Wild Rift",
             DiscordRole.MobileLegends => "Mobile Legends",
+            DiscordRole.Premium => "👑 Премиум",
             _ => throw new ArgumentOutOfRangeException(nameof(role), role, null)
         };
 
@@ -104,6 +106,7 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
             DiscordRole.Moderator => "c072b2",
             DiscordRole.Nitro => "f47fff",
             DiscordRole.ContentProvider => "6fffc4",
+            DiscordRole.Premium => "ffb71d",
             // для всех остальных используем значение по-умолчанию (прозрачный цвет дискорда)
             _ => "000000"
         };

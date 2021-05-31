@@ -16,6 +16,7 @@ using Hinode.Izumi.Services.GameServices.LocationService.Commands;
 using Hinode.Izumi.Services.GameServices.LocationService.Queries;
 using Hinode.Izumi.Services.GameServices.StatisticService.Commands;
 using Hinode.Izumi.Services.GameServices.TutorialService.Commands;
+using Hinode.Izumi.Services.HangfireJobService.Commands;
 using Hinode.Izumi.Services.ImageService.Queries;
 using MediatR;
 using Image = Hinode.Izumi.Data.Enums.Image;
@@ -112,6 +113,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.TransitJob
 
             await _mediator.Send(new SendEmbedToUserCommand(
                 await _mediator.Send(new GetDiscordSocketUserQuery(userId)), embed));
+            await _mediator.Send(new DeleteUserHangfireJobCommand(userId, HangfireAction.Transit));
 
             // проверяем нужно ли двинуть прогресс обучения пользователя
             // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault

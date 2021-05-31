@@ -21,6 +21,7 @@ using Hinode.Izumi.Services.GameServices.MasteryService.Queries;
 using Hinode.Izumi.Services.GameServices.PropertyService.Queries;
 using Hinode.Izumi.Services.GameServices.UserService.Commands;
 using Hinode.Izumi.Services.GameServices.UserService.Queries;
+using Hinode.Izumi.Services.HangfireJobService.Commands;
 using Hinode.Izumi.Services.ImageService.Queries;
 using Humanizer;
 using MediatR;
@@ -68,9 +69,12 @@ namespace Hinode.Izumi.Commands.UserCommands.ExploreCommands.ExploreCastleComman
                 await _mediator.Send(new GetPropertyValueQuery(Property.EnergyCostExplore))));
 
             // запускаем джобу для окончания исследования
-            BackgroundJob.Schedule<IExploreJob>(x =>
+            var jobId = BackgroundJob.Schedule<IExploreJob>(x =>
                     x.CompleteExploreCastle((long) context.User.Id, masteryAmount),
                 TimeSpan.FromMinutes(exploreTime));
+            await _mediator.Send(new CreateUserHangfireJobCommand(
+                (long) context.User.Id, HangfireAction.Explore, jobId));
+
 
             // выводим собирательские ресурсы этой локации
             var resourcesString = gatherings.Aggregate(string.Empty, (current, gathering) =>

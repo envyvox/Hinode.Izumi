@@ -12,6 +12,7 @@ using Hinode.Izumi.Services.GameServices.BuildingService.Commands;
 using Hinode.Izumi.Services.GameServices.BuildingService.Queries;
 using Hinode.Izumi.Services.GameServices.FamilyService.Queries;
 using Hinode.Izumi.Services.GameServices.FieldService.Commands;
+using Hinode.Izumi.Services.HangfireJobService.Commands;
 using MediatR;
 
 namespace Hinode.Izumi.Services.BackgroundJobs.BuildingJob
@@ -71,6 +72,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BuildingJob
 
             await _mediator.Send(new SendEmbedToUserCommand(
                 await _mediator.Send(new GetDiscordSocketUserQuery(userId)), embed));
+            await _mediator.Send(new DeleteUserHangfireJobCommand(userId, HangfireAction.Building));
             await Task.CompletedTask;
         }
     }

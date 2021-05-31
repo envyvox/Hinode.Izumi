@@ -91,20 +91,23 @@ namespace Hinode.Izumi.Data.Enums.PropertyEnums
         CasinoState = 88,
         EventJuneBambooToyPrice = 89,
         EventJuneSkyLanternFoodId = 90,
-        EventJuneSkyLanternFoodAmount = 91
+        EventJuneSkyLanternFoodAmount = 91,
+        EnergyRecoveryPerHourNonPremium = 92,
+        EnergyRecoveryPerHourPremium = 93,
+        TransitTimePercentReducePremium = 94
     }
 
     public static class PropertyHelper
     {
         public static PropertyCategory Category(this Property property) => property switch
         {
-            Property.EnergyCostExplore => PropertyCategory.EnergyCost,
-            Property.EnergyCostTransit => PropertyCategory.EnergyCost,
-            Property.EnergyCostCraft => PropertyCategory.EnergyCost,
-            Property.EnergyCostFieldPlant => PropertyCategory.EnergyCost,
-            Property.EnergyCostFieldCollect => PropertyCategory.EnergyCost,
-            Property.EnergyCostFieldWater => PropertyCategory.EnergyCost,
-            Property.EnergyCostFieldDig => PropertyCategory.EnergyCost,
+            Property.EnergyCostExplore => PropertyCategory.Energy,
+            Property.EnergyCostTransit => PropertyCategory.Energy,
+            Property.EnergyCostCraft => PropertyCategory.Energy,
+            Property.EnergyCostFieldPlant => PropertyCategory.Energy,
+            Property.EnergyCostFieldCollect => PropertyCategory.Energy,
+            Property.EnergyCostFieldWater => PropertyCategory.Energy,
+            Property.EnergyCostFieldDig => PropertyCategory.Energy,
             Property.ActionTimeFieldWater => PropertyCategory.ActionTime,
             Property.ActionTimeFishing => PropertyCategory.ActionTime,
             Property.ActionTimeReduceFishingBoat => PropertyCategory.ActionTimeReduce,
@@ -186,6 +189,9 @@ namespace Hinode.Izumi.Data.Enums.PropertyEnums
             Property.EventJuneBambooToyPrice => PropertyCategory.Event,
             Property.EventJuneSkyLanternFoodId => PropertyCategory.Event,
             Property.EventJuneSkyLanternFoodAmount => PropertyCategory.Event,
+            Property.EnergyRecoveryPerHourNonPremium => PropertyCategory.Energy,
+            Property.EnergyRecoveryPerHourPremium => PropertyCategory.Energy,
+            Property.TransitTimePercentReducePremium => PropertyCategory.ActionTimeReduce,
             _ => throw new ArgumentOutOfRangeException(nameof(property), property, null)
         };
     }

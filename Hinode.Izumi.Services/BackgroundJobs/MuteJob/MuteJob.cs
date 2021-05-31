@@ -1,11 +1,13 @@
 ﻿using System.Threading.Tasks;
 using Discord;
+using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands;
 using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Commands;
 using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries;
+using Hinode.Izumi.Services.HangfireJobService.Commands;
 using MediatR;
 
 namespace Hinode.Izumi.Services.BackgroundJobs.MuteJob
@@ -24,6 +26,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.MuteJob
         {
             // снимаем роль блокировки чата с пользователя
             await _mediator.Send(new RemoveDiscordRoleFromUserCommand(userId, DiscordRole.Mute));
+            await _mediator.Send(new DeleteUserHangfireJobCommand(userId, HangfireAction.Unmute));
 
             var embed = new EmbedBuilder()
                 // подтвержаем снятия блокировки чата

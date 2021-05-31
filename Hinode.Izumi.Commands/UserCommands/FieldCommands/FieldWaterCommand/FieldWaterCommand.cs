@@ -19,6 +19,7 @@ using Hinode.Izumi.Services.GameServices.LocationService.Commands;
 using Hinode.Izumi.Services.GameServices.PropertyService.Queries;
 using Hinode.Izumi.Services.GameServices.UserService.Commands;
 using Hinode.Izumi.Services.GameServices.UserService.Queries;
+using Hinode.Izumi.Services.HangfireJobService.Commands;
 using Hinode.Izumi.Services.ImageService.Queries;
 using MediatR;
 using Image = Hinode.Izumi.Data.Enums.Image;
@@ -112,9 +113,11 @@ namespace Hinode.Izumi.Commands.UserCommands.FieldCommands.FieldWaterCommand
                         await _mediator.Send(new GetPropertyValueQuery(Property.EnergyCostFieldWater))));
 
                     // запускаем джобу для окончания поливки участка
-                    BackgroundJob.Schedule<IFieldJob>(x =>
+                    var jobId = BackgroundJob.Schedule<IFieldJob>(x =>
                             x.CompleteWatering((long) context.User.Id, userFields.First().UserId),
                         TimeSpan.FromMinutes(wateringTime));
+                    await _mediator.Send(new CreateUserHangfireJobCommand(
+                        (long) context.User.Id, HangfireAction.FieldWatering, jobId));
 
                     var embed = new EmbedBuilder()
                         // баннер участка

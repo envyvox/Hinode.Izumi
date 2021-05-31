@@ -8,7 +8,6 @@ using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Data.Enums.FamilyEnums;
 using Hinode.Izumi.Data.Enums.MessageEnums;
 using Hinode.Izumi.Data.Enums.ReputationEnums;
-using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands;
 using Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries;
 using Hinode.Izumi.Services.EmoteService.Queries;
 using Hinode.Izumi.Services.Extensions;
@@ -18,6 +17,7 @@ using Hinode.Izumi.Services.GameServices.ContractService.Queries;
 using Hinode.Izumi.Services.GameServices.FamilyService.Queries;
 using Hinode.Izumi.Services.GameServices.LocalizationService;
 using Hinode.Izumi.Services.GameServices.LocationService.Queries;
+using Hinode.Izumi.Services.GameServices.PremiumService.Queries;
 using Hinode.Izumi.Services.GameServices.ReputationService.Queries;
 using Hinode.Izumi.Services.GameServices.TutorialService.Commands;
 using Hinode.Izumi.Services.GameServices.UserService.Queries;
@@ -89,6 +89,7 @@ namespace Hinode.Izumi.Commands.UserCommands.UserInfoCommands
             var registrationDate = user.CreatedAt.ToString("dd MMMM yyyy", new CultureInfo("ru-ru"));
             // заполняем количество дней в игровом мире
             var daysInGame = (timeNow - user.CreatedAt).TotalDays.Days().Humanize(1, new CultureInfo("ru-RU"));
+            var userCommandColor = await _mediator.Send(new GetUserCommandColorQuery(user.Id));
 
             // заполняем строку о текущей локации в зависимости от того, чем пользователь сейчас заниматся
             string locationString;
@@ -127,6 +128,7 @@ namespace Hinode.Izumi.Commands.UserCommands.UserInfoCommands
             }
 
             var embed = new EmbedBuilder()
+                .WithColor(new Color(uint.Parse(userCommandColor ?? "36393F", NumberStyles.HexNumber)))
                 // аватарка пользователя
                 .WithThumbnailUrl(socketUser.GetAvatarUrl())
 
@@ -193,7 +195,7 @@ namespace Hinode.Izumi.Commands.UserCommands.UserInfoCommands
                 // активный баннер пользователя
                 .WithImageUrl(userBanner.Url);
 
-            await _mediator.Send(new SendEmbedToUserCommand(Context.User, embed));
+            await Context.Channel.SendMessageAsync("", false, embed.Build());
             // проверяем нужно ли двинуть прогресс обучения пользователя
             await _mediator.Send(new CheckUserTutorialStepCommand((long) Context.User.Id, TutorialStep.CheckProfile));
             await Task.CompletedTask;

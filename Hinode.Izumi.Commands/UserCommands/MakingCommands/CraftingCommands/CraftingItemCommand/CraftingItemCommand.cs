@@ -26,6 +26,7 @@ using Hinode.Izumi.Services.GameServices.LocationService.Queries;
 using Hinode.Izumi.Services.GameServices.PropertyService.Queries;
 using Hinode.Izumi.Services.GameServices.UserService.Commands;
 using Hinode.Izumi.Services.GameServices.UserService.Queries;
+using Hinode.Izumi.Services.HangfireJobService.Commands;
 using Hinode.Izumi.Services.ImageService.Queries;
 using Humanizer;
 using MediatR;
@@ -100,9 +101,11 @@ namespace Hinode.Izumi.Commands.UserCommands.MakingCommands.CraftingCommands.Cra
                     (long) context.User.Id, InventoryCategory.Currency, Currency.Ien.GetHashCode(), craftingPrice));
 
                 // запускаем джобу завершения изготовления предмета
-                BackgroundJob.Schedule<IMakingJob>(x =>
+                var jobId = BackgroundJob.Schedule<IMakingJob>(x =>
                         x.CompleteCrafting((long) context.User.Id, crafting.Id, amount, userLocation),
                     TimeSpan.FromSeconds(craftingTime));
+                await _mediator.Send(new CreateUserHangfireJobCommand(
+                    (long) context.User.Id, HangfireAction.Making, jobId));
 
                 var buildingWorkshop = await _mediator.Send(new GetBuildingByTypeQuery(Building.Workshop));
                 var embed = new EmbedBuilder()

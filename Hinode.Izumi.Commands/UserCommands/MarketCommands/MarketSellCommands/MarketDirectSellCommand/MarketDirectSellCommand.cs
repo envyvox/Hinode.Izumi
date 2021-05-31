@@ -96,6 +96,13 @@ namespace Hinode.Izumi.Commands.UserCommands.MarketCommands.MarketSellCommands.M
                         userAmount = userFood.Amount;
 
                         break;
+                    case MarketCategory.Crop:
+
+                        var userCrop = await _mediator.Send(new GetUserCropQuery(
+                            (long) context.User.Id, request.ItemId));
+                        userAmount = userCrop.Amount;
+
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -146,6 +153,7 @@ namespace Hinode.Izumi.Commands.UserCommands.MarketCommands.MarketSellCommands.M
                             MarketCategory.Alcohol => InventoryCategory.Alcohol,
                             MarketCategory.Drink => InventoryCategory.Drink,
                             MarketCategory.Food => InventoryCategory.Food,
+                            MarketCategory.Crop => InventoryCategory.Crop,
                             _ => throw new ArgumentOutOfRangeException()
                         }, request.ItemId));
 

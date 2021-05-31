@@ -23,6 +23,7 @@ using Hinode.Izumi.Services.GameServices.MasteryService.Commands;
 using Hinode.Izumi.Services.GameServices.PropertyService.Queries;
 using Hinode.Izumi.Services.GameServices.StatisticService.Commands;
 using Hinode.Izumi.Services.GameServices.TutorialService.Commands;
+using Hinode.Izumi.Services.HangfireJobService.Commands;
 using Hinode.Izumi.Services.ImageService.Queries;
 using Hinode.Izumi.Services.TimeService.Queries;
 using MediatR;
@@ -141,7 +142,10 @@ namespace Hinode.Izumi.Services.BackgroundJobs.ExploreJob
             await _mediator.Send(new CheckAchievementInUserCommand(userId, Achievement.CompleteCollectionGathering));
             // проверяем выполнил ли пользователь достижение события
             if (currentEvent == Event.June)
+            {
                 await _mediator.Send(new CheckAchievementInUserCommand(userId, Achievement.MeetSummer));
+            }
+            await _mediator.Send(new DeleteUserHangfireJobCommand(userId, HangfireAction.Explore));
         }
 
         public async Task CompleteExploreCastle(long userId, long userGatheringMastery)
@@ -239,6 +243,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.ExploreJob
             await _mediator.Send(new CheckUserTutorialStepCommand(userId, TutorialStep.CompleteExploreCastle));
             // проверяем выполнил ли пользователь достижение
             await _mediator.Send(new CheckAchievementInUserCommand(userId, Achievement.CompleteCollectionGathering));
+            await _mediator.Send(new DeleteUserHangfireJobCommand(userId, HangfireAction.Explore));
         }
 
         public async Task CompleteFishing(long userId, long userFishingMastery)
@@ -340,6 +345,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.ExploreJob
             await _mediator.Send(new CheckUserTutorialStepCommand(userId, TutorialStep.CompleteFishing));
             // проверяем выполнил ли пользователь достижение
             await _mediator.Send(new CheckAchievementInUserCommand(userId, Achievement.CompleteCollectionFish));
+            await _mediator.Send(new DeleteUserHangfireJobCommand(userId, HangfireAction.Explore));
         }
     }
 }

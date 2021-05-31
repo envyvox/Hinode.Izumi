@@ -532,7 +532,26 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         ShopEventJuneBuySuccessYourself,
         ShopEventJuneBuySuccessForUser,
         ShopEventJuneBuySuccessNotify,
-        ShopEventEmpty
+        ShopEventEmpty,
+        InterruptActionAcceptedList,
+        InterruptActionSuccess,
+        HelpGameCommandsFieldName,
+        HelpGameCommandsFieldDesc,
+        HelpGameMechanicsFieldName,
+        HelpGameMechanicsFieldDesc,
+        HelpSuggestionsFieldName,
+        HelpSuggestionsFieldDesc,
+        HelpBugsFieldName,
+        HelpBugsFieldDesc,
+        HelpDonationFieldName,
+        HelpDonationFieldDesc,
+        ActivatePremiumNotify,
+        DeactivatePremiumNotify,
+        PremiumChangeColor,
+        PremiumInfoChangeColorFieldName,
+        PremiumInfoChangeColorFieldDesc,
+        PremiumInfoExpirationFieldName,
+        PremiumInfoExpirationFieldDesc
     }
 
     public static class IzumiReplyMessageHelper
@@ -1650,7 +1669,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "Обновление пола пользователя",
 
             IzumiReplyMessage.UpdateGenderNotifyFieldDesc =>
-                "{0} **{1}** `!mod update-gender {2} 1`\n{3} **{4}** `!mod update-gender {2} 2`",
+                "После беседы в голосовом канале, напишите мне в личные сообщения одну из команд:\n{0} **{1}** `!mod update-gender {2} 1`\n{3} **{4}** `!mod update-gender {2} 2`",
 
             IzumiReplyMessage.ModGenderDesc =>
                 "Пол пользователя {0} был успешно обновлен на {1} **{2}**.",
@@ -2160,6 +2179,63 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.ShopEventEmpty =>
                 "Не смотря на то, что сейчас проходит событие, прилавки магазина события пустуют. Возвращайтесь на следующее событие.",
+
+            IzumiReplyMessage.InterruptActionAcceptedList =>
+                "Прерваться можно только во время следующих действий:\n{0}",
+
+            IzumiReplyMessage.InterruptActionSuccess =>
+                "Вы прервали текущее действие.",
+
+            IzumiReplyMessage.HelpGameCommandsFieldName =>
+                "{0} Игровые команды",
+
+            IzumiReplyMessage.HelpGameCommandsFieldDesc =>
+                "Посмотреть все доступные команды игрового мира можно на нашем сайте.\n[Нажмите сюда чтобы открыть](https://hinode.kkxo.ru/commands).",
+
+            IzumiReplyMessage.HelpGameMechanicsFieldName =>
+                "{0} Игровые механики",
+
+            IzumiReplyMessage.HelpGameMechanicsFieldDesc =>
+                "Хотите понять как устроен мир изнутри?\nЗагляните в <#{0}>.",
+
+            IzumiReplyMessage.HelpSuggestionsFieldName =>
+                "{0} Отзывы и предложения",
+
+            IzumiReplyMessage.HelpSuggestionsFieldDesc =>
+                "Есть что сказать о нашем проекте? Хотите предложить что-то новое?\nПишите в <#{0}>.",
+
+            IzumiReplyMessage.HelpBugsFieldName =>
+                "{0} Ошибки",
+
+            IzumiReplyMessage.HelpBugsFieldDesc =>
+                "Нашли опечатку в тексте? Столкнулись с очевидной ошибкой или вам кажется что что-то работает не так?\nНапишите в личные сообщения <@550493599629049858> и получите небольшую {0} награду.",
+
+            IzumiReplyMessage.HelpDonationFieldName =>
+                "{0} Поддержка проекта",
+
+            IzumiReplyMessage.HelpDonationFieldDesc =>
+                "Хотите поддержать наш проект материально и получить {0} бонусы?\nОзнакомьтесь с `!пожертвования`.",
+
+            IzumiReplyMessage.ActivatePremiumNotify =>
+                "Вы получили {0} **Премиум-статус** на **{1}**, загляните в `!премиум` чтобы узнать подробнее.",
+
+            IzumiReplyMessage.DeactivatePremiumNotify =>
+                "Ваш {0} **Премиум-статус** закончился.",
+
+            IzumiReplyMessage.PremiumChangeColor =>
+                "Вы успешно обновили цвет команд на `#{0}`.",
+
+            IzumiReplyMessage.PremiumInfoChangeColorFieldName =>
+                "{0} Персонализация команд",
+
+            IzumiReplyMessage.PremiumInfoChangeColorFieldDesc =>
+                "Напишите `!премиум цвет [HEX-цвет]` чтобы обновить цвет команд.\n\n> Подобрать цвет можно [нажав сюда](https://www.google.com/search?q=color+picker).\n> Текущий цвет: `#{0}`.",
+
+            IzumiReplyMessage.PremiumInfoExpirationFieldName =>
+                "{0} Длительность",
+
+            IzumiReplyMessage.PremiumInfoExpirationFieldDesc =>
+                "{0} Премиум-статус будет действовать еще {1}.",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };
