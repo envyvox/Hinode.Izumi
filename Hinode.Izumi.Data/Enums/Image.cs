@@ -1,8 +1,5 @@
 ﻿namespace Hinode.Izumi.Data.Enums
 {
-    /// <summary>
-    /// Изображение, которое используются в сообщениях.
-    /// </summary>
     public enum Image
     {
         WeatherClear = 1,
@@ -58,6 +55,8 @@
         Summer = 51,
         Autumn = 52,
         Winter = 53,
-        EventJuneSkyLantern = 54
+        EventJuneSkyLantern = 54,
+        ColorPicker = 55,
+        Premium = 56
     }
 }

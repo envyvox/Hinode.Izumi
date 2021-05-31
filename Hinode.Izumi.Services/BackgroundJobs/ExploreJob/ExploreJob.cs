@@ -24,7 +24,6 @@ using Hinode.Izumi.Services.GameServices.PropertyService.Queries;
 using Hinode.Izumi.Services.GameServices.StatisticService.Commands;
 using Hinode.Izumi.Services.GameServices.TutorialService.Commands;
 using Hinode.Izumi.Services.HangfireJobService.Commands;
-using Hinode.Izumi.Services.HangfireJobService.Queries;
 using Hinode.Izumi.Services.ImageService.Queries;
 using Hinode.Izumi.Services.TimeService.Queries;
 using MediatR;

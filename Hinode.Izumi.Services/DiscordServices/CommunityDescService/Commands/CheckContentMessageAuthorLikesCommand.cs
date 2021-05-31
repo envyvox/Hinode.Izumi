@@ -49,8 +49,8 @@ namespace Hinode.Izumi.Services.DiscordServices.CommunityDescService.Commands
                 await _mediator.Send(new AddDiscordRoleToUserCommand
                     (contentMessage.UserId, DiscordRole.ContentProvider), cancellationToken);
                 // добавляем полученную роль в базу
-                await _mediator.Send(new AddDiscordRoleToUserToDbCommand(
-                        contentMessage.UserId, roles[DiscordRole.ContentProvider].Id, DateTimeOffset.Now.AddDays(30)),
+                await _mediator.Send(new AddDiscordUserRoleToDbCommand(
+                        contentMessage.UserId, roles[DiscordRole.ContentProvider].Id, 30),
                     cancellationToken);
 
                 var embed = new EmbedBuilder()

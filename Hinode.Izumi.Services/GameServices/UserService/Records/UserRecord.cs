@@ -12,9 +12,20 @@ namespace Hinode.Izumi.Services.GameServices.UserService.Records
         Location Location,
         int Energy,
         long Points,
+        bool Premium,
         DateTimeOffset CreatedAt)
     {
-        public UserRecord() : this(default, default, default, default, default, default, default, default, default)
+        public UserRecord() : this(
+            default,
+            default,
+            default,
+            default,
+            default,
+            default,
+            default,
+            default,
+            default,
+            default)
         {
         }
     }

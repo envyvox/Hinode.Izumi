@@ -24,6 +24,7 @@
         Contract = 20,
         Family = 21,
         Casino = 22,
-        Rating = 23
+        Rating = 23,
+        Premium = 24
     }
 }

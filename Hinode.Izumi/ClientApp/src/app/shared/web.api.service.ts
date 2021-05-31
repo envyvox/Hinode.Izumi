@@ -6999,6 +6999,7 @@ export enum CommandCategory {
     Family = 21,
     Casino = 22,
     Rating = 23,
+    Premium = 24,
 }
 
 export enum Location {
@@ -7909,6 +7910,8 @@ export enum Image {
     Autumn = 52,
     Winter = 53,
     EventJuneSkyLantern = 54,
+    ColorPicker = 55,
+    Premium = 56,
 }
 
 export class LocalizationWebModel extends EntityBaseModel implements ILocalizationWebModel {
@@ -8290,7 +8293,7 @@ export interface IWorldPropertyWebModel extends IEntityBaseModel {
 }
 
 export enum PropertyCategory {
-    EnergyCost = 1,
+    Energy = 1,
     ActionTime = 2,
     ActionTimeReduce = 3,
     WorldState = 4,
@@ -8393,6 +8396,9 @@ export enum Property {
     EventJuneBambooToyPrice = 89,
     EventJuneSkyLanternFoodId = 90,
     EventJuneSkyLanternFoodAmount = 91,
+    EnergyRecoveryPerHourNonPremium = 92,
+    EnergyRecoveryPerHourPremium = 93,
+    TransitTimePercentReducePremium = 94,
 }
 
 export class SwaggerException extends Error {

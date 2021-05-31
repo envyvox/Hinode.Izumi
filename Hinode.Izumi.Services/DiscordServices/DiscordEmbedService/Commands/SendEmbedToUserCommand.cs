@@ -21,10 +21,10 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands
             _mediator = mediator;
         }
 
-        public async Task<IUserMessage> Handle(SendEmbedToUserCommand request, CancellationToken cancellationToken)
+        public async Task<IUserMessage> Handle(SendEmbedToUserCommand request, CancellationToken ct)
         {
             var (socketUser, embedBuilder, message) = request;
-            var embed = await _mediator.Send(new BuildEmbedCommand(embedBuilder), cancellationToken);
+            var embed = await _mediator.Send(new BuildEmbedCommand(embedBuilder, (long) socketUser.Id), ct);
 
             return await socketUser.SendMessageAsync(message, false, embed);
         }

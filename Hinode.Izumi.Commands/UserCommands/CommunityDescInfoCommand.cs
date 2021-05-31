@@ -23,8 +23,8 @@ using MediatR;
 
 namespace Hinode.Izumi.Commands.UserCommands
 {
-    [CommandCategory(CommandCategory.UserInfo)]
     [Group("доска")]
+    [CommandCategory(CommandCategory.UserInfo)]
     public class CommunityDescInfoCommand : ModuleBase<SocketCommandContext>
     {
         private readonly IMediator _mediator;
@@ -38,6 +38,7 @@ namespace Hinode.Izumi.Commands.UserCommands
         }
 
         [Command("сообщества")]
+        [Summary("Просмотр информации об участии в доске сообщества")]
         public async Task CommunityDescInfoTask()
         {
             _emotes = await _mediator.Send(new GetEmotesQuery());
@@ -100,6 +101,7 @@ namespace Hinode.Izumi.Commands.UserCommands
                         .Humanize(2, new CultureInfo("ru-RU"))));
 
             await _mediator.Send(new SendEmbedToUserCommand(Context.User, embed));
+            await Task.CompletedTask;
         }
 
         private static long ChannelMessagesVotes(IEnumerable<ContentVoteRecord> votes,
