@@ -9,6 +9,7 @@ using Hinode.Izumi.Services.DiscordServices.DiscordClientService.Options;
 using Hinode.Izumi.Services.GameServices.AlcoholService.Queries;
 using Hinode.Izumi.Services.GameServices.CalculationService.Queries;
 using Hinode.Izumi.Services.GameServices.CraftingService.Queries;
+using Hinode.Izumi.Services.GameServices.CropService.Queries;
 using Hinode.Izumi.Services.GameServices.DrinkService.Queries;
 using Hinode.Izumi.Services.GameServices.FoodService.Queries;
 using Hinode.Izumi.Services.GameServices.MarketService.Commands;
@@ -122,6 +123,16 @@ namespace Hinode.Izumi.Services.BackgroundJobs.MarketJob
                             // добавляем или обновляем блюдо на рынок
                             await _mediator.Send(new CreateOrUpdateMarketRequestCommand(
                                 izumiId, category, food.Id, price, 9999, false));
+                        }
+
+                        break;
+                    case MarketCategory.Crop:
+
+                        var crops = await _mediator.Send(new GetAllCropsQuery());
+                        foreach (var crop in crops)
+                        {
+                            await _mediator.Send(new CreateOrUpdateMarketRequestCommand(
+                                izumiId, category, crop.Id, crop.Price, 9999, false));
                         }
 
                         break;

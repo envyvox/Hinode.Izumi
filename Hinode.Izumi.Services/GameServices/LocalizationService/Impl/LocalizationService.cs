@@ -85,6 +85,7 @@ namespace Hinode.Izumi.Services.GameServices.LocalizationService.Impl
                 MarketCategory.Alcohol => LocalizationCategory.Alcohol,
                 MarketCategory.Drink => LocalizationCategory.Drink,
                 MarketCategory.Food => LocalizationCategory.Food,
+                MarketCategory.Crop => LocalizationCategory.Crop,
                 _ => throw new ArgumentOutOfRangeException(nameof(category), category, null)
             }, localizedWord);
 
@@ -109,6 +110,7 @@ namespace Hinode.Izumi.Services.GameServices.LocalizationService.Impl
                 MarketCategory.Alcohol => LocalizationCategory.Alcohol,
                 MarketCategory.Drink => LocalizationCategory.Drink,
                 MarketCategory.Food => LocalizationCategory.Food,
+                MarketCategory.Crop => LocalizationCategory.Crop,
                 _ => throw new ArgumentOutOfRangeException(nameof(requestCategory), requestCategory, null)
             }, itemId).Result;
             return Localize(localization, amount);

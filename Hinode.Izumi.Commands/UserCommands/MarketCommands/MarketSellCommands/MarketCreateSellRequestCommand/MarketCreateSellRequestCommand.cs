@@ -12,6 +12,7 @@ using Hinode.Izumi.Services.Extensions;
 using Hinode.Izumi.Services.GameServices.AlcoholService.Queries;
 using Hinode.Izumi.Services.GameServices.CalculationService.Queries;
 using Hinode.Izumi.Services.GameServices.CraftingService.Queries;
+using Hinode.Izumi.Services.GameServices.CropService.Queries;
 using Hinode.Izumi.Services.GameServices.DrinkService.Queries;
 using Hinode.Izumi.Services.GameServices.FoodService.Queries;
 using Hinode.Izumi.Services.GameServices.GatheringService.Queries;
@@ -81,6 +82,12 @@ namespace Hinode.Izumi.Commands.UserCommands.MarketCommands.MarketSellCommands.M
                     userAmount = userFood.Amount;
 
                     break;
+                case MarketCategory.Crop:
+
+                    var userCrop = await _mediator.Send(new GetUserCropQuery((long) context.User.Id, itemId));
+                    userAmount = userCrop.Amount;
+
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(category), category, null);
             }
@@ -136,6 +143,12 @@ namespace Hinode.Izumi.Commands.UserCommands.MarketCommands.MarketSellCommands.M
 
                         npcPrice = await _mediator.Send(new GetNpcPriceQuery(category,
                             await _mediator.Send(new GetFoodCostPriceQuery(itemId))));
+
+                        break;
+                    case MarketCategory.Crop:
+
+                        var crop = await _mediator.Send(new GetCropByIdQuery(itemId));
+                        npcPrice = crop.Price;
 
                         break;
                     default:
