@@ -100,7 +100,7 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
                 "*{0}*",
 
             IzumiEventMessage.ReputationAdded =>
-                "{0} {1} репутации в **{2}**, ",
+                "{0} {1} репутации в **{2}**",
 
             IzumiEventMessage.BossKilled =>
                 "Мы отлично справились, у босса не было ни шанса, но не стоит расслабляться. Завтра он наверняка захочет отомстить и вновь нападет на один из городов.",
