@@ -34,6 +34,7 @@ namespace Hinode.Izumi.Services.GameServices.InventoryService.Commands
                 MarketCategory.Alcohol => InventoryCategory.Alcohol,
                 MarketCategory.Drink => InventoryCategory.Drink,
                 MarketCategory.Food => InventoryCategory.Food,
+                MarketCategory.Crop => InventoryCategory.Crop,
                 _ => throw new ArgumentOutOfRangeException(nameof(category), category, null)
             }, itemId, amount), cancellationToken);
 
