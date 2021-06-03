@@ -195,6 +195,8 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
             var requiredUsersLength = await _mediator.Send(new GetPropertyValueQuery(Property.BossRequiredUsers));
             var currentEvent = (Event) await _mediator.Send(new GetPropertyValueQuery(Property.CurrentEvent));
 
+            if (currentEvent != Event.None) requiredUsersLength = 0;
+
             // снимаем все реакции с сообщения
             await message.RemoveAllReactionsAsync();
 
@@ -206,7 +208,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
                 // изображение босса
                 .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(bossImage)));
 
-            if (users.Length < requiredUsersLength && currentEvent != Event.None)
+            if (users.Length < requiredUsersLength)
             {
                 // получаем дебафф от втождения ежедневного босса
                 var debuff = reputation switch
