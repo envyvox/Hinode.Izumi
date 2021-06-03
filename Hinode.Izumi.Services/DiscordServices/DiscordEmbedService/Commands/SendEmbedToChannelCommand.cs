@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Hinode.Izumi.Data.Enums.DiscordEnums;
@@ -30,7 +31,16 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands
                 new GetDiscordSocketTextChannelQuery(channels[channel].Id), cancellationToken);
             var embed = await _mediator.Send(new BuildEmbedCommand(embedBuilder), cancellationToken);
 
-            return await textChannel.SendMessageAsync(message, false, embed);
+            try
+            {
+                return await textChannel.SendMessageAsync(message, false, embed);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            return null;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -26,7 +27,16 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands
             var (socketUser, embedBuilder, message) = request;
             var embed = await _mediator.Send(new BuildEmbedCommand(embedBuilder, (long) socketUser.Id), ct);
 
-            return await socketUser.SendMessageAsync(message, false, embed);
+            try
+            {
+                return await socketUser.SendMessageAsync(message, false, embed);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            return null;
         }
     }
 }

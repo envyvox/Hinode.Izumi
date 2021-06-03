@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using Hinode.Izumi.Services.DiscordServices.DiscordClientService;
@@ -25,7 +26,17 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries
         public async Task<SocketGuild> Handle(GetDiscordSocketGuildQuery request, CancellationToken cancellationToken)
         {
             var client = await _discordClientService.GetSocketClient();
-            return client.GetGuild(_options.Value.GuildId);
+
+            try
+            {
+                return client.GetGuild(_options.Value.GuildId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            return null;
         }
     }
 }
