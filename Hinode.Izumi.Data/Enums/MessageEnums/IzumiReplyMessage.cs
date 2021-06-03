@@ -551,7 +551,9 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         PremiumInfoChangeColorFieldName,
         PremiumInfoChangeColorFieldDesc,
         PremiumInfoExpirationFieldName,
-        PremiumInfoExpirationFieldDesc
+        PremiumInfoExpirationFieldDesc,
+        AdventurePointsRewardAuthor,
+        AdventurePointsRewardDesc
     }
 
     public static class IzumiReplyMessageHelper
@@ -2236,6 +2238,12 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.PremiumInfoExpirationFieldDesc =>
                 "{0} Премиум-статус будет действовать еще {1}.",
+
+            IzumiReplyMessage.AdventurePointsRewardAuthor =>
+                "Награда приключений",
+
+            IzumiReplyMessage.AdventurePointsRewardDesc =>
+                "Вы заняли {0} {1} место и получили:\n\n",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };

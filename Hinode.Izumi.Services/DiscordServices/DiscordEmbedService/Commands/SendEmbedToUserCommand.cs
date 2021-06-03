@@ -25,6 +25,9 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands
         public async Task<IUserMessage> Handle(SendEmbedToUserCommand request, CancellationToken ct)
         {
             var (socketUser, embedBuilder, message) = request;
+
+            if (socketUser is null) return null;
+
             var embed = await _mediator.Send(new BuildEmbedCommand(embedBuilder, (long) socketUser.Id), ct);
 
             try

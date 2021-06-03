@@ -1,8 +1,5 @@
 ﻿namespace Hinode.Izumi.Data.Enums
 {
-    /// <summary>
-    /// Коробка с подарком внутри.
-    /// </summary>
     public enum Box
     {
         Capital = 1,
@@ -14,11 +11,6 @@
 
     public static class BoxHelper
     {
-        /// <summary>
-        /// Возвращает название иконки коробки.
-        /// </summary>
-        /// <param name="box">Коробка.</param>
-        /// <returns>Название иконки коробки.</returns>
         public static string Emote(this Box box) => "Box" + box;
     }
 }

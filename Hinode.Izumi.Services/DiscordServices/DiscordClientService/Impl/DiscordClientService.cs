@@ -218,7 +218,7 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.Impl
 
                 // ежемесячные джобы
                 RecurringJob.AddOrUpdate<IPointsJob>(
-                    x => x.ResetAdventurePoints(),
+                    x => x.SendAwardsAndResetPoints(),
                     Cron.Monthly, _timeZoneInfo);
 
                 _logger.LogInformation("Bot started");
