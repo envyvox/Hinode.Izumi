@@ -193,6 +193,9 @@ namespace Hinode.Izumi.Services.BackgroundJobs.BossJob
             var users = reactionUsers.Where(x => x.IsBot == false).ToArray();
             // получаем необходимое количество пользователей для убийства ежедневного босса
             var requiredUsersLength = await _mediator.Send(new GetPropertyValueQuery(Property.BossRequiredUsers));
+            var currentEvent = (Event) await _mediator.Send(new GetPropertyValueQuery(Property.CurrentEvent));
+
+            if (currentEvent != Event.None) requiredUsersLength = 0;
 
             // снимаем все реакции с сообщения
             await message.RemoveAllReactionsAsync();

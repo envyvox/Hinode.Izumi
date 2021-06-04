@@ -145,6 +145,7 @@ namespace Hinode.Izumi.Services.BackgroundJobs.ExploreJob
             {
                 await _mediator.Send(new CheckAchievementInUserCommand(userId, Achievement.MeetSummer));
             }
+
             await _mediator.Send(new DeleteUserHangfireJobCommand(userId, HangfireAction.Explore));
         }
 

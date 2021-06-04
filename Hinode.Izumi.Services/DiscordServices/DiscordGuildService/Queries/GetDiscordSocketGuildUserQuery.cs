@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using MediatR;
@@ -21,7 +22,17 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries
             CancellationToken cancellationToken)
         {
             var socketGuild = await _mediator.Send(new GetDiscordSocketGuildQuery(), cancellationToken);
-            return socketGuild.GetUser((ulong) request.Id);
+
+            try
+            {
+                return socketGuild.GetUser((ulong) request.Id);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            return null;
         }
     }
 }

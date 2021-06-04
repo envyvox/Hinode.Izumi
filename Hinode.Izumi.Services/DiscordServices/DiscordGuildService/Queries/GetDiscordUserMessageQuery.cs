@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using MediatR;
@@ -22,7 +23,16 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordGuildService.Queries
             var textChannel = await _mediator.Send(new GetDiscordSocketTextChannelQuery(channelId),
                 cancellationToken);
 
-            return (IUserMessage) await textChannel.GetMessageAsync((ulong) messageId);
+            try
+            {
+                return (IUserMessage) await textChannel.GetMessageAsync((ulong) messageId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            return null;
         }
     }
 }

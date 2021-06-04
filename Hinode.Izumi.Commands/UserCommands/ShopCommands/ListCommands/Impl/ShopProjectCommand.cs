@@ -7,6 +7,7 @@ using Hinode.Izumi.Framework.Autofac;
 using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands;
 using Hinode.Izumi.Services.EmoteService.Queries;
 using Hinode.Izumi.Services.Extensions;
+using Hinode.Izumi.Services.GameServices.BuildingService.Queries;
 using Hinode.Izumi.Services.GameServices.LocalizationService;
 using Hinode.Izumi.Services.GameServices.ProjectService.Queries;
 using Hinode.Izumi.Services.ImageService.Queries;
@@ -29,33 +30,30 @@ namespace Hinode.Izumi.Commands.UserCommands.ShopCommands.ListCommands.Impl
 
         public async Task Execute(SocketCommandContext context)
         {
-            // получаем иконки из базы
             var emotes = await _mediator.Send(new GetEmotesQuery());
-            // получаем все чертежи
             var projects = await _mediator.Send(new GetAllProjectsQuery());
 
             var embed = new EmbedBuilder()
-                // изображение магазина чертежей
                 .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Image.ShopProject)))
-                // рассказываем как купить чертеж
                 .WithDescription(
                     IzumiReplyMessage.ShopProjectDesc.Parse() +
                     $"\n{emotes.GetEmoteOrBlank("Blank")}");
 
-            // для каждого чертежа создаем embed field
             foreach (var project in projects)
             {
-                // проверяем наличие чертежа у пользователя
-                var hasProject = await _mediator.Send(new CheckUserHasProjectQuery((long) context.User.Id, project.Id));
-                // если у пользователя уже есть этот чертеж - игнорируем
-                if (hasProject) return;
+                var building = await _mediator.Send(new GetBuildingByProjectIdQuery(project.Id));
+                var hasProject = await _mediator.Send(new CheckUserHasProjectQuery(
+                    (long) context.User.Id, project.Id));
+                var hasBuilding = await _mediator.Send(new CheckBuildingInUserQuery(
+                    (long) context.User.Id, building.Type));
+
+                if (hasProject || hasBuilding) continue;
 
                 embed.AddField(
                     $"{emotes.GetEmoteOrBlank("List")} `{project.Id}` {emotes.GetEmoteOrBlank("Project")} {project.Name}",
                     $"Стоимость: {emotes.GetEmoteOrBlank(Currency.Ien.ToString())} {project.Price} {_local.Localize(Currency.Ien.ToString(), project.Price)}");
             }
 
-            // если нечего отобразить пользователю - выводим сообщение о том, что он все купил
             if (embed.Fields.Count < 1)
                 embed.AddField(IzumiReplyMessage.ShopProjectSoldFieldName.Parse(),
                     IzumiReplyMessage.ShopProjectSoldFieldDesc.Parse());

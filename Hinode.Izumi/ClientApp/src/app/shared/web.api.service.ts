@@ -3104,6 +3104,129 @@ export class EmoteService extends ServiceBase {
 @Injectable({
     providedIn: 'root'
 })
+export class EmulatorService extends ServiceBase {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(Injector) configuration: Injector, @Inject(HttpClient) http: HttpClient, @Optional() @Inject(SPA_BASE_URL) baseUrl?: string) {
+        super(configuration);
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : this.getBaseUrl("spa");
+    }
+
+    emulateFishing(setup: FishingEmulateSetup): Observable<FishingResult> {
+        let url_ = this.baseUrl + "/api/emulator/fishing";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(setup);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("post", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.processEmulateFishing(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processEmulateFishing(<any>response_);
+                } catch (e) {
+                    return <Observable<FishingResult>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FishingResult>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processEmulateFishing(response: HttpResponseBase): Observable<FishingResult> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = FishingResult.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FishingResult>(<any>null);
+    }
+
+    emulateExplore(setup: ExploreEmulateSetup): Observable<ExploreResult> {
+        let url_ = this.baseUrl + "/api/emulator/explore";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(setup);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return _observableFrom(this.transformOptions(options_)).pipe(_observableMergeMap(transformedOptions_ => {
+            return this.http.request("post", url_, transformedOptions_);
+        })).pipe(_observableMergeMap((response_: any) => {
+            return this.processEmulateExplore(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processEmulateExplore(<any>response_);
+                } catch (e) {
+                    return <Observable<ExploreResult>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ExploreResult>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processEmulateExplore(response: HttpResponseBase): Observable<ExploreResult> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ExploreResult.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ExploreResult>(<any>null);
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
 export class FishService extends ServiceBase {
     private http: HttpClient;
     private baseUrl: string;
@@ -7462,6 +7585,278 @@ export interface IEmoteWebModel {
     updatedAt?: Date;
 }
 
+export class FishingResult implements IFishingResult {
+    successCount?: number;
+    failCount?: number;
+    successPercent?: number;
+    masteryReceived?: number;
+    currencyReceived?: number;
+    commonFishCount?: number;
+    rareFishCount?: number;
+    epicFishCount?: number;
+    mythicalFishCount?: number;
+    legendaryFishCount?: number;
+    divineFishCount?: number;
+
+    constructor(data?: IFishingResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.successCount = _data["successCount"] !== undefined ? _data["successCount"] : <any>null;
+            this.failCount = _data["failCount"] !== undefined ? _data["failCount"] : <any>null;
+            this.successPercent = _data["successPercent"] !== undefined ? _data["successPercent"] : <any>null;
+            this.masteryReceived = _data["masteryReceived"] !== undefined ? _data["masteryReceived"] : <any>null;
+            this.currencyReceived = _data["currencyReceived"] !== undefined ? _data["currencyReceived"] : <any>null;
+            this.commonFishCount = _data["commonFishCount"] !== undefined ? _data["commonFishCount"] : <any>null;
+            this.rareFishCount = _data["rareFishCount"] !== undefined ? _data["rareFishCount"] : <any>null;
+            this.epicFishCount = _data["epicFishCount"] !== undefined ? _data["epicFishCount"] : <any>null;
+            this.mythicalFishCount = _data["mythicalFishCount"] !== undefined ? _data["mythicalFishCount"] : <any>null;
+            this.legendaryFishCount = _data["legendaryFishCount"] !== undefined ? _data["legendaryFishCount"] : <any>null;
+            this.divineFishCount = _data["divineFishCount"] !== undefined ? _data["divineFishCount"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): FishingResult {
+        data = typeof data === 'object' ? data : {};
+        let result = new FishingResult();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["successCount"] = this.successCount !== undefined ? this.successCount : <any>null;
+        data["failCount"] = this.failCount !== undefined ? this.failCount : <any>null;
+        data["successPercent"] = this.successPercent !== undefined ? this.successPercent : <any>null;
+        data["masteryReceived"] = this.masteryReceived !== undefined ? this.masteryReceived : <any>null;
+        data["currencyReceived"] = this.currencyReceived !== undefined ? this.currencyReceived : <any>null;
+        data["commonFishCount"] = this.commonFishCount !== undefined ? this.commonFishCount : <any>null;
+        data["rareFishCount"] = this.rareFishCount !== undefined ? this.rareFishCount : <any>null;
+        data["epicFishCount"] = this.epicFishCount !== undefined ? this.epicFishCount : <any>null;
+        data["mythicalFishCount"] = this.mythicalFishCount !== undefined ? this.mythicalFishCount : <any>null;
+        data["legendaryFishCount"] = this.legendaryFishCount !== undefined ? this.legendaryFishCount : <any>null;
+        data["divineFishCount"] = this.divineFishCount !== undefined ? this.divineFishCount : <any>null;
+        return data; 
+    }
+}
+
+export interface IFishingResult {
+    successCount?: number;
+    failCount?: number;
+    successPercent?: number;
+    masteryReceived?: number;
+    currencyReceived?: number;
+    commonFishCount?: number;
+    rareFishCount?: number;
+    epicFishCount?: number;
+    mythicalFishCount?: number;
+    legendaryFishCount?: number;
+    divineFishCount?: number;
+}
+
+export class FishingEmulateSetup implements IFishingEmulateSetup {
+    timesDay?: TimesDay;
+    season?: Season;
+    weather?: Weather;
+    fishingMastery?: number;
+    masteryStackable?: boolean;
+    fishingCount?: number;
+    emulateCount?: number;
+
+    constructor(data?: IFishingEmulateSetup) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.timesDay = _data["timesDay"] !== undefined ? _data["timesDay"] : <any>null;
+            this.season = _data["season"] !== undefined ? _data["season"] : <any>null;
+            this.weather = _data["weather"] !== undefined ? _data["weather"] : <any>null;
+            this.fishingMastery = _data["fishingMastery"] !== undefined ? _data["fishingMastery"] : <any>null;
+            this.masteryStackable = _data["masteryStackable"] !== undefined ? _data["masteryStackable"] : <any>null;
+            this.fishingCount = _data["fishingCount"] !== undefined ? _data["fishingCount"] : <any>null;
+            this.emulateCount = _data["emulateCount"] !== undefined ? _data["emulateCount"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): FishingEmulateSetup {
+        data = typeof data === 'object' ? data : {};
+        let result = new FishingEmulateSetup();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["timesDay"] = this.timesDay !== undefined ? this.timesDay : <any>null;
+        data["season"] = this.season !== undefined ? this.season : <any>null;
+        data["weather"] = this.weather !== undefined ? this.weather : <any>null;
+        data["fishingMastery"] = this.fishingMastery !== undefined ? this.fishingMastery : <any>null;
+        data["masteryStackable"] = this.masteryStackable !== undefined ? this.masteryStackable : <any>null;
+        data["fishingCount"] = this.fishingCount !== undefined ? this.fishingCount : <any>null;
+        data["emulateCount"] = this.emulateCount !== undefined ? this.emulateCount : <any>null;
+        return data; 
+    }
+}
+
+export interface IFishingEmulateSetup {
+    timesDay?: TimesDay;
+    season?: Season;
+    weather?: Weather;
+    fishingMastery?: number;
+    masteryStackable?: boolean;
+    fishingCount?: number;
+    emulateCount?: number;
+}
+
+export enum TimesDay {
+    Any = 0,
+    Day = 1,
+    Night = 2,
+}
+
+export enum Weather {
+    Any = 0,
+    Clear = 1,
+    Rain = 2,
+}
+
+export class ExploreResult implements IExploreResult {
+    successCount?: number;
+    failCount?: number;
+    successPercent?: number;
+    masteryReceived?: number;
+    currencyReceived?: number;
+    gatheringsReceived?: { [key: string]: number; } | null;
+    totalItemsCount?: number;
+
+    constructor(data?: IExploreResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.successCount = _data["successCount"] !== undefined ? _data["successCount"] : <any>null;
+            this.failCount = _data["failCount"] !== undefined ? _data["failCount"] : <any>null;
+            this.successPercent = _data["successPercent"] !== undefined ? _data["successPercent"] : <any>null;
+            this.masteryReceived = _data["masteryReceived"] !== undefined ? _data["masteryReceived"] : <any>null;
+            this.currencyReceived = _data["currencyReceived"] !== undefined ? _data["currencyReceived"] : <any>null;
+            if (_data["gatheringsReceived"]) {
+                this.gatheringsReceived = {} as any;
+                for (let key in _data["gatheringsReceived"]) {
+                    if (_data["gatheringsReceived"].hasOwnProperty(key))
+                        this.gatheringsReceived![key] = _data["gatheringsReceived"][key];
+                }
+            }
+            this.totalItemsCount = _data["totalItemsCount"] !== undefined ? _data["totalItemsCount"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): ExploreResult {
+        data = typeof data === 'object' ? data : {};
+        let result = new ExploreResult();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["successCount"] = this.successCount !== undefined ? this.successCount : <any>null;
+        data["failCount"] = this.failCount !== undefined ? this.failCount : <any>null;
+        data["successPercent"] = this.successPercent !== undefined ? this.successPercent : <any>null;
+        data["masteryReceived"] = this.masteryReceived !== undefined ? this.masteryReceived : <any>null;
+        data["currencyReceived"] = this.currencyReceived !== undefined ? this.currencyReceived : <any>null;
+        if (this.gatheringsReceived) {
+            data["gatheringsReceived"] = {};
+            for (let key in this.gatheringsReceived) {
+                if (this.gatheringsReceived.hasOwnProperty(key))
+                    data["gatheringsReceived"][key] = this.gatheringsReceived[key] !== undefined ? this.gatheringsReceived[key] : <any>null;
+            }
+        }
+        data["totalItemsCount"] = this.totalItemsCount !== undefined ? this.totalItemsCount : <any>null;
+        return data; 
+    }
+}
+
+export interface IExploreResult {
+    successCount?: number;
+    failCount?: number;
+    successPercent?: number;
+    masteryReceived?: number;
+    currencyReceived?: number;
+    gatheringsReceived?: { [key: string]: number; } | null;
+    totalItemsCount?: number;
+}
+
+export class ExploreEmulateSetup implements IExploreEmulateSetup {
+    location?: Location;
+    gatheringMastery?: number;
+    masteryStackable?: boolean;
+    exploreCount?: number;
+    emulateCount?: number;
+
+    constructor(data?: IExploreEmulateSetup) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.location = _data["location"] !== undefined ? _data["location"] : <any>null;
+            this.gatheringMastery = _data["gatheringMastery"] !== undefined ? _data["gatheringMastery"] : <any>null;
+            this.masteryStackable = _data["masteryStackable"] !== undefined ? _data["masteryStackable"] : <any>null;
+            this.exploreCount = _data["exploreCount"] !== undefined ? _data["exploreCount"] : <any>null;
+            this.emulateCount = _data["emulateCount"] !== undefined ? _data["emulateCount"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): ExploreEmulateSetup {
+        data = typeof data === 'object' ? data : {};
+        let result = new ExploreEmulateSetup();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["location"] = this.location !== undefined ? this.location : <any>null;
+        data["gatheringMastery"] = this.gatheringMastery !== undefined ? this.gatheringMastery : <any>null;
+        data["masteryStackable"] = this.masteryStackable !== undefined ? this.masteryStackable : <any>null;
+        data["exploreCount"] = this.exploreCount !== undefined ? this.exploreCount : <any>null;
+        data["emulateCount"] = this.emulateCount !== undefined ? this.emulateCount : <any>null;
+        return data; 
+    }
+}
+
+export interface IExploreEmulateSetup {
+    location?: Location;
+    gatheringMastery?: number;
+    masteryStackable?: boolean;
+    exploreCount?: number;
+    emulateCount?: number;
+}
+
 export class FishWebModel extends EntityBaseModel implements IFishWebModel {
     name?: string | null;
     rarity?: FishRarity;
@@ -7530,18 +7925,6 @@ export enum FishRarity {
     Mythical = 4,
     Legendary = 5,
     Divine = 6,
-}
-
-export enum Weather {
-    Any = 0,
-    Clear = 1,
-    Rain = 2,
-}
-
-export enum TimesDay {
-    Any = 0,
-    Day = 1,
-    Night = 2,
 }
 
 export class FoodWebModel extends EntityBaseModel implements IFoodWebModel {

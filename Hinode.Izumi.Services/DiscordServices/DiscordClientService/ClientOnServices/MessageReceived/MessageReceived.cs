@@ -67,28 +67,8 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
             // если это сообщение в общении
             if (socketMessage.Channel.Id == (ulong) channels[DiscordChannel.Chat].Id)
             {
-                // проверяем есть ли у пользователя нитро буст
-                var hasNitroRole = await _mediator.Send(new CheckDiscordRoleInUserQuery(
-                    (long) socketMessage.Author.Id, DiscordRole.Nitro));
-                // проверяем есть ли у пользователя роль модератора
-                var hasModeratorRole = await _mediator.Send(new CheckDiscordRoleInUserQuery(
-                    (long) socketMessage.Author.Id, DiscordRole.Moderator));
-                // проверяем есть ли у пользователя роль ивент-менеджера
-                var hasEventManagerRole = await _mediator.Send(new CheckDiscordRoleInUserQuery(
-                    (long) socketMessage.Author.Id, DiscordRole.EventManager));
-                // проверяем есть ли у пользователя роль администратора
-                var hasAdministrationRole = await _mediator.Send(new CheckDiscordRoleInUserQuery(
-                    (long) socketMessage.Author.Id, DiscordRole.Administration));
-                var hasStaffRole = hasModeratorRole || hasEventManagerRole || hasAdministrationRole;
                 // проверяем зарегистрирован ли пользователь в игровом мире
                 var checkUser = await _mediator.Send(new CheckUserByIdQuery((long) socketMessage.Author.Id));
-
-                // если сообщение имеет вложение или ссылку и пользователь не имеет роли нитро-буста или стафа
-                if (CheckAttachment(socketMessage) && !(hasNitroRole || hasStaffRole))
-                    // удаляем сообщение через 10 минут
-                    BackgroundJob.Schedule<IDiscordJob>(
-                        x => x.DeleteMessage((long) socketMessage.Channel.Id, (long) socketMessage.Id),
-                        TimeSpan.FromMinutes(10));
 
                 if (checkUser)
                 {

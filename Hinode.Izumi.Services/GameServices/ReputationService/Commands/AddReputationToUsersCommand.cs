@@ -29,7 +29,7 @@ namespace Hinode.Izumi.Services.GameServices.ReputationService.Commands
                     insert into user_reputations as ur (user_id, reputation, amount)
                     values (unnest(array[@usersId]), @reputation, @amount)
                     on conflict (user_id, reputation) do update
-                        set amount = ur.reputation + @reputation,
+                        set amount = ur.amount + @reputation,
                             updated_at = now()",
                     new {usersId, reputation, amount});
 

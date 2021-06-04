@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using MediatR;
@@ -21,7 +22,14 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands
             var (message, embedBuilder) = request;
             var newEmbed = await _mediator.Send(new BuildEmbedCommand(embedBuilder), cancellationToken);
 
-            await message.ModifyAsync(x => x.Embed = newEmbed);
+            try
+            {
+                await message.ModifyAsync(x => x.Embed = newEmbed);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
 
             return new Unit();
         }
