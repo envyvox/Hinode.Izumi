@@ -3,15 +3,17 @@ using System;
 using Hinode.Izumi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Hinode.Izumi.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210604163106_CreateWeeklyQuestModel")]
+    partial class CreateWeeklyQuestModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -686,47 +688,6 @@ namespace Hinode.Izumi.Data.Migrations
                         .HasDatabaseName("ix_crops_seed_id");
 
                     b.ToTable("crops");
-                });
-
-            modelBuilder.Entity("Hinode.Izumi.Data.Models.CurrentWeeklyQuest", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<int>("Location")
-                        .HasColumnType("integer")
-                        .HasColumnName("location");
-
-                    b.Property<long>("QuestId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("quest_id");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at")
-                        .HasDefaultValueSql("now()");
-
-                    b.HasKey("Id")
-                        .HasName("pk_current_weekly_quests");
-
-                    b.HasIndex("QuestId")
-                        .HasDatabaseName("ix_current_weekly_quests_quest_id");
-
-                    b.HasIndex("Location", "QuestId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_current_weekly_quests_location_quest_id");
-
-                    b.ToTable("current_weekly_quests");
                 });
 
             modelBuilder.Entity("Hinode.Izumi.Data.Models.DiscordModels.ContentMessage", b =>
@@ -3625,47 +3586,6 @@ namespace Hinode.Izumi.Data.Migrations
                     b.ToTable("user_trainings");
                 });
 
-            modelBuilder.Entity("Hinode.Izumi.Data.Models.UserModels.UserWeeklyQuest", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<long>("QuestId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("quest_id");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_user_weekly_quests");
-
-                    b.HasIndex("QuestId")
-                        .HasDatabaseName("ix_user_weekly_quests_quest_id");
-
-                    b.HasIndex("UserId", "QuestId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_user_weekly_quests_user_id_quest_id");
-
-                    b.ToTable("user_weekly_quests");
-                });
-
             modelBuilder.Entity("Hinode.Izumi.Data.Models.WeeklyQuest", b =>
                 {
                     b.Property<long>("Id")
@@ -3699,6 +3619,10 @@ namespace Hinode.Izumi.Data.Migrations
                     b.Property<long>("ItemId")
                         .HasColumnType("bigint")
                         .HasColumnName("item_id");
+
+                    b.Property<int>("Location")
+                        .HasColumnType("integer")
+                        .HasColumnName("location");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -3831,18 +3755,6 @@ namespace Hinode.Izumi.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Seed");
-                });
-
-            modelBuilder.Entity("Hinode.Izumi.Data.Models.CurrentWeeklyQuest", b =>
-                {
-                    b.HasOne("Hinode.Izumi.Data.Models.WeeklyQuest", "Quest")
-                        .WithMany()
-                        .HasForeignKey("QuestId")
-                        .HasConstraintName("fk_current_weekly_quests_weekly_quest_quest_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Quest");
                 });
 
             modelBuilder.Entity("Hinode.Izumi.Data.Models.DiscordModels.ContentVote", b =>
@@ -4596,27 +4508,6 @@ namespace Hinode.Izumi.Data.Migrations
                         .HasConstraintName("fk_user_trainings_users_user_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Hinode.Izumi.Data.Models.UserModels.UserWeeklyQuest", b =>
-                {
-                    b.HasOne("Hinode.Izumi.Data.Models.CurrentWeeklyQuest", "Quest")
-                        .WithMany()
-                        .HasForeignKey("QuestId")
-                        .HasConstraintName("fk_user_weekly_quests_current_weekly_quests_quest_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Hinode.Izumi.Data.Models.UserModels.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .HasConstraintName("fk_user_weekly_quests_users_user_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Quest");
 
                     b.Navigation("User");
                 });
