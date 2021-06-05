@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -38,14 +39,15 @@ namespace Hinode.Izumi.Services.DiscordServices.DiscordClientService.ClientOnSer
             // получаем каналы доски сообщества
             var communityDescChannels = await _mediator.Send(new GetCommunityDescChannelsQuery());
 
-            // если поставленная реакция находится в получении ролей
             if (socketMessageChannel.Id == (ulong) channels[DiscordChannel.GetRoles].Id ||
-                // или в регистрации
-                socketMessageChannel.Id == (ulong) channels[DiscordChannel.Registration].Id)
+                socketMessageChannel.Id == (ulong) channels[DiscordChannel.Registration].Id ||
+                socketMessageChannel.Id == (ulong) channels[DiscordChannel.DiscordEventGetRole].Id)
             {
                 // определяем какую роль необходимо выдать в зависимости от названия реакции
                 var role = socketReaction.Emote.Name switch
                 {
+                    // роль мероприятий
+                    "🥳" => DiscordRole.DiscordEvent,
                     // роли оповещений событий
                     "NumOne" => DiscordRole.AllEvents,
                     "NumTwo" => DiscordRole.DailyEvents,

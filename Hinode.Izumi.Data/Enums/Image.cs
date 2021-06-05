@@ -57,6 +57,7 @@
         Winter = 53,
         EventJuneSkyLantern = 54,
         ColorPicker = 55,
-        Premium = 56
+        Premium = 56,
+        DiscordEvent = 57
     }
 }

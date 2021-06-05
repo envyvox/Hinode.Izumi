@@ -2,9 +2,6 @@
 
 namespace Hinode.Izumi.Data.Enums.DiscordEnums
 {
-    /// <summary>
-    /// Роль на сервере дискорда.
-    /// </summary>
     public enum DiscordRole
     {
         MusicBot = 1,
@@ -16,6 +13,7 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
         ContentProvider = 7,
         InVoice = 8,
         Premium = 9,
+        DiscordEvent = 10,
 
         LocationInTransit = 50,
         LocationCapital = 51,
@@ -49,11 +47,6 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
 
     public static class DiscordRoleHelper
     {
-        /// <summary>
-        /// Возвращает локализированное название роли.
-        /// </summary>
-        /// <param name="role">Роль.</param>
-        /// <returns>Локализированное название роли.</returns>
         public static string Name(this DiscordRole role) => role switch
         {
             DiscordRole.MusicBot => "Музыкальные боты",
@@ -91,14 +84,10 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
             DiscordRole.WildRift => "Wild Rift",
             DiscordRole.MobileLegends => "Mobile Legends",
             DiscordRole.Premium => "👑 Премиум",
+            DiscordRole.DiscordEvent => "🥳 Мероприятия",
             _ => throw new ArgumentOutOfRangeException(nameof(role), role, null)
         };
 
-        /// <summary>
-        /// Возвращает hex-цвет роли.
-        /// </summary>
-        /// <param name="role">Роль.</param>
-        /// <returns>Hex-цвет роли.</returns>
         public static string Color(this DiscordRole role) => role switch
         {
             DiscordRole.Administration => "ffc7f5",

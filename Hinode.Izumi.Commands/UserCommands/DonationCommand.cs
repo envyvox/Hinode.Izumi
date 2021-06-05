@@ -5,8 +5,10 @@ using Hinode.Izumi.Data.Enums;
 using Hinode.Izumi.Services.DiscordServices.DiscordEmbedService.Commands;
 using Hinode.Izumi.Services.EmoteService.Queries;
 using Hinode.Izumi.Services.Extensions;
+using Hinode.Izumi.Services.ImageService.Queries;
 using Hinode.Izumi.Services.WebServices.CommandWebService.Attributes;
 using MediatR;
+using Image = Hinode.Izumi.Data.Enums.Image;
 
 namespace Hinode.Izumi.Commands.UserCommands
 {
@@ -39,7 +41,7 @@ namespace Hinode.Izumi.Commands.UserCommands
                     $"\n{emotes.GetEmoteOrBlank("Blank")}")
                 .AddField("Игровые бонусы",
                     $"{emotes.GetEmoteOrBlank("List")} {emotes.GetEmoteOrBlank("Premium")} **Премиум-статус** на **30 дней** стоимостью {emotes.GetEmoteOrBlank("Ruble")} **350 рублей**.\n" +
-                    "> *Ознакомиться с преимуществами премиум-статуса можно [нажав сюда](https://cdn.discordapp.com/attachments/842067362139209778/848626579978190868/Premium.png)*.\n\n" +
+                    $"> *Ознакомиться с преимуществами премиум-статуса можно [нажав сюда]({await _mediator.Send(new GetImageUrlQuery(Image.Premium))})*.\n\n" +
                     $"{emotes.GetEmoteOrBlank("List")} {emotes.GetEmoteOrBlank(Currency.Pearl.ToString())} **Жемчуг** стоимостью {emotes.GetEmoteOrBlank("Ruble")} **1 рубль** за {emotes.GetEmoteOrBlank(Currency.Pearl.ToString())} **1 жемчуг**.\n" +
                     "> *Жемгуг это особая игровая валюта, позволяющая приобретать уникальные товары.*" +
                     $"\n{emotes.GetEmoteOrBlank("Blank")}")

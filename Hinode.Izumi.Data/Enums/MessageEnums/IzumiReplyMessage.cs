@@ -553,7 +553,9 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
         PremiumInfoExpirationFieldName,
         PremiumInfoExpirationFieldDesc,
         AdventurePointsRewardAuthor,
-        AdventurePointsRewardDesc
+        AdventurePointsRewardDesc,
+        PresetDiscordEventAuthor,
+        PresetDiscordEventDesc
     }
 
     public static class IzumiReplyMessageHelper
@@ -2244,6 +2246,12 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
             IzumiReplyMessage.AdventurePointsRewardDesc =>
                 "Вы заняли {0} {1} место и получили:\n\n",
+
+            IzumiReplyMessage.PresetDiscordEventAuthor =>
+                "Роль мероприятия",
+
+            IzumiReplyMessage.PresetDiscordEventDesc =>
+                "Вы можете получить роль <@&{0}>, которая будет **упоминаться** в <#{1}> для оповещения о предстоящих **мероприятиях**, для этого нажмите на **реакцию** под этим сообщением.",
 
             _ => throw new ArgumentOutOfRangeException(nameof(message), message, null)
         };
