@@ -8295,6 +8295,7 @@ export enum Image {
     EventJuneSkyLantern = 54,
     ColorPicker = 55,
     Premium = 56,
+    DiscordEvent = 57,
 }
 
 export class LocalizationWebModel extends EntityBaseModel implements ILocalizationWebModel {

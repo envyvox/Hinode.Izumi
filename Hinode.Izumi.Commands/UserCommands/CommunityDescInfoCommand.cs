@@ -50,6 +50,9 @@ namespace Hinode.Izumi.Commands.UserCommands
             var userRole = await _mediator.Send(new GetDiscordUserRoleQuery(
                 (long) Context.User.Id, roles[DiscordRole.ContentProvider].Id));
 
+            var photosMessages = userMessages
+                .Where(x => x.ChannelId == channels[DiscordChannel.Photos].Id)
+                .ToArray();
             var screenshotMessages = userMessages
                 .Where(x => x.ChannelId == channels[DiscordChannel.Screenshots].Id)
                 .ToArray();
@@ -66,6 +69,8 @@ namespace Hinode.Izumi.Commands.UserCommands
                 .Where(x => x.ChannelId == channels[DiscordChannel.Nsfw].Id)
                 .ToArray();
 
+            var photosMessagesLikes = ChannelMessagesVotes(userVotes, photosMessages, Vote.Like);
+            var photosMessagesDislikes = ChannelMessagesVotes(userVotes, photosMessages, Vote.Dislike);
             var screenshotMessagesLikes = ChannelMessagesVotes(userVotes, screenshotMessages, Vote.Like);
             var screenshotMessagesDislikes = ChannelMessagesVotes(userVotes, screenshotMessages, Vote.Dislike);
             var memesMessagesLikes = ChannelMessagesVotes(userVotes, memesMessages, Vote.Like);
@@ -81,6 +86,8 @@ namespace Hinode.Izumi.Commands.UserCommands
 
             var embed = new EmbedBuilder()
                 .WithDescription(IzumiReplyMessage.CommunityDescInfoDesc.Parse(
+                    DisplayChannelInfo(photosMessages.Length, channels[DiscordChannel.Photos].Id,
+                        photosMessagesLikes, photosMessagesDislikes),
                     DisplayChannelInfo(screenshotMessages.Length, channels[DiscordChannel.Screenshots].Id,
                         screenshotMessagesLikes, screenshotMessagesDislikes),
                     DisplayChannelInfo(memesMessages.Length, channels[DiscordChannel.Memes].Id,

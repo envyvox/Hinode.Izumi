@@ -2,21 +2,22 @@
 
 namespace Hinode.Izumi.Data.Enums.DiscordEnums
 {
-    /// <summary>
-    /// Канал на сервере дискорда.
-    /// </summary>
     public enum DiscordChannel
     {
         Chat = 1,
         SearchParent = 2,
         GetRoles = 3,
         Search = 4,
+        DiscordEventParent = 57,
+        DiscordEventGetRole = 58,
+        DiscordEventNotify = 59,
         GameWorldParent = 5,
         Updates = 6,
         Registration = 7,
         Diary = 8,
         CommunityDescParent = 9,
         HowDescWork = 54,
+        Photos = 60,
         Screenshots = 55,
         Memes = 13,
         Arts = 14,
@@ -62,7 +63,7 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
         Test = 50,
         LogWelcome = 51,
         LogMute = 52,
-        LogAudit = 53,
+        LogAudit = 53
     }
 
     public static class DiscordChannelHelper
@@ -71,23 +72,22 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
         private const string LocationWhatToDo = "чем-заняться";
         private const string LocationEvents = "события";
 
-        /// <summary>
-        /// Возвращает локализированное название канала.
-        /// </summary>
-        /// <param name="channel">Канал.</param>
-        /// <returns>Локализированное название канала.</returns>
         public static string Name(this DiscordChannel channel) => channel switch
         {
             DiscordChannel.Chat => "общение",
             DiscordChannel.SearchParent => "поиск игроков",
             DiscordChannel.GetRoles => "получение-ролей",
             DiscordChannel.Search => "поиск-напарников",
+            DiscordChannel.DiscordEventParent => "Мероприятия",
+            DiscordChannel.DiscordEventGetRole => "получение-роли",
+            DiscordChannel.DiscordEventNotify => "оповещения🔔",
             DiscordChannel.GameWorldParent => "игровая вселенная",
             DiscordChannel.Updates => "обновления🔔",
             DiscordChannel.Registration => "регистрация",
             DiscordChannel.Diary => "дневник-странницы",
             DiscordChannel.CommunityDescParent => "доска сообщества",
             DiscordChannel.HowDescWork => "как-работает",
+            DiscordChannel.Photos => "фотографии",
             DiscordChannel.Screenshots => "скриншоты",
             DiscordChannel.Memes => "мемесы",
             DiscordChannel.Arts => "арты",
@@ -137,11 +137,6 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
             _ => throw new ArgumentOutOfRangeException(nameof(channel), channel, null)
         };
 
-        /// <summary>
-        /// Возвращает категорию к которой относится канал.
-        /// </summary>
-        /// <param name="channel">Канал.</param>
-        /// <returns>Категория канала.</returns>
         public static DiscordChannelCategory Category(this DiscordChannel channel) => channel switch
         {
             DiscordChannel.Chat => DiscordChannelCategory.TextChannel,
@@ -200,15 +195,13 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
             DiscordChannel.HowDescWork => DiscordChannelCategory.TextChannel,
             DiscordChannel.Screenshots => DiscordChannelCategory.TextChannel,
             DiscordChannel.GameMechanics => DiscordChannelCategory.TextChannel,
+            DiscordChannel.DiscordEventParent => DiscordChannelCategory.CategoryChannel,
+            DiscordChannel.DiscordEventGetRole => DiscordChannelCategory.TextChannel,
+            DiscordChannel.DiscordEventNotify => DiscordChannelCategory.TextChannel,
+            DiscordChannel.Photos => DiscordChannelCategory.TextChannel,
             _ => throw new ArgumentOutOfRangeException(nameof(channel), channel, null)
         };
 
-        /// <summary>
-        /// Возвращает родительсьский канал.
-        /// </summary>
-        /// <param name="channel">Канал.</param>
-        /// <returns>Родительский канал.</returns>
-        // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
         public static DiscordChannel Parent(this DiscordChannel channel) => channel switch
         {
             DiscordChannel.GetRoles => DiscordChannel.SearchParent,
@@ -253,7 +246,10 @@ namespace Hinode.Izumi.Data.Enums.DiscordEnums
             DiscordChannel.LogAudit => DiscordChannel.TechnicalParent,
             DiscordChannel.HowDescWork => DiscordChannel.CommunityDescParent,
             DiscordChannel.Screenshots => DiscordChannel.CommunityDescParent,
-            _ => throw new ArgumentOutOfRangeException(nameof(channel), channel, null)
+            DiscordChannel.Photos => DiscordChannel.CommunityDescParent,
+            DiscordChannel.DiscordEventGetRole => DiscordChannel.DiscordEventParent,
+            DiscordChannel.DiscordEventNotify => DiscordChannel.DiscordEventParent,
+            _ => channel
         };
     }
 }

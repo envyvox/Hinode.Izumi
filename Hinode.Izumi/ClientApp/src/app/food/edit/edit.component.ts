@@ -39,7 +39,7 @@ export class EditComponent implements OnInit, OnDestroy {
       time: [0, Validators.required],
       recipeSellable: [false],
       event: [false],
-      energy: [0, Validators.required],
+      energy: [0],
       costPrice: [0],
       cookingPrice: [0],
       npcPrice: [0],

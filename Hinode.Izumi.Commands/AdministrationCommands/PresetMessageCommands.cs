@@ -71,6 +71,26 @@ namespace Hinode.Izumi.Commands.AdministrationCommands
                 Emote.Parse(emotes.GetEmoteOrBlank("WildRift")),
                 Emote.Parse(emotes.GetEmoteOrBlank("MobileLegends"))
             });
+            await Task.CompletedTask;
+        }
+
+        [Command("event-role")]
+        public async Task SendEventRoleMessage()
+        {
+            var channels = await _mediator.Send(new GetDiscordChannelsQuery());
+            var roles = await _mediator.Send(new GetDiscordRolesQuery());
+
+            var embed = new EmbedBuilder()
+                .WithAuthor(IzumiReplyMessage.PresetDiscordEventAuthor.Parse())
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Image.DiscordEvent)))
+                .WithDescription(IzumiReplyMessage.PresetDiscordEventDesc.Parse(
+                    roles[DiscordRole.DiscordEvent].Id, channels[DiscordChannel.DiscordEventNotify].Id))
+                .WithFooter(IzumiReplyMessage.PresetRolesFooter.Parse());
+
+            var message = await _mediator.Send(new SendEmbedToChannelCommand(
+                DiscordChannel.DiscordEventGetRole, embed));
+            await message.AddReactionAsync(new Emoji("🥳"));
+            await Task.CompletedTask;
         }
 
         [Command("registry")]
@@ -108,8 +128,8 @@ namespace Hinode.Izumi.Commands.AdministrationCommands
                 .WithFooter(IzumiReplyMessage.PresetRolesFooter.Parse())
                 .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Image.RegistryGetAnonsRoles)));
 
-            var message =
-                await _mediator.Send(new SendEmbedToChannelCommand(DiscordChannel.Registration, anonsRolesEmbed));
+            var message = await _mediator.Send(new SendEmbedToChannelCommand(
+                DiscordChannel.Registration, anonsRolesEmbed));
             await message.AddReactionsAsync(new IEmote[]
             {
                 Emote.Parse(emotes.GetEmoteOrBlank("NumOne")),
@@ -119,6 +139,7 @@ namespace Hinode.Izumi.Commands.AdministrationCommands
                 Emote.Parse(emotes.GetEmoteOrBlank("NumFive")),
                 Emote.Parse(emotes.GetEmoteOrBlank("NumSix"))
             });
+            await Task.CompletedTask;
         }
     }
 }
