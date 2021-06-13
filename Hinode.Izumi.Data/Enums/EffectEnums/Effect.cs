@@ -2,10 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums.EffectEnums
 {
-    /// <summary>
-    /// Эффект.
-    /// </summary>
-    public enum Effect
+    public enum Effect : byte
     {
         Lottery = 1,
         FishingRarityChanceRareSmall = 2,
@@ -43,11 +40,6 @@ namespace Hinode.Izumi.Data.Enums.EffectEnums
 
     public static class CardEffectHelper
     {
-        /// <summary>
-        /// Возвращает локализированное название эффекта.
-        /// </summary>
-        /// <param name="effect">Эффект.</param>
-        /// <returns>Локализированное название эффекта.</returns>
         public static string Localize(this Effect effect) => effect switch
         {
             Effect.Lottery => "Участник лотереи",
@@ -85,11 +77,6 @@ namespace Hinode.Izumi.Data.Enums.EffectEnums
             _ => throw new ArgumentOutOfRangeException(nameof(effect), effect, null)
         };
 
-        /// <summary>
-        /// Возвращает категорию к которой относится эффект.
-        /// </summary>
-        /// <param name="effect">Эффект.</param>
-        /// <returns>Категория эффекта.</returns>
         public static EffectCategory Category(this Effect effect) => effect switch
         {
             Effect.Lottery => EffectCategory.Lottery,

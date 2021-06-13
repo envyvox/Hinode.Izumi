@@ -2,7 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums.PropertyEnums
 {
-    public enum Property
+    public enum Property : byte
     {
         EnergyCostExplore = 1,
         EnergyCostTransit = 2,

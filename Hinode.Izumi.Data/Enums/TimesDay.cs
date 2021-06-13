@@ -2,7 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums
 {
-    public enum TimesDay
+    public enum TimesDay : byte
     {
         Any = 0,
         Day = 1,

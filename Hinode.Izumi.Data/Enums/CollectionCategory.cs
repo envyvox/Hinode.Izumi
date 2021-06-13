@@ -2,10 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums
 {
-    /// <summary>
-    /// Категория коллекции.
-    /// </summary>
-    public enum CollectionCategory
+    public enum CollectionCategory : byte
     {
         Gathering = 1,
         Crafting = 2,
@@ -19,11 +16,6 @@ namespace Hinode.Izumi.Data.Enums
 
     public static class CollectionCategoryHelper
     {
-        /// <summary>
-        /// Возвращает локализированное название категории коллекции.
-        /// </summary>
-        /// <param name="category">Категория коллекции.</param>
-        /// <returns>Локализированное название категории коллекции.</returns>
         public static string Localize(this CollectionCategory category) => category switch
         {
             CollectionCategory.Gathering => "Собительские предметы",

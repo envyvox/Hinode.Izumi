@@ -5,9 +5,6 @@ namespace Hinode.Izumi.Services.Extensions
 {
     public static class CacheExtensions
     {
-        /// <summary>
-        /// Настройки кэша с длительностью хранения по-умолчанию.
-        /// </summary>
         public static readonly MemoryCacheEntryOptions DefaultCacheOptions =
             new MemoryCacheEntryOptions()
                 .SetAbsoluteExpiration(TimeSpan.FromMinutes(5));

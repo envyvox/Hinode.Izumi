@@ -1,6 +1,6 @@
 ﻿namespace Hinode.Izumi.Data.Enums
 {
-    public enum Image
+    public enum Image : byte
     {
         WeatherClear = 1,
         WeatherRain = 2,

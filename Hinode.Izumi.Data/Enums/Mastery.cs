@@ -2,10 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums
 {
-    /// <summary>
-    /// Мастерство.
-    /// </summary>
-    public enum Mastery
+    public enum Mastery : byte
     {
         Gathering = 1,
         Fishing = 2,
@@ -17,11 +14,6 @@ namespace Hinode.Izumi.Data.Enums
 
     public static class MasteryHelper
     {
-        /// <summary>
-        /// Возвращает локализированное название мастерства.
-        /// </summary>
-        /// <param name="mastery">Мастерство.</param>
-        /// <returns>Локализированное название мастерства.</returns>
         public static string Localize(this Mastery mastery) => mastery switch
         {
             Mastery.Gathering => "Сбор",
@@ -33,22 +25,26 @@ namespace Hinode.Izumi.Data.Enums
             _ => throw new ArgumentOutOfRangeException(nameof(mastery), mastery, null)
         };
 
-        /// <summary>
-        /// Возвращает локализированное описание мастерства.
-        /// </summary>
-        /// <param name="mastery">Мастерство.</param>
-        /// <returns>Локализированное описание мастерства.</returns>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static string Description(this Mastery mastery) => mastery switch
         {
-            Mastery.Gathering => "При исследованиях вы будете **чаще** и **больше** получать ресурсы.",
+            Mastery.Gathering =>
+                "При исследованиях вы будете **чаще** и **больше** получать ресурсы.",
+
             Mastery.Fishing =>
                 "Ваши навыки позволят вам не только вылавливать **чаще**, но и более **редкая** рыба станет вам \"по зубам\".",
-            Mastery.Cooking => "Вам станут доступными **новые** кулинарные **рецепты**.",
+
+            Mastery.Cooking =>
+                "Вам станут доступными **новые** кулинарные **рецепты**.",
+
             Mastery.Crafting =>
                 "Ваши руки настолько приспособлятся к изготовлению, что создание **дополнительного** предмета станет нормой.",
-            Mastery.Trading => "Торговцы будут **лояльнее** относиться к вам, делая различные **скидки**.",
-            Mastery.Alchemy => "Ожидайте обновления...",
+
+            Mastery.Trading =>
+                "Торговцы будут **лояльнее** относиться к вам, делая различные **скидки**.",
+
+            Mastery.Alchemy =>
+                "Ожидайте обновления...",
+
             _ => throw new ArgumentOutOfRangeException(nameof(mastery), mastery, null)
         };
     }

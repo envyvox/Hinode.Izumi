@@ -1,6 +1,6 @@
 ﻿namespace Hinode.Izumi.Data.Enums
 {
-    public enum BambooToy
+    public enum BambooToy : byte
     {
         Dragon = 1,
         Whale = 2,

@@ -2,10 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums
 {
-    /// <summary>
-    /// НПС.
-    /// </summary>
-    public enum Npc
+    public enum Npc : byte
     {
         Toredo = 1,
         Jodi = 2,
@@ -18,12 +15,6 @@ namespace Hinode.Izumi.Data.Enums
 
     public static class NpcHelper
     {
-        /// <summary>
-        /// Возвращает локализированное имя НПС.
-        /// </summary>
-        /// <param name="npc">НПС.</param>
-        /// <returns>Локализированное имя НПС.</returns>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static string Name(this Npc npc) => npc switch
         {
             Npc.Toredo => "Торедо, успешный торговец",
@@ -36,12 +27,6 @@ namespace Hinode.Izumi.Data.Enums
             _ => throw new ArgumentOutOfRangeException(nameof(npc), npc, null)
         };
 
-        /// <summary>
-        /// Возвращает изображение НПС.
-        /// </summary>
-        /// <param name="npc">НПС.</param>
-        /// <returns>Изображение НПС.</returns>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static Image Image(this Npc npc) => npc switch
         {
             Npc.Toredo => Enums.Image.NpcCapitalTodedo,

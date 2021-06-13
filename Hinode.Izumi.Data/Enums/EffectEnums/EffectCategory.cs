@@ -4,10 +4,7 @@ using System.Linq;
 
 namespace Hinode.Izumi.Data.Enums.EffectEnums
 {
-    /// <summary>
-    /// Категория эффекта.
-    /// </summary>
-    public enum EffectCategory
+    public enum EffectCategory : byte
     {
         Lottery = 1,
         FishingRarityChance = 2,
@@ -23,11 +20,6 @@ namespace Hinode.Izumi.Data.Enums.EffectEnums
 
     public static class EffectCategoryHelper
     {
-        /// <summary>
-        /// Возвращает локализированное название категории эффекта.
-        /// </summary>
-        /// <param name="category">Категория эффекта.</param>
-        /// <returns>Локализированное название категории эффекта.</returns>
         public static string Localize(this EffectCategory category) => category switch
         {
             EffectCategory.Lottery => "Лотерея",
@@ -42,15 +34,5 @@ namespace Hinode.Izumi.Data.Enums.EffectEnums
             EffectCategory.DrinkDoubleChance => "Увеличение шанса на изготовление дополнительного напитка",
             _ => throw new ArgumentOutOfRangeException(nameof(category), category, null)
         };
-
-        /// <summary>
-        /// Возвращает массив эффектов которые находятся в этой категории.
-        /// </summary>
-        /// <param name="category">Категория.</param>
-        /// <returns>Массив эффектов.</returns>
-        public static IEnumerable<Effect> Effects(this EffectCategory category) =>
-            Enum.GetValues(typeof(Effect))
-                .Cast<Effect>()
-                .Where(x => x.Category() == category);
     }
 }

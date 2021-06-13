@@ -1,6 +1,6 @@
 ﻿namespace Hinode.Izumi.Data.Enums.DiscordEnums
 {
-    public enum DiscordChannelCategory
+    public enum DiscordChannelCategory : byte
     {
         TextChannel = 1,
         VoiceChannel = 2,

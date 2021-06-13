@@ -2,10 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums
 {
-    /// <summary>
-    /// Категория инвентаря.
-    /// </summary>
-    public enum InventoryCategory
+    public enum InventoryCategory : byte
     {
         Currency = 1,
         Box = 2,
@@ -23,11 +20,6 @@ namespace Hinode.Izumi.Data.Enums
 
     public static class InventoryCategoryHelper
     {
-        /// <summary>
-        /// Возвращает локализированное название категории инвентаря.
-        /// </summary>
-        /// <param name="category">Категория инвенторя.</param>
-        /// <returns>Локализированное название категории инвентаря.</returns>
         public static string Localize(this InventoryCategory category) => category switch
         {
             InventoryCategory.Currency => "Валюта",

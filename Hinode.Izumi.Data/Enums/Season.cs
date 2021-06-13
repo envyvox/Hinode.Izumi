@@ -2,7 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums
 {
-    public enum Season
+    public enum Season : byte
     {
         Any = 0,
         Spring = 1,

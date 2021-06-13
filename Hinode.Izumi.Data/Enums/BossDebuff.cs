@@ -2,10 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums
 {
-    /// <summary>
-    /// Последствие вторжения ежедневного босса.
-    /// </summary>
-    public enum BossDebuff
+    public enum BossDebuff : byte
     {
         None = 0,
         CapitalStop = 1,
@@ -17,11 +14,6 @@ namespace Hinode.Izumi.Data.Enums
 
     public static class BossDebuffHelper
     {
-        /// <summary>
-        /// Возвращает локализированное описание последствий вторжения ежедневного босса.
-        /// </summary>
-        /// <param name="debuff">Последствие вторждения.</param>
-        /// <returns>Локализированное описание последствий вторжения ежедневного босса.</returns>
         public static string Localize(this BossDebuff debuff) => debuff switch
         {
             BossDebuff.None =>
@@ -45,11 +37,6 @@ namespace Hinode.Izumi.Data.Enums
             _ => throw new ArgumentOutOfRangeException(nameof(debuff), debuff, null)
         };
 
-        /// <summary>
-        /// Возвращает локацию к которой относится последствие вторжения.
-        /// </summary>
-        /// <param name="debuff">Последсвтие вторжения.</param>
-        /// <returns>Локация.</returns>
         public static Location Location(this BossDebuff debuff) => debuff switch
         {
             BossDebuff.CapitalStop => Enums.Location.Capital,

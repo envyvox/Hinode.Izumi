@@ -62,7 +62,6 @@ namespace Hinode.Izumi.Commands.UserCommands
                 .WithFooter(IzumiReplyMessage.PointsTopFooter.Parse());
 
             await _mediator.Send(new SendEmbedToUserCommand(Context.User, embed));
-            await Task.CompletedTask;
         }
     }
 }

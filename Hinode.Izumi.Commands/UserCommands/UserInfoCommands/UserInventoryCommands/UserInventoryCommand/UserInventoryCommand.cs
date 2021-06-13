@@ -79,7 +79,7 @@ namespace Hinode.Izumi.Commands.UserCommands.UserInfoCommands.UserInventoryComma
                     InventoryCategory.Gathering => userGathering.Aggregate(string.Empty, (current, gathering) =>
                         current + (gathering.Amount > 0
                             ? $"{emotes.GetEmoteOrBlank(gathering.Name)} {gathering.Amount} {_local.Localize(gathering.Name, gathering.Amount)}, "
-                            : "")),
+                            : string.Empty)),
 
                     InventoryCategory.Product => userProduct.Aggregate(string.Empty, (current, product) =>
                         current + (product.Amount > 0

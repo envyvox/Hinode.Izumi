@@ -2,10 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums.RarityEnums
 {
-    /// <summary>
-    /// Редкость карточки.
-    /// </summary>
-    public enum CardRarity
+    public enum CardRarity : byte
     {
         Common = 1,
         Rare = 2,
@@ -15,12 +12,6 @@ namespace Hinode.Izumi.Data.Enums.RarityEnums
 
     public static class CardRarityHelper
     {
-        /// <summary>
-        /// Возвращает локализированное название редкости карточки.
-        /// </summary>
-        /// <param name="rarity">Редкость карточки.</param>
-        /// <param name="declension">Склонение (какую карточку)?</param>
-        /// <returns>Локализированное название редкости карточки.</returns>
         public static string Localize(this CardRarity rarity, bool declension = false) => rarity switch
         {
             CardRarity.Common => declension ? "обычную карточку" : "Обычная карточка",

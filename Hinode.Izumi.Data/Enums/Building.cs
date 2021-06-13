@@ -1,9 +1,6 @@
 ﻿namespace Hinode.Izumi.Data.Enums
 {
-    /// <summary>
-    /// Постройка.
-    /// </summary>
-    public enum Building
+    public enum Building : byte
     {
         HarvestField = 1,
         HarvestFieldExpansionL1 = 2,

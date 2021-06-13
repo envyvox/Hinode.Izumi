@@ -1,9 +1,6 @@
 ﻿namespace Hinode.Izumi.Data.Enums
 {
-    /// <summary>
-    /// Голос сообщества.
-    /// </summary>
-    public enum Vote
+    public enum Vote : byte
     {
         Like = 1,
         Dislike = 2

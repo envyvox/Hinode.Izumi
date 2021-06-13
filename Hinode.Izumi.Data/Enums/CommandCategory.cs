@@ -1,6 +1,6 @@
 ﻿namespace Hinode.Izumi.Data.Enums
 {
-    public enum CommandCategory
+    public enum CommandCategory : byte
     {
         Registration = 1,
         Training = 2,

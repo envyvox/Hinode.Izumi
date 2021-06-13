@@ -2,10 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums.RarityEnums
 {
-    /// <summary>
-    /// Редкость рыбы.
-    /// </summary>
-    public enum FishRarity
+    public enum FishRarity : byte
     {
         Common = 1,
         Rare = 2,
@@ -17,12 +14,6 @@ namespace Hinode.Izumi.Data.Enums.RarityEnums
 
     public static class FishRarityHelper
     {
-        /// <summary>
-        /// Возвращает локализированное название редкости рыбы.
-        /// </summary>
-        /// <param name="fishRarity">Редкость рыбы.</param>
-        /// <param name="declension">Склонение (какую рыбу)?</param>
-        /// <returns>Локализированное название редкости рыбы.</returns>
         public static string Localize(this FishRarity fishRarity, bool declension = false) => fishRarity switch
         {
             FishRarity.Common => declension ? "обычную" : "Обычная",

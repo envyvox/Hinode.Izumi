@@ -2,10 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums
 {
-    /// <summary>
-    /// Локация в игровом мире.
-    /// </summary>
-    public enum Location
+    public enum Location : byte
     {
         InTransit = 0,
         Capital = 1,
@@ -29,11 +26,6 @@ namespace Hinode.Izumi.Data.Enums
 
     public static class LocationHelper
     {
-        /// <summary>
-        /// Проверяет локацию на ее тип (локация или подлокация).
-        /// </summary>
-        /// <param name="location">Локация.</param>
-        /// <returns>True если локация это подлокация, false если нет.</returns>
         public static bool SubLocation(this Location location) => location switch
         {
             Location.Capital => false,
@@ -44,12 +36,6 @@ namespace Hinode.Izumi.Data.Enums
             _ => true
         };
 
-        /// <summary>
-        /// Возвращает локализированное название локации.
-        /// </summary>
-        /// <param name="location">Локация.</param>
-        /// <param name="declension">Склонение (в локации)?</param>
-        /// <returns>Локализированное название локации.</returns>
         public static string Localize(this Location location, bool declension = false) => location switch
         {
             Location.InTransit => declension ? "пути" : "В пути",

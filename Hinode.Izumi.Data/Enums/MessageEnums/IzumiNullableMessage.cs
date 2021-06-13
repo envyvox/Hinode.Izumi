@@ -2,9 +2,6 @@
 
 namespace Hinode.Izumi.Data.Enums.MessageEnums
 {
-    /// <summary>
-    /// Сообщение с ошибкой о том что ожидаемый ответ оказался null.
-    /// </summary>
     public enum IzumiNullableMessage
     {
         UserWithId,
@@ -46,38 +43,20 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
     public static class IzumiNullableMessageHelper
     {
-        /// <summary>
-        /// Возвращает локализированный текст сообщение об ошибке.
-        /// </summary>
-        /// <param name="message">Сообщение об ошибке.</param>
-        /// <returns>Локализированный текст сообщения об ошибке.</returns>
         public static string Parse(this IzumiNullableMessage message) => message.Localize();
 
-        /// <summary>
-        /// Возвращает локализированный текст сообщение об ошибке поставляя указанные значения.
-        /// </summary>
-        /// <param name="message">Сообщение об ошибке.</param>
-        /// <param name="replacements">Значения которые необходимо подставить в текст.</param>
-        /// <returns>Локализированный текст сообщения об ошибке.</returns>
         public static string Parse(this IzumiNullableMessage message, params object[] replacements)
         {
             try
             {
-                // пытаемся подставить указанные значения
                 return string.Format(Parse(message), replacements);
             }
             catch (FormatException)
             {
-                // выводим текст с ошибкой, если подставить не получилось
                 return "`Возникла ошибка вывода ответа. Пожалуйста, покажите это Холли.`";
             }
         }
 
-        /// <summary>
-        /// Возвращает локализированный текст сообщения об ошибке.
-        /// </summary>
-        /// <param name="message">Сообщение об ошибке.</param>
-        /// <returns>Локализированный текст сообщения об ошибке.</returns>
         private static string Localize(this IzumiNullableMessage message) => message switch
         {
             IzumiNullableMessage.UserWithId =>

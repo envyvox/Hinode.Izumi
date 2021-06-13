@@ -2,10 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums
 {
-    /// <summary>
-    /// Состояние ячейки участка.
-    /// </summary>
-    public enum FieldState
+    public enum FieldState : byte
     {
         Empty = 0, // состояние по-умолчанию
         Planted = 1,
@@ -15,11 +12,6 @@ namespace Hinode.Izumi.Data.Enums
 
     public static class FieldStateHelper
     {
-        /// <summary>
-        /// Возвращает локализированное название состояния ячейки участка.
-        /// </summary>
-        /// <param name="state">Состояние ячейки участка.</param>
-        /// <returns>Локализированное название состояния ячейки участка.</returns>
         public static string Localize(this FieldState state) => state switch
         {
             FieldState.Empty => "Пустая",

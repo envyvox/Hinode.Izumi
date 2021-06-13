@@ -2,10 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums
 {
-    /// <summary>
-    /// Сертификат.
-    /// </summary>
-    public enum Certificate
+    public enum Certificate : byte
     {
         Rename = 1,
         FamilyRegistration = 2,
@@ -14,11 +11,6 @@ namespace Hinode.Izumi.Data.Enums
 
     public static class CertificateHelper
     {
-        /// <summary>
-        /// Возвращает локализированное название сертификата.
-        /// </summary>
-        /// <param name="certificate">Сертификат.</param>
-        /// <returns>Локализированное название сертификата.</returns>
         public static string Localize(this Certificate certificate) => certificate switch
         {
             Certificate.Rename => "смена имени",
@@ -27,11 +19,6 @@ namespace Hinode.Izumi.Data.Enums
             _ => throw new ArgumentOutOfRangeException(nameof(certificate), certificate, null)
         };
 
-        /// <summary>
-        /// Возвращает локализированное описание сертификата.
-        /// </summary>
-        /// <param name="certificate">Сертификат.</param>
-        /// <returns>Локализированное описание сертификата.</returns>
         public static string Description(this Certificate certificate) => certificate switch
         {
             Certificate.Rename =>

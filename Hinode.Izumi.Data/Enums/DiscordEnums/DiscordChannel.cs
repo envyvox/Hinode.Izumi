@@ -2,7 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums.DiscordEnums
 {
-    public enum DiscordChannel
+    public enum DiscordChannel : byte
     {
         Chat = 1,
         SearchParent = 2,

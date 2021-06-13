@@ -2,29 +2,11 @@
 
 namespace Hinode.Izumi.Data.Models
 {
-    /// <summary>
-    /// Собирательский ресурс.
-    /// </summary>
     public class Gathering : EntityBase
     {
-        /// <summary>
-        /// Название собирательского ресурса.
-        /// </summary>
         public string Name { get; set; }
-
-        /// <summary>
-        /// Цена собирательского ресурса.
-        /// </summary>
         public long Price { get; set; }
-
-        /// <summary>
-        /// Локация, в которой его можно получить.
-        /// </summary>
         public Location Location { get; set; }
-
-        /// <summary>
-        /// Событие в которые можно получить этот предмет.
-        /// </summary>
         public Event Event { get; set; }
     }
 }

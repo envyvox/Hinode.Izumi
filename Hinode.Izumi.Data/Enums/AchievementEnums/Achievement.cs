@@ -2,10 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums.AchievementEnums
 {
-    /// <summary>
-    /// Достижение.
-    /// </summary>
-    public enum Achievement
+    public enum Achievement : byte
     {
         FirstMessage = 1,
         FirstTransit = 2,
@@ -61,11 +58,6 @@ namespace Hinode.Izumi.Data.Enums.AchievementEnums
 
     public static class AchievementHelper
     {
-        /// <summary>
-        /// Возвращает локализированное название достижения.
-        /// </summary>
-        /// <param name="achievement">Достижение.</param>
-        /// <returns></returns>
         public static string Localize(this Achievement achievement) => achievement switch
         {
             Achievement.FirstMessage => "Написать первое сообщение",
@@ -121,11 +113,6 @@ namespace Hinode.Izumi.Data.Enums.AchievementEnums
             _ => throw new ArgumentOutOfRangeException(nameof(achievement), achievement, null)
         };
 
-        /// <summary>
-        /// Возвращает категорию в которой находится достижение.
-        /// </summary>
-        /// <param name="achievement">Достижение.</param>
-        /// <returns>Категория в которой находится достижение.</returns>
         public static AchievementCategory Category(this Achievement achievement) => achievement switch
         {
             Achievement.FirstMessage => AchievementCategory.FirstSteps,

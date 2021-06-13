@@ -1,6 +1,6 @@
 ﻿namespace Hinode.Izumi.Data.Enums
 {
-    public enum HangfireAction
+    public enum HangfireAction : byte
     {
         None = 0,
         Explore = 1,

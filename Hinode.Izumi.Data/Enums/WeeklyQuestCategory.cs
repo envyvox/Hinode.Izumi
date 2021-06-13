@@ -1,6 +1,6 @@
 ﻿namespace Hinode.Izumi.Data.Enums
 {
-    public enum WeeklyQuestCategory
+    public enum WeeklyQuestCategory : byte
     {
         Bring = 1,
         Get = 2,

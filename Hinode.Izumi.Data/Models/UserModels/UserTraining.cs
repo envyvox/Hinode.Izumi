@@ -2,24 +2,10 @@
 
 namespace Hinode.Izumi.Data.Models.UserModels
 {
-    /// <summary>
-    /// Шаг обучения у пользователя.
-    /// </summary>
     public class UserTraining : EntityBase
     {
-        /// <summary>
-        /// Id пользователя.
-        /// </summary>
         public long UserId { get; set; }
-
-        /// <summary>
-        /// Шаг обучения.
-        /// </summary>
         public TutorialStep Step { get; set; }
-
-        /// <summary>
-        /// Пользователь.
-        /// </summary>
         public virtual User User { get; set; }
     }
 }

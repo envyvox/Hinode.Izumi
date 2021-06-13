@@ -2,7 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums
 {
-    public enum Weather
+    public enum Weather : byte
     {
         Any = 0,
         Clear = 1,

@@ -5,7 +5,7 @@ using CoordinateSharp;
 using Hinode.Izumi.Data.Enums;
 using MediatR;
 
-namespace Hinode.Izumi.Services.TimeService.Queries
+namespace Hinode.Izumi.Services.GameServices.TimeService.Queries
 {
     public record GetCurrentTimesDayQuery : IRequest<TimesDay>;
 

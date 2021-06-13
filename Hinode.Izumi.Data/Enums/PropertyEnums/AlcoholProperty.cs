@@ -1,13 +1,7 @@
 ﻿namespace Hinode.Izumi.Data.Enums.PropertyEnums
 {
-    /// <summary>
-    /// Свойство алкоголя.
-    /// </summary>
-    public enum AlcoholProperty
+    public enum AlcoholProperty : byte
     {
-        /// <summary>
-        /// Шанс на двойное изготовление с 0 мастерства.
-        /// </summary>
-        CraftingDoubleChance = 1,
+        CraftingDoubleChance = 1
     }
 }

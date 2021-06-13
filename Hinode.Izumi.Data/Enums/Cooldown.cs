@@ -2,7 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums
 {
-    public enum Cooldown
+    public enum Cooldown : byte
     {
         UpdateAbout = 1,
         GamblingBet = 2,
@@ -10,11 +10,6 @@ namespace Hinode.Izumi.Data.Enums
 
     public static class CooldownHelper
     {
-        /// <summary>
-        /// Возвращает локализированное название кулдауна.
-        /// </summary>
-        /// <param name="cooldown">Кулдаун.</param>
-        /// <returns>Локализированное название кулдауна.</returns>
         public static string Localize(this Cooldown cooldown) => cooldown switch
         {
             Cooldown.UpdateAbout => "Обновление информации",

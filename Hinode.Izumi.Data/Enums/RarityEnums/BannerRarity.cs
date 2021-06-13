@@ -2,10 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums.RarityEnums
 {
-    /// <summary>
-    /// Редкость баннера.
-    /// </summary>
-    public enum BannerRarity
+    public enum BannerRarity : byte
     {
         Common = 1,
         Rare = 2,
@@ -16,11 +13,6 @@ namespace Hinode.Izumi.Data.Enums.RarityEnums
 
     public static class BannerRarityHelper
     {
-        /// <summary>
-        /// Возвращает локализированное название редкости баннера.
-        /// </summary>
-        /// <param name="bannerRarity">Редкость баннера.</param>
-        /// <returns>Локализированное название редкости баннера</returns>
         public static string Localize(this BannerRarity bannerRarity) => bannerRarity switch
         {
             BannerRarity.Common => "Обычный баннер",

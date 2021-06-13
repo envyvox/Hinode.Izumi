@@ -1,6 +1,6 @@
 ﻿namespace Hinode.Izumi.Data.Enums
 {
-    public enum LocalizationCategory
+    public enum LocalizationCategory : byte
     {
         Gathering = 1,
         Product = 2,

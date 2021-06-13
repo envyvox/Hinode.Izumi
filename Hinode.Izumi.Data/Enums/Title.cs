@@ -2,10 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums
 {
-    /// <summary>
-    /// Титул пользователя, отображается перед игровым именем.
-    /// </summary>
-    public enum Title
+    public enum Title : byte
     {
         Newbie = 1, // титул по-умолчанию
         Lucky = 2,
@@ -25,18 +22,13 @@ namespace Hinode.Izumi.Data.Enums
         KingExcitement = 16,
         BelievingInLuck = 17,
         FirstSamurai = 18,
-        Yatagarasu = 19, // титул реферальной системы
+        Yatagarasu = 19,
         HarbingerOfSummer = 20,
-        Wanderer = 777 // титул для Изуми
+        Wanderer = 255 // титул для Изуми
     }
 
     public static class TitleHelper
     {
-        /// <summary>
-        /// Возвращает локализированное название титула.
-        /// </summary>
-        /// <param name="title">Титул.</param>
-        /// <returns>Локализированное название титула</returns>
         public static string Localize(this Title title) => title switch
         {
             Title.Newbie => "Новичок",
@@ -63,11 +55,6 @@ namespace Hinode.Izumi.Data.Enums
             _ => throw new ArgumentOutOfRangeException(nameof(title), title, null)
         };
 
-        /// <summary>
-        /// Возвращает название иконки титула.
-        /// </summary>
-        /// <param name="title">Титул.</param>
-        /// <returns>Название иконки.</returns>
         public static string Emote(this Title title) => "Title" + title;
     }
 }

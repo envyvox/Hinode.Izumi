@@ -1,9 +1,6 @@
 ﻿namespace Hinode.Izumi.Data.Enums.PropertyEnums
 {
-    /// <summary>
-    /// Свойство опыта мастерства.
-    /// </summary>
-    public enum MasteryXpProperty
+    public enum MasteryXpProperty : byte
     {
         FishingSuccess = 1,
         FishingFail = 2,

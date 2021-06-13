@@ -2,7 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums.DiscordEnums
 {
-    public enum DiscordRole
+    public enum DiscordRole : byte
     {
         MusicBot = 1,
         Administration = 2,

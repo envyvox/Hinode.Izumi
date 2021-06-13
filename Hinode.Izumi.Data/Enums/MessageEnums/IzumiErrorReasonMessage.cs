@@ -2,7 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums.MessageEnums
 {
-    public enum IzumiErrorReasonMessage
+    public enum IzumiErrorReasonMessage : byte
     {
         SomethingGoneWrong = 0,
         UnknownCommand = 1,
@@ -14,11 +14,6 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
     public static class IzumiErrorReasonMessageHelper
     {
-        /// <summary>
-        /// Возвращает локализированный текст сообщения об ошибке.
-        /// </summary>
-        /// <param name="errorReasonMessage">Сообщение об ошибке.</param>
-        /// <returns>Локализированный текст сообщения об ошибке.</returns>
         public static string Localize(this IzumiErrorReasonMessage errorReasonMessage) => errorReasonMessage switch
         {
             IzumiErrorReasonMessage.SomethingGoneWrong =>

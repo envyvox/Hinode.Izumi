@@ -2,7 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums
 {
-    public enum TutorialStep
+    public enum TutorialStep : byte
     {
         None = 0,
         CheckProfile = 1,
@@ -38,11 +38,6 @@ namespace Hinode.Izumi.Data.Enums
 
     public static class TutorialStepHelper
     {
-        /// <summary>
-        /// Возвращает локализирированное название шага обучения.
-        /// </summary>
-        /// <param name="step">Шаг обучения.</param>
-        /// <returns>Локализирированное название шага обучения.</returns>
         public static string Name(this TutorialStep step) => step switch
         {
             TutorialStep.None => "",
@@ -78,11 +73,6 @@ namespace Hinode.Izumi.Data.Enums
             _ => throw new ArgumentOutOfRangeException(nameof(step), step, null)
         };
 
-        /// <summary>
-        /// Возвращает локализированное описание шага обучения.
-        /// </summary>
-        /// <param name="step">Шаг обучения.</param>
-        /// <returns>Локализированное описание шага обучения.</returns>
         public static string Description(this TutorialStep step) => step switch
         {
             TutorialStep.None => "",

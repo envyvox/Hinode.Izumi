@@ -1,6 +1,6 @@
 ﻿namespace Hinode.Izumi.Data.Enums
 {
-    public enum WeeklyQuestDifficulty
+    public enum WeeklyQuestDifficulty : byte
     {
         Easy = 1,
         Normal = 2,

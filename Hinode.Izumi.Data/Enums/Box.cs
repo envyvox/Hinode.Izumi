@@ -1,6 +1,6 @@
 ﻿namespace Hinode.Izumi.Data.Enums
 {
-    public enum Box
+    public enum Box : byte
     {
         Capital = 1,
         Garden = 2,

@@ -1,9 +1,6 @@
 ﻿namespace Hinode.Izumi.Data.Enums
 {
-    /// <summary>
-    /// Статистика.
-    /// </summary>
-    public enum Statistic
+    public enum Statistic : byte
     {
         Messages = 1,
         CurrencyEarned = 2,

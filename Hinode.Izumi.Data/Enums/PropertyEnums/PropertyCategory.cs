@@ -1,6 +1,6 @@
 ﻿namespace Hinode.Izumi.Data.Enums.PropertyEnums
 {
-    public enum PropertyCategory
+    public enum PropertyCategory : byte
     {
         Energy = 1,
         ActionTime = 2,

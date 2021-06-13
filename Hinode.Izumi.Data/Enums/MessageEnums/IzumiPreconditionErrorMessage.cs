@@ -2,10 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums.MessageEnums
 {
-    /// <summary>
-    /// Сообщение с ошибкой о том что не выполнены необходимые требования.
-    /// </summary>
-    public enum IzumiPreconditionErrorMessage
+    public enum IzumiPreconditionErrorMessage : byte
     {
         RequireRegistry = 1,
         RequireRole = 2,
@@ -25,40 +22,22 @@ namespace Hinode.Izumi.Data.Enums.MessageEnums
 
     public static class IzumiPreconditionErrorMessageHelper
     {
-        /// <summary>
-        /// Возвращает локализированный текст сообщения об ошибке.
-        /// </summary>
-        /// <param name="ibPreconditionErrorMessage">Сообщение об ошибке.</param>
-        /// <returns>Локализированный текст сообщения об ошибке.</returns>
         public static string Parse(this IzumiPreconditionErrorMessage ibPreconditionErrorMessage) =>
             ibPreconditionErrorMessage.Localize();
 
-        /// <summary>
-        /// Возвращает локализированный текст сообщения об ошибке подставляя указанные значения.
-        /// </summary>
-        /// <param name="ibPreconditionErrorMessage">Сообщение об ошибке.</param>
-        /// <param name="replacements">Значения которые необходимо подставить в текст.</param>
-        /// <returns>Локализированный текст сообщения об ошибке.</returns>
         public static string Parse(this IzumiPreconditionErrorMessage ibPreconditionErrorMessage,
             params object[] replacements)
         {
             try
             {
-                // пытаемся подставить указанные значения
                 return string.Format(Parse(ibPreconditionErrorMessage), replacements);
             }
             catch (FormatException)
             {
-                // выводим текст с ошибкой, если подставить не получилось
                 return "`Возникла ошибка вывода ответа. Пожалуйста, покажите это Холли.`";
             }
         }
 
-        /// <summary>
-        /// Возвращает локализированный текст сообщения об ошибке.
-        /// </summary>
-        /// <param name="ibPreconditionErrorMessage">Сообщение об ошибке.</param>
-        /// <returns>Локализированный текст сообщения об ошибке.</returns>
         private static string Localize(this IzumiPreconditionErrorMessage ibPreconditionErrorMessage) =>
             ibPreconditionErrorMessage switch
             {

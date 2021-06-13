@@ -2,7 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums.DiscordEnums
 {
-    public enum DiscordContext
+    public enum DiscordContext : byte
     {
         Guild = 1,
         DirectMessage = 2,

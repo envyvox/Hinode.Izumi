@@ -1,18 +1,8 @@
 ﻿namespace Hinode.Izumi.Data.Enums.FamilyEnums
 {
-    /// <summary>
-    /// Статус семьи.
-    /// </summary>
-    public enum FamilyStatus
+    public enum FamilyStatus : byte
     {
-        /// <summary>
-        /// В процессе регистрации.
-        /// </summary>
         Registration = 1,
-
-        /// <summary>
-        /// Успешно создана.
-        /// </summary>
         Created = 2
     }
 }

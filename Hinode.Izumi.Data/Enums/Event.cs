@@ -2,10 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums
 {
-    /// <summary>
-    /// Событие.
-    /// </summary>
-    public enum Event
+    public enum Event : byte
     {
         None = 0,
         January = 1,
@@ -24,12 +21,6 @@ namespace Hinode.Izumi.Data.Enums
 
     public static class EventHelper
     {
-        /// <summary>
-        /// Возвращает локализированное название события.
-        /// </summary>
-        /// <param name="event">Событие.</param>
-        /// <returns>Локализированное название события.</returns>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static string Localize(this Event @event) => @event switch
         {
             Event.None => "...",

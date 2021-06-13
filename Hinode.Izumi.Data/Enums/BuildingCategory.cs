@@ -2,10 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums
 {
-    /// <summary>
-    /// Категория постройки.
-    /// </summary>
-    public enum BuildingCategory
+    public enum BuildingCategory : byte
     {
         Personal = 1,
         Family = 2,
@@ -14,13 +11,6 @@ namespace Hinode.Izumi.Data.Enums
 
     public static class BuildingCategoryHelper
     {
-        /// <summary>
-        /// Возвращает локализированное название категории постройки.
-        /// </summary>
-        /// <param name="category">Категория постройки.</param>
-        /// <param name="declension">Склонить "какой"?</param>
-        /// <returns>Локализированное название категории постройки.</returns>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static string Localize(this BuildingCategory category, bool declension = false) => category switch
         {
             BuildingCategory.Personal => declension ? "Персональный" : "Персональные",

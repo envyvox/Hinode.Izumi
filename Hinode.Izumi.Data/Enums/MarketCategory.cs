@@ -2,7 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums
 {
-    public enum MarketCategory
+    public enum MarketCategory : byte
     {
         Gathering = 1,
         Crafting = 2,

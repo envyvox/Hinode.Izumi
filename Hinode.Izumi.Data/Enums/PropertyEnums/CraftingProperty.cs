@@ -1,13 +1,7 @@
 ﻿namespace Hinode.Izumi.Data.Enums.PropertyEnums
 {
-    /// <summary>
-    /// Свойство изготавливаемого предмета.
-    /// </summary>
-    public enum CraftingProperty
+    public enum CraftingProperty : byte
     {
-        /// <summary>
-        /// Шанс на двойное изготовление.
-        /// </summary>
-        CraftingDoubleChance = 1,
+        CraftingDoubleChance = 1
     }
 }

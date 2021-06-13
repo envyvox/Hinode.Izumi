@@ -2,10 +2,7 @@
 
 namespace Hinode.Izumi.Data.Enums.FamilyEnums
 {
-    /// <summary>
-    /// Статус пользователя в семье.
-    /// </summary>
-    public enum UserInFamilyStatus
+    public enum UserInFamilyStatus : byte
     {
         Default = 0,
         Deputy = 1,
@@ -14,11 +11,6 @@ namespace Hinode.Izumi.Data.Enums.FamilyEnums
 
     public static class UserInFamilyStatusHelper
     {
-        /// <summary>
-        /// Возвращает локализированное название статуса пользователя в семье.
-        /// </summary>
-        /// <param name="status">Статус пользователя в семье.</param>
-        /// <returns>Локализированное название статуса пользователя в семье.</returns>
         public static string Localize(this UserInFamilyStatus status) => status switch
         {
             UserInFamilyStatus.Default => "участник семьи",

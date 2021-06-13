@@ -12,6 +12,7 @@ namespace Hinode.Izumi.Data.Configurations
 
             b.Property(x => x.Category).IsRequired();
             b.Property(x => x.ItemId).IsRequired();
+            b.Property(x => x.Name).IsRequired();
             b.Property(x => x.Single).IsRequired();
             b.Property(x => x.Double).IsRequired();
             b.Property(x => x.Multiply).IsRequired();
